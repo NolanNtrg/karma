@@ -1,6 +1,6 @@
 import sys 
 import pygame 
-from src.settings import (
+from settings import (
     COLOR_BG,
     FPS,
     SCREEN_HEIGHT,
@@ -14,7 +14,7 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  
         pygame.display.set_caption(TITLE) 
         self.clock = pygame.time.Clock()
-        self.running = True 
+        self.running: bool = True 
 
     def run(self):
         while self.running:

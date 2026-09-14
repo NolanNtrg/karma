@@ -8,5 +8,3 @@ dependencies = [
     "mypy",
     "pytmx",
 ]
-[tool.pyright]
-extraPaths = ["."]
