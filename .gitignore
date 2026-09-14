@@ -1,2 +1,4 @@
 .venv
 .gitignore
+
+/exemple.egg-info
