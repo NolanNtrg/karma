@@ -1,0 +1,9 @@
+[project]
+name = "exemple"
+version = "0.1.0"
+description = "Tester pygame"
+requires-python = ">=3.12, <3.13"
+dependencies = [
+    "pygame==2.6.1",
+    "mypy",
+]
