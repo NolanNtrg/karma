@@ -11,7 +11,7 @@ class Button :
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.bg_color, self.rect) # dessine le bouton avec la couleur de fond
-        self.text_image = self.font.render(self.text, False, self.color) # transforme le texte en image
+        self.text_image = self.font.render(self.text,False, self.color) # transforme le texte en image
         self.text_rect = self.text_image.get_rect(center=self.rect.center) # centre le texte sur le rectangle
         screen.blit(self.text_image, self.text_rect) # sert à superposer le texte sur le rectangle en fond
 
