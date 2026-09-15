@@ -8,6 +8,8 @@ from karma.settings import (
     SCREEN_WIDTH,
     TITLE,
 )
+from karma.environment.map import MapManager
+from karma.settings import ASSETS_DIR
 
 class Game:
     def __init__(self): 
@@ -18,6 +20,7 @@ class Game:
         self.running: bool = True 
         self.state = "MENU" # Etat du menu, peut être "MENU", "PLAY"
         self.menu = Menu(title="Karma",title_color="white")
+        self.map_manager = MapManager(ASSETS_DIR / "nightMap.tmx")
 
     def run(self):
         while self.running:
@@ -37,7 +40,7 @@ class Game:
             if self.state == "MENU":
                 self.menu.draw(self.screen)
             elif self.state == "PLAY":
-                pass # mettre le dessin du jeu ici 
+                self.map_manager.render(self.screen)
 
             pygame.display.flip()
             self.clock.tick(FPS)
