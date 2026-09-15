@@ -7,8 +7,8 @@ MAPS_DIR: Path = ASSETS_DIR / "maps"
 SPRITES_DIR: Path = ASSETS_DIR / "sprites"
 SOUNDS_DIR: Path = ASSETS_DIR / "sounds"
 
-SCREEN_WIDTH: int = 1024
-SCREEN_HEIGHT: int = 768
+SCREEN_WIDTH: int = 1280
+SCREEN_HEIGHT: int = 720
 FPS: int = 60
 TITLE: str = "Karma"
 

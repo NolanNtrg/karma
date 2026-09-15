@@ -5,7 +5,7 @@ from karma.settings import (
     KARMA_MIN,
     KARMA_MAX
 )
-from karma.resources.ressourceType import RessourceType
+from karma.enums import RessourceType
     
 class RessourceManager:
 

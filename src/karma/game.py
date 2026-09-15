@@ -1,6 +1,7 @@
 import sys
 import pygame
 
+from karma.enums import ResolutionType, StateType
 from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
@@ -26,11 +27,12 @@ from karma.settings import (
 class Game:
     def __init__(self) -> None:
         pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.running: bool = True
-        self.state: str = "MENU"  # États possibles : "MENU", "PLAY", "PAUSE"
+        self.state: StateType = StateType.Menu  # États possibles : "MENU", "PLAY", "PAUSE"
+        self.resolution: ResolutionType = ResolutionType.Base # États possibles : "BASE", "FULLSCREEN"
 
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
@@ -73,32 +75,34 @@ class Game:
                 self.running = False
                 return
 
-            if self.state == "MENU":
+            if self.state == StateType.Menu:
                 action = self.main_menu.handle_event(event)
-                if action == "PLAY":
-                    self.state = "PLAY"
-                elif action == "QUIT":
+                if action == StateType.Play:
+                    self.state = StateType.Play
+                elif action == StateType.Quit:
                     self.running = False
 
-            elif self.state == "PLAY":
+            elif self.state == StateType.Play:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.state = "PAUSE"
+                    self.state = StateType.Pause
 
-            elif self.state == "PAUSE":
+            elif self.state == StateType.Pause:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.state = "PLAY"
+                    self.state = StateType.Play
                 else:
                     action = self.pause_menu.handle_event(event)
-                    if action == "RESUME":
-                        self.state = "PLAY"
-                    elif action == "MENU":
-                        self.state = "MENU"
-                    elif action == "QUIT":
+                    if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
+                        self.resolution = action
+                        pygame.display.toggle_fullscreen()
+                    elif action == StateType.Quit:
                         self.running = False
+                    elif action == StateType.Play or action == StateType.Menu:
+                        self.state = action
+                    
 
     def update(self, dt: float) -> None:
         # Mise à jour de la physique et des entités (seulement quand on joue)
-        if self.state == "PLAY":
+        if self.state == StateType.Play:
             self.player.update(dt)
             self.base.update(dt, self.isDay)
             self.camera.update(self.player.getCenter())
@@ -124,9 +128,9 @@ class Game:
 
     def draw(self) -> None:
         # Rendu graphique
-        self.screen.fill(COLOR_BG)
 
-        if self.state == "MENU":
+        if self.state == StateType.Menu:
+            self.screen.fill(COLOR_BG)
             self.main_menu.draw(self.screen)
         else:
             # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan.
@@ -143,7 +147,7 @@ class Game:
             duration = self.dayDuration if self.isDay else self.nightDuration
             self.hud.draw(self.screen, self.currentDay, self.isDay, self.cycleTimer, duration)
 
-            if self.state == "PAUSE":
+            if self.state == StateType.Pause:
                 self.pause_menu.draw(self.screen)
 
         pygame.display.flip()
