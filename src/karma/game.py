@@ -22,6 +22,7 @@ from karma.settings import (
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
     TITLE,
+    SOUNDS_DIR
 )
 
 class Game:
@@ -68,6 +69,10 @@ class Game:
         self.cycleTimer = 0.0
         self.currentDay = 1
 
+        pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+        pygame.mixer.music.play()
+
+
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
         for event in pygame.event.get():
@@ -76,6 +81,7 @@ class Game:
                 return
 
             if self.state == StateType.Menu:
+
                 action = self.main_menu.handle_event(event)
                 if action == StateType.Play:
                     self.state = StateType.Play
@@ -130,7 +136,9 @@ class Game:
         # Rendu graphique
 
         if self.state == StateType.Menu:
-            self.screen.fill(COLOR_BG)
+            backgroundOriginal = pygame.image.load(ASSETS_DIR / "Main-Menu.jpg")
+            background = pygame.transform.scale(backgroundOriginal, (SCREEN_WIDTH, SCREEN_HEIGHT))
+            self.screen.blit(background, (0,0))
             self.main_menu.draw(self.screen)
         else:
             # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan.
@@ -159,6 +167,7 @@ class Game:
 
             self.update(dt)
             self.draw()
+
 
         pygame.quit()
         sys.exit()
