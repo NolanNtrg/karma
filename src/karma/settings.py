@@ -20,3 +20,6 @@ COLOR_BG: tuple[int, int, int] = (20, 20, 25)
 KARMA_START: float = 0.0
 KARMA_MIN: float = -1000.0
 KARMA_MAX: float = 1000.0
+
+ENERGY_START = 100
+RAW_MATERIAL_START = 500
