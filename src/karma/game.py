@@ -3,6 +3,7 @@ import pygame
 
 from karma.entities.buildings.building import Building
 from karma.entities.player.player import Player
+from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
@@ -28,6 +29,7 @@ class Game:
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
         self.map_manager = MapManager(ASSETS_DIR / "dayMap.tmx")
+        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.map_manager.width, self.map_manager.height)
 
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
@@ -67,6 +69,7 @@ class Game:
         # Mise à jour de la physique et des entités (seulement quand on joue)
         if self.state == "PLAY":
             self.player.update(dt)
+            self.camera.update(self.player.getCenter())
             self.karma_manager.update(dt, self.buildings)
 
     def draw(self) -> None:
@@ -77,8 +80,8 @@ class Game:
             self.main_menu.draw(self.screen)
         else:
             # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan
-            self.map_manager.render(self.screen)
-            self.player.draw(self.screen)
+            self.map_manager.render(self.screen, self.camera)
+            self.player.draw(self.screen, self.camera)
 
             if self.state == "PAUSE":
                 self.pause_menu.draw(self.screen)

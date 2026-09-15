@@ -58,5 +58,9 @@ class Player(Entity):
         frame = self.currentFrame[int(self.imageIndex % len(self.currentFrame))]
         self.image = pygame.transform.flip(frame, self.flip, False)
     
-    def draw(self, screen: pygame.Surface) -> None:
-        screen.blit(self.image, self.position)
+    def getCenter(self) -> pygame.Vector2:
+        return self.position + pygame.Vector2(self.image.get_size()) / 2
+
+    def draw(self, screen: pygame.Surface, camera=None) -> None:
+        position = camera.apply(self.position) if camera else self.position
+        screen.blit(self.image, position)
