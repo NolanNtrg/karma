@@ -1,15 +1,13 @@
 import pygame;
 
-class Player():
-    # Déclaration des variables de classes
-    health: int = 100
-    
+class Player:
     # Constructeur
-    def __init__(self, name: str, position: pygame.Vector2, speed: float) -> None:
-        # Déclatation des variables d'instances
+    def __init__(self, name: str, position: pygame.Vector2, speed: float, health: int = 100) -> None:
+        # Déclaration des variables d'instances
         self.name: str = name
         self.position: pygame.Vector2 = position
         self.speed: float = speed
+        self.health: int = health
 
     # Récupère la direction du joueur et sort un vecteur normalisé de sa direction
     def getDirection(self) -> pygame.Vector2:
