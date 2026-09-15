@@ -25,7 +25,7 @@ class Game:
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
-        self.map_manager = MapManager(ASSETS_DIR / "nightMap.tmx")
+        self.map_manager = MapManager(ASSETS_DIR / "dayMap.tmx")
 
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
