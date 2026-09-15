@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2-2-geb83ddb9" orientation="orthogonal" renderorder="right-down" width="80" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="TilesetNuit.tsx"/>
- <tileset firstgid="257" source="TilesetNuit.tsx"/>
+ <tileset firstgid="1" source="TilesetJour.tsx"/>
+ <tileset firstgid="257" source="TilesetJour.tsx"/>
  <layer id="1" name="Calque de Tuiles 1" width="80" height="50">
   <data encoding="csv">
 450,450,450,450,450,450,450,450,450,450,450,450,450,450,450,450,450,472,164,179,165,161,147,165,145,177,178,146,177,161,181,147,163,166,149,148,181,178,164,180,166,180,149,164,180,179,149,178,147,149,147,164,149,145,149,179,149,147,181,166,166,166,145,149,148,164,177,148,162,163,164,180,145,161,471,450,450,450,450,450,
