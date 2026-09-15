@@ -1,0 +1,15 @@
+from pathlib import Path
+
+BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
+
+ASSETS_DIR: Path = BASE_DIR / "assets"
+MAPS_DIR: Path = ASSETS_DIR / "maps"
+SPRITES_DIR: Path = ASSETS_DIR / "sprites"
+SOUNDS_DIR: Path = ASSETS_DIR / "sounds"
+
+SCREEN_WIDTH: int = 1024
+SCREEN_HEIGHT: int = 768
+FPS: int = 60
+TITLE: str = "Karma"
+
+COLOR_BG: tuple[int, int, int] = (20, 20, 25)

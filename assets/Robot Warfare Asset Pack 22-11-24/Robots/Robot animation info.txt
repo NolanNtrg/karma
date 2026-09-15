@@ -1,0 +1,5 @@
+The animations in the Scarab and Spider sprites sheets from top to bottom are:
+
+Idle, walk, firing, melee and a destroyed frame.
+
+The animations in the Hornet sprite sheet are neutral hover and firing hover.
