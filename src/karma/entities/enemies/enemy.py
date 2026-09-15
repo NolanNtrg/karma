@@ -34,8 +34,7 @@ class Enemy(Attacker):
         self.frameSize: int = frameSize
         self.scale: int = scale
 
-        # spriteSheetPath vaut None pour les ennemis qui gèrent leur propre
-        # rendu (voir ArmoredUnit, qui anime un corps à plusieurs segments).
+        # None pour les ennemis qui gèrent leur propre rendu (voir ArmoredUnit).
         if spriteSheetPath is not None:
             assert idleFrameCoords is not None and walkFrameCoords is not None
             self.spriteSheet: pygame.Surface = pygame.image.load(spriteSheetPath).convert_alpha()

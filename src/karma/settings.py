@@ -26,5 +26,5 @@ RAW_MATERIAL_START = 500
 
 BASE_HEALTH: int = 1000
 
-# Délai en millisecondes entre deux apparitions ennemis pendant la nuit
+# Délai en millisecondes entre deux apparitions d'ennemis pendant la nuit
 ENEMY_SPAWN_INTERVAL: float = 1500.0

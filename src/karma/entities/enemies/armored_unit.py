@@ -4,16 +4,13 @@ from karma.entities.enemies.enemy import Enemy
 from karma.settings import ASSETS_DIR
 
 # Centipede.png n'a que 4 orientations dessinées par section (E, N, W, S) :
-# les diagonales sont approximées par la direction cardinale la plus proche.
-# Lignes 0-7 : tête, une orientation toutes les 2 lignes (les lignes impaires
-# ne sont pas utilisées, elles couvrent les diagonales qu'on ignore ici).
+# Lignes 0-7 : tête, une orientation toutes les 2 lignes (les lignes impaires ne sont pas utilisées).
 HEAD_ROWS = {"E": 0, "N": 2, "W": 4, "S": 6}
 HEAD_FRAME_COUNT = 4
-# Lignes 8-15 : segment de corps.
+# Lignes 8-15 : segment de corps
 BODY_ROWS = {"E": 9, "N": 10, "W": 11, "S": 8}
 BODY_FRAME_COUNT = 4
-# Ligne 16 : bout de queue sans pince, une frame fixe par direction (pas
-# d'animation de marche sur la queue).
+# Ligne 16 : bout de queue, une frame fixe par direction (pas d'animation de marche sur la queue).
 TAIL_ROW = 16
 TAIL_COLUMNS = {"E": 0, "N": 2, "W": 4, "S": 6}
 
@@ -23,8 +20,7 @@ SEGMENT_PHASE_OFFSET = 120.0
 
 
 class ArmoredUnit(Enemy):
-    # Blindé : ennemi lent avec énormément de vie et de dégâts, corps de
-    # centipède à plusieurs segments qui suivent la tête en ligne droite.
+    # Blindé : ennemi lent, très résistant, corps de centipède à plusieurs segments.
 
     def __init__(self, position: pygame.Vector2, target: pygame.Vector2) -> None:
         super().__init__(
@@ -46,8 +42,7 @@ class ArmoredUnit(Enemy):
         )
 
     def getCardinalDirection(self, heading: pygame.Vector2) -> str:
-        # Pas de frame diagonale : on garde l'axe dominant (le plus grand des
-        # deux déplacements, horizontal ou vertical) et son sens.
+        # Pas de diagonale : on garde l'axe le plus marqué, horizontal ou vertical.
         if abs(heading.x) >= abs(heading.y):
             return "E" if heading.x >= 0 else "W"
         return "S" if heading.y >= 0 else "N"
