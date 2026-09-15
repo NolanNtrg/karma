@@ -29,19 +29,19 @@ class Game:
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
-        self.map_manager = MapManager(ASSETS_DIR / "dayMap.tmx")
-        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.map_manager.width, self.map_manager.height)
+
+        # gestion de la map
+        self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
+        self.nightMap = MapManager(ASSETS_DIR / "nightMap.tmx")
+        self.currentMap = self.dayMap  # Commence avec la carte de jour
+
+        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.currentMap.width, self.currentMap.height)
         # Surface de jeu utilisée avant l'agrandissement à l'écran.
         self.game_surface = pygame.Surface((round(self.camera.width), round(self.camera.height)))
 
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
         self.karma_manager = KarmaManager()
-
-        # gestion de la map
-        self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
-        self.nightMap = MapManager(ASSETS_DIR / "nightMap.tmx")
-        self.currentMap = self.dayMap  # Commence avec la carte de jour
 
         self.isDay = True
         self.dayDuration = 4000 # mettre 2 min dans le futur
@@ -104,14 +104,13 @@ class Game:
         if self.state == "MENU":
             self.main_menu.draw(self.screen)
         else:
-            # Le monde reste visible en pause et est agrandi sur l'écran.
+            # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan.
+            # On dessine la carte du cycle jour/nuit courante sur la surface
+            # zoomée, puis on l'étire vers l'écran.
             self.game_surface.fill(COLOR_BG)
-            self.map_manager.render(self.game_surface, self.camera)
+            self.currentMap.render(self.game_surface, self.camera)
             self.player.draw(self.game_surface, self.camera)
             pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
-            # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan
-            self.currentMap.render(self.screen)
-            self.player.draw(self.screen)
 
             icon = self.sunImg if self.isDay else self.moonImg
             self.screen.blit(icon, (20,20))
