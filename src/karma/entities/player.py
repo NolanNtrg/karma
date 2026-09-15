@@ -1,13 +1,14 @@
-import pygame;
+import pygame
 
-class Player:
+from karma.entities.entity import Entity
+
+
+class Player(Entity):
     # Constructeur
     def __init__(self, name: str, position: pygame.Vector2, speed: float, health: int = 100) -> None:
-        # Déclaration des variables d'instances
-        self.name: str = name
-        self.position: pygame.Vector2 = position
-        self.speed: float = speed
-        self.health: int = health
+        super().__init__(position, health)
+        self.name = name
+        self.speed = speed
 
     # Récupère la direction du joueur et sort un vecteur normalisé de sa direction
     def getDirection(self) -> pygame.Vector2:
@@ -18,15 +19,14 @@ class Player:
 
         if direction.length_squared() == 0:
             return direction
-        
+
         return direction.normalize()
 
-    def update(self, dt: float):
+    def update(self, dt: float) -> None:
         direction = self.getDirection()
         self.position += direction * self.speed * dt
-    
+
     def draw(self, screen: pygame.Surface, color: tuple) -> None:
         # Rectangle pour le joueur
         rect = pygame.Rect(self.position.x, self.position.y, 32, 32)
         pygame.draw.rect(screen, color, rect)
-
