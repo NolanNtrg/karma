@@ -82,6 +82,7 @@ class Game:
         while self.running:
             self.handle_events()
             dt = self.clock.tick(FPS)
+
             self.update(dt)
             self.draw()
 
