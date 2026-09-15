@@ -7,6 +7,7 @@ from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.entities.buildings.base import Base
+from karma.interface.hud import HUD
 from karma.settings import (
     ASSETS_DIR,
     CAMERA_ZOOM,
@@ -47,13 +48,13 @@ class Game:
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
 
+        self.hud = HUD()
+
         self.isDay = True
         self.dayDuration = 4000 # mettre 2 min dans le futur
         self.nightDuration = 4000 # pareil mais 1 min
         self.cycleTimer = 0.0
-
-        self.sunImg =  pygame.transform.scale_by(pygame.image.load(ASSETS_DIR / "soleil.png").convert_alpha(), 3)
-        self.moonImg = pygame.transform.scale_by(pygame.image.load(ASSETS_DIR / "eclipseTotale.png").convert_alpha(), 3)
+        self.currentDay = 1
 
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
@@ -100,6 +101,7 @@ class Game:
                 self.isDay = True
                 self.currentMap = self.dayMap
                 self.cycleTimer = 0.0
+                self.currentDay += 1 # on passe au jour suivant
 
     def draw(self) -> None:
         # Rendu graphique
@@ -117,8 +119,8 @@ class Game:
             self.player.draw(self.game_surface, self.camera)
             pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
-            icon = self.sunImg if self.isDay else self.moonImg
-            self.screen.blit(icon, (20,20))
+            duration = self.dayDuration if self.isDay else self.nightDuration
+            self.hud.draw(self.screen, self.currentDay, self.isDay, self.cycleTimer, duration)
 
             if self.state == "PAUSE":
                 self.pause_menu.draw(self.screen)
