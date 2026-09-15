@@ -1,7 +1,7 @@
 import sys 
 import pygame 
-from interface.menu import Menu
-from settings import (
+from karma.interface.menu import Menu
+from karma.settings import (
     COLOR_BG,
     FPS,
     SCREEN_HEIGHT,

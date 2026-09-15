@@ -1,11 +1,11 @@
 from pathlib import Path
 
-BASE_DIR: str = Path(__file__).resolve().parent.parent
+BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
-ASSETS_DIR: str = BASE_DIR / "assets"
-MAPS_DIR: str = ASSETS_DIR / "maps"
-SPRITES_DIR: str = ASSETS_DIR / "sprites"
-SOUNDS_DIR: str = ASSETS_DIR / "sounds"
+ASSETS_DIR: Path = BASE_DIR / "assets"
+MAPS_DIR: Path = ASSETS_DIR / "maps"
+SPRITES_DIR: Path = ASSETS_DIR / "sprites"
+SOUNDS_DIR: Path = ASSETS_DIR / "sounds"
 
 SCREEN_WIDTH: int = 1024
 SCREEN_HEIGHT: int = 768
