@@ -1,5 +1,6 @@
 import sys 
 import pygame 
+from entities.player import Player
 from settings import (
     COLOR_BG,
     FPS,
@@ -14,6 +15,7 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  
         pygame.display.set_caption(TITLE) 
         self.clock = pygame.time.Clock()
+        self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100))
         self.running: bool = True 
 
     def run(self):
@@ -22,9 +24,12 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
+            dt = self.clock.tick(FPS)
             self.screen.fill(COLOR_BG)
+
+            self.player.inputHandler(self.screen, dt)
+
             pygame.display.flip()
-            self.clock.tick(FPS)
 
         pygame.quit()
         sys.exit()
