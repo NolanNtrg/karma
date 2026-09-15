@@ -19,3 +19,7 @@ class MapManager:
                         if camera:
                             position = camera.apply(position)
                         screen.blit(tile, position)
+
+
+    def get_vaisseau_slot(self):
+        return self.tmx_data.get_object_by_name("vaisseau")
