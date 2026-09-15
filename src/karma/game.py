@@ -20,7 +20,7 @@ class Game:
         self.running: bool = True 
         self.state = "MENU" # Etat du menu, peut être "MENU", "PLAY"
         self.menu = Menu(title="Karma",title_color="white")
-        self.map_manager = MapManager(ASSETS_DIR / "nightMap.tmx")
+        self.map_manager = MapManager(ASSETS_DIR / "dayMap.tmx")
 
     def run(self):
         while self.running:
