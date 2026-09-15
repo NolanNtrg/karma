@@ -1,7 +1,7 @@
 import sys
 import pygame
 
-from karma.entities.player import Player
+from karma.entities.player.player import Player
 from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.settings import (
