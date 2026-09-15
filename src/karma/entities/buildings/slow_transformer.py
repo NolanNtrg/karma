@@ -4,7 +4,7 @@ from karma.entities.buildings.transformer import Transformer
 
 
 class SlowTransformer(Transformer):
-    # Variante propre et lente de la transformation : fait monter le karma tant qu'active
+    # Transformateur lent qui augmente le karma quand actif
 
     def __init__(
         self,

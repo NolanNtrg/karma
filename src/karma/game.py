@@ -38,6 +38,19 @@ class Game:
         self.buildings: list[Building] = []
         self.karma_manager = KarmaManager()
 
+        # gestion de la map
+        self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
+        self.nightMap = MapManager(ASSETS_DIR / "nightMap.tmx")
+        self.currentMap = self.dayMap  # Commence avec la carte de jour
+
+        self.isDay = True
+        self.dayDuration = 4000 # mettre 2 min dans le futur
+        self.nightDuration = 4000 # pareil mais 1 min
+        self.cycleTimer = 0.0
+
+        self.sunImg =  pygame.transform.scale_by(pygame.image.load(ASSETS_DIR / "soleil.png").convert_alpha(), 3)
+        self.moonImg = pygame.transform.scale_by(pygame.image.load(ASSETS_DIR / "eclipseTotale.png").convert_alpha(), 3)
+
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
         for event in pygame.event.get():
@@ -74,6 +87,15 @@ class Game:
             self.player.update(dt)
             self.camera.update(self.player.getCenter())
             self.karma_manager.update(dt, self.buildings)
+            self.cycleTimer += dt
+            if self.isDay and self.cycleTimer >= self.dayDuration:
+                self.isDay = False
+                self.currentMap = self.nightMap
+                self.cycleTimer = 0.0   
+            elif not self.isDay and self.cycleTimer >= self.nightDuration:
+                self.isDay = True
+                self.currentMap = self.dayMap
+                self.cycleTimer = 0.0
 
     def draw(self) -> None:
         # Rendu graphique
@@ -87,6 +109,12 @@ class Game:
             self.map_manager.render(self.game_surface, self.camera)
             self.player.draw(self.game_surface, self.camera)
             pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
+            # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan
+            self.currentMap.render(self.screen)
+            self.player.draw(self.screen)
+
+            icon = self.sunImg if self.isDay else self.moonImg
+            self.screen.blit(icon, (20,20))
 
             if self.state == "PAUSE":
                 self.pause_menu.draw(self.screen)

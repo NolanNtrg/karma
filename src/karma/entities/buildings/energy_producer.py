@@ -4,8 +4,7 @@ from karma.entities.buildings.building import Building
 
 
 class EnergyProducer(Building):
-    # Classe mère des bâtiments de production d'Énergie : produit une quantité
-    # fixe d'Énergie à intervalle régulier tant qu'il est opérationnel
+    # Base des bâtiments qui produisent de l'Énergie à intervalle régulier.
 
     def __init__(
         self,
@@ -22,8 +21,7 @@ class EnergyProducer(Building):
         self.timeSinceLastProduction: float = 0.0
 
     def tryProduce(self, dt: float) -> int:
-        # dt : temps écoulé depuis la dernière frame, en millisecondes
-        # Retourne l'Énergie produite ce frame (0 si inactif, détruit ou pas encore prêt)
+        # Retourne l'Énergie produite pour cette frame, ou 0 si nécessaire.
         if not self.isOperational():
             return 0
         self.timeSinceLastProduction += dt

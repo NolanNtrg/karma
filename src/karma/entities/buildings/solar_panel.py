@@ -4,8 +4,7 @@ from karma.entities.buildings.energy_producer import EnergyProducer
 
 
 class SolarPanel(EnergyProducer):
-    # Panneau solaire : variante propre et lente de la production d'Énergie
-    # Fait monter le karma tant qu'il est actif
+    # Panneau solaire lent qui augmente le karma.
 
     def __init__(
         self,

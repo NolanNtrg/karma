@@ -5,15 +5,14 @@ from karma.settings import KARMA_MAX, KARMA_MIN, KARMA_START
 
 
 class KarmaManager:
-    # Garde l'état global de la jauge de karma et l'actualise à partir des
-    # bâtiments actifs sur la carte, en la maintenant entre KARMA_MIN et KARMA_MAX
+    # Gère la jauge de karma selon les bâtiments actifs
 
     def __init__(self) -> None:
         self.karma: float = KARMA_START
 
     def update(self, dt: float, buildings: Sequence[Building]) -> None:
-        # dt : temps écoulé depuis la dernière frame, en millisecondes
-        # buildings : tous les bâtiments actuellement placés sur la carte
+        # dt est exprimé en millisecondes.
+        # buildings contient les bâtiments placés sur la carte.
         totalImpact: float = sum(building.getKarmaImpact(dt) for building in buildings)
         self.karma = max(KARMA_MIN, min(KARMA_MAX, self.karma + totalImpact))
 

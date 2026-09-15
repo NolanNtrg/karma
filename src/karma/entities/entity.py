@@ -2,7 +2,7 @@ import pygame
 
 
 class Entity:
-    # Classe mère de toutes les entités possédant une position et des points de vie
+    # Base des entités avec une position et des points de vie.
 
     def __init__(self, position: pygame.Vector2, health: int) -> None:
         self.position: pygame.Vector2 = position
