@@ -28,6 +28,10 @@ class Game:
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
 
+        # self.buildings sera rempli par le futur système de construction/placement
+        self.buildings: list[Building] = []
+        self.karma_manager = KarmaManager()
+
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
         self.nightMap = MapManager(ASSETS_DIR / "nightMap.tmx")
