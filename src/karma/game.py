@@ -91,7 +91,6 @@ class Game:
             self.player.update(dt)
             self.base.update(dt, self.isDay)
             self.camera.update(self.player.getCenter())
-            self.karma_manager.update(dt, self.buildings)
             self.cycleTimer += dt
             if self.isDay and self.cycleTimer >= self.dayDuration:
                 self.isDay = False
