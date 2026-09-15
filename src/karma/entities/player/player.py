@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import pygame
 from karma.settings import ASSETS_DIR
 
-from karma.entities.core.entity import Entity
+from karma.entities.entity import Entity
 
 
 class Player(Entity):
@@ -9,19 +11,19 @@ class Player(Entity):
     # Constructeur
     def __init__(self, name: str, position: pygame.Vector2, speed: float, health: int = 100) -> None:
         super().__init__(position, health)
-        self.name = name
-        self.speed = speed
+        self.name: str = name
+        self.speed: float = speed
 
-        spriteSheetPath: str = ASSETS_DIR / "Soldiers" / "SquadLeader.png"
-        self.spriteSheet = pygame.image.load(spriteSheetPath).convert_alpha()
+        spriteSheetPath: Path = ASSETS_DIR / "Soldiers" / "SquadLeader.png"
+        self.spriteSheet: pygame.Surface = pygame.image.load(spriteSheetPath).convert_alpha()
 
         self.idleFrame: list[pygame.Surface] = [self.getSprite(0,0), self.getSprite(0,1)]
         self.movingFrames: list[pygame.Surface] = [self.getSprite(1,0), self.getSprite(1,1)]
 
-        self.imageIndex: int = 0
+        self.imageIndex: float = 0.0
         self.flip: bool = False
         self.currentFrame: list[pygame.Surface] = self.idleFrame
-        self.image = self.currentFrame[0]
+        self.image: pygame.Surface = self.currentFrame[0]
 
     def getDirection(self) -> pygame.Vector2:
         keys = pygame.key.get_pressed()
@@ -39,7 +41,7 @@ class Player(Entity):
         img.blit(self.spriteSheet, (0,0), (col*16, row*16, 16, 16))
         return pygame.transform.scale_by(img, 2)
 
-    def update(self, dt: float):
+    def update(self, dt: float) -> None:
         direction = self.getDirection()
         self.position += direction * self.speed * dt
         isMoving: bool = direction.length_squared() > 0 

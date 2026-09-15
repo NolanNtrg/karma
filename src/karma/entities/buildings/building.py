@@ -1,6 +1,6 @@
 import pygame
 
-from karma.entities.core.entity import Entity
+from karma.entities.entity import Entity
 
 
 class Building(Entity):
@@ -15,10 +15,13 @@ class Building(Entity):
         energyCost: int,
         karmaImpact: float = 0.0,
     ) -> None:
-        super().__init__(position, health)
-        self.energyCost = energyCost
-        self.karmaImpact = karmaImpact
-        self.isActive = True
+        # Appel explicite (plutôt que super()) : Turret hérite aussi d'Attacker, qui
+        # hérite désormais d'Entity, donc super() ici résoudrait vers Attacker.__init__
+        # dans le MRO de Turret et non vers Entity.__init__
+        Entity.__init__(self, position, health)
+        self.energyCost: int = energyCost
+        self.karmaImpact: float = karmaImpact
+        self.isActive: bool = True
 
     def activate(self) -> None:
         # Rend le bâtiment fonctionnel (reprend son effet karma et sa production)

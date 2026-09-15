@@ -1,6 +1,6 @@
 import pygame
 
-from karma.entities.core.entity import Entity
+from karma.entities.entity import Entity
 
 
 class Base(Entity):
