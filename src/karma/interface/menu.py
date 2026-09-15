@@ -13,20 +13,17 @@ class Menu:
         self.buttons: list[tuple[Button, str]] = []
 
     def add_button(self, y: int, text: str, action: str, bg_color: tuple) -> None:
-        # Ajoute un bouton centré horizontalement à la hauteur y demandée
-        width, height = 200, 50
-        x = (SCREEN_WIDTH - width) // 2
+        width, height = 200, 50 
+        x = (SCREEN_WIDTH - width) // 2 # centre le bouton horizontalement
         button = Button(x, y, width, height, text, "white", bg_color)
         self.buttons.append((button, action))
 
     def draw(self, screen: pygame.Surface) -> None:
-        # Affiche le titre et les boutons du menu
         screen.blit(self.title_surface, self.title_rect)
         for button, _ in self.buttons:
             button.draw(screen)
 
     def handle_event(self, event: pygame.event.Event) -> str | None:
-        # Vérifie si un bouton a été cliqué et retourne son action
         for button, action in self.buttons:
             if button.is_clicked(event):
                 return action

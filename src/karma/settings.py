@@ -13,3 +13,7 @@ FPS: int = 60
 TITLE: str = "Karma"
 
 COLOR_BG: tuple[int, int, int] = (20, 20, 25)
+
+KARMA_START: float = 0.0
+KARMA_MIN: float = -1000.0
+KARMA_MAX: float = 1000.0

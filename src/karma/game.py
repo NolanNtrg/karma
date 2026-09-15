@@ -1,8 +1,10 @@
 import sys
 import pygame
 
+from karma.entities.buildings.building import Building
 from karma.entities.player.player import Player
 from karma.environment.map import MapManager
+from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.settings import (
     ASSETS_DIR,
@@ -73,6 +75,7 @@ class Game:
         # Mise à jour de la physique et des entités (seulement quand on joue)
         if self.state == "PLAY":
             self.player.update(dt)
+            self.karma_manager.update(dt, self.buildings)
             self.cycleTimer += dt
             if self.isDay and self.cycleTimer >= self.dayDuration:
                 self.isDay = False
