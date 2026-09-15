@@ -5,7 +5,6 @@ from karma.entities.buildings.building import Building
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
-from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.entities.buildings.base import Base
 from karma.settings import (
@@ -47,7 +46,6 @@ class Game:
 
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
-        self.karma_manager = KarmaManager()
 
         self.isDay = True
         self.dayDuration = 4000 # mettre 2 min dans le futur
