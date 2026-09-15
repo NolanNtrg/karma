@@ -7,6 +7,7 @@ from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
+from karma.entities.buildings.base import Base
 from karma.settings import (
     ASSETS_DIR,
     CAMERA_ZOOM,
@@ -33,6 +34,11 @@ class Game:
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
         self.nightMap = MapManager(ASSETS_DIR / "nightMap.tmx")
+        v_slot = self.dayMap.get_vaisseau_slot()
+        v_pos = pygame.Vector2(v_slot.x, v_slot.y)
+        self.player.position = pygame.Vector2(v_slot.x + 16, v_slot.y + 80)
+        self.base = Base(position=v_pos, health=500)
+
         self.currentMap = self.dayMap  # Commence avec la carte de jour
 
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.currentMap.width, self.currentMap.height)
@@ -85,6 +91,7 @@ class Game:
         # Mise à jour de la physique et des entités (seulement quand on joue)
         if self.state == "PLAY":
             self.player.update(dt)
+            self.base.update(dt, self.isDay)
             self.camera.update(self.player.getCenter())
             self.karma_manager.update(dt, self.buildings)
             self.cycleTimer += dt
@@ -109,6 +116,7 @@ class Game:
             # zoomée, puis on l'étire vers l'écran.
             self.game_surface.fill(COLOR_BG)
             self.currentMap.render(self.game_surface, self.camera)
+            self.base.draw(self.game_surface, self.camera)
             self.player.draw(self.game_surface, self.camera)
             pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
