@@ -4,8 +4,7 @@ from karma.entities.buildings.building import Building
 
 
 class Transformer(Building):
-    # Classe mère des bâtiments de transformation : convertit de la Matière première
-    # en Énergie à intervalle régulier tant qu'il est opérationnel
+    # Base des bâtiments qui transforment la matière première en énergie
 
     def __init__(
         self,
@@ -24,11 +23,8 @@ class Transformer(Building):
         self.timeSinceLastTransform: float = 0.0
 
     def tryTransform(self, dt: float, availableRawMaterial: int) -> int:
-        # dt : temps écoulé depuis la dernière frame, en millisecondes
-        # availableRawMaterial : stock de Matière première actuellement disponible
-        # Retourne l'Énergie produite ce frame (0 si inactif, détruit, pas encore prêt
-        # ou si le stock de Matière première est insuffisant). Ne déduit pas le stock
-        # lui-même : c'est à l'appelant de retirer rawMaterialCost s'il reçoit un résultat
+        # Retourne l'énergie produite, ou 0 si la transformation est impossible.
+        # Le stock est retiré par l'appelant après une transformation réussie.
         if not self.isOperational():
             return 0
         self.timeSinceLastTransform += dt

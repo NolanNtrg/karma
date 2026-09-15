@@ -6,7 +6,7 @@ from karma.entities.entity import Entity
 
 
 class Attacker(Entity):
-    # Classe mère de toute entité capable d'attaquer une cible à portée avec un temps de recharge
+    # Base des entités capables d'attaquer avec un délai.
 
     def __init__(
         self,
@@ -23,10 +23,8 @@ class Attacker(Entity):
         self.timeSinceLastAttack: float = attackInterval
 
     def tryAttack(self, dt: float) -> int:
-        # dt : temps écoulé depuis la dernière frame, en millisecondes
-        # Retourne les dégâts à infliger ce frame (0 si le temps de recharge n'est pas écoulé)
-        # À appeler uniquement quand l'appelant sait déjà qu'une cible est à portée :
-        # cette méthode ne vérifie pas elle-même la distance
+        # Retourne les dégâts si le délai d'attaque est écoulé.
+        # La portée doit être vérifiée par l'appelant.
         self.timeSinceLastAttack += dt
         if self.timeSinceLastAttack >= self.attackInterval:
             self.timeSinceLastAttack = 0.0
@@ -34,8 +32,7 @@ class Attacker(Entity):
         return 0
 
     def findClosestTarget(self, position: pygame.Vector2, candidates: Sequence[Entity]) -> Entity | None:
-        # Cherche, parmi les candidats encore en vie, le plus proche qui est à portée
-        # Retourne None si aucun candidat n'est assez proche
+        # Cherche la cible vivante la plus proche et à portée.
         closestTarget: Entity | None = None
         closestDistance: float = self.attackRange
         for candidate in candidates:

@@ -6,8 +6,7 @@ from karma.entities.buildings.base import Base
 
 
 class Enemy(Attacker):
-    # Représente un ennemi sur la carte : sa position, ses points de vie, son déplacement
-    # en ligne droite vers la base et son attaque au contact
+    # Ennemi qui avance vers la base et attaque les obstacles rencontrés.
 
     def __init__(
         self,
@@ -19,28 +18,25 @@ class Enemy(Attacker):
         attackInterval: float,
         attackRange: float = 4.0,
     ) -> None:
-        # target : position de la base
-        # speed : pixels par milliseconde
+        # target est la position de la base.
+        # speed est exprimée en pixels par milliseconde.
         super().__init__(position, health, attackRange, attackDamage, attackInterval)
         self.target: pygame.Vector2 = target
         self.speed: float = speed
 
     def hasReachedTarget(self) -> bool:
-        # Vrai si l'ennemi est à portée d'attaque de sa cible (la base)
+        # Indique si l'ennemi est à portée de sa cible.
         return self.position.distance_to(self.target) <= self.attackRange
 
     def getVelocity(self) -> pygame.Vector2:
-        # Vecteur de déplacement vers la cible, en pixels par milliseconde
+        # Retourne le déplacement vers la cible.
         direction = self.target - self.position
         if direction.length_squared() == 0:
             return pygame.Vector2(0, 0)
         return direction.normalize() * self.speed
 
     def update(self, dt: float, walls: list[Wall], base: Base) -> None:
-        # Met à jour l'ennemi pour une frame
-        # dt : temps écoulé depuis la dernière frame, en millisecondes
-        # walls : murs encore présents sur la carte
-        # base : la base du joueur
+        # Attaque un mur ou la base, sinon avance vers la base.
         blockingWall = self.findClosestTarget(self.position, walls)
 
         if blockingWall is not None:

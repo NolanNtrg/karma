@@ -4,8 +4,7 @@ from karma.entities.buildings.energy_producer import EnergyProducer
 
 
 class CoalPlant(EnergyProducer):
-    # Centrale à charbon : variante sale et rapide de la production d'Énergie
-    # Fait baisser le karma tant qu'elle est active
+    # Centrale rapide qui diminue le karma.
 
     def __init__(
         self,

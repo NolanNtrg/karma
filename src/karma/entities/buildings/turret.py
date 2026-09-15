@@ -6,8 +6,7 @@ from karma.entities.enemies.enemy import Enemy
 
 
 class Turret(Building, Attacker):
-    # Tourelle de défense statique : cible automatiquement l'ennemi le plus proche à portée
-    # Effet karma neutre, coût payé en Énergie (construction et futurs niveaux 2-3)
+    # Tourelle statique qui attaque les ennemis proches.
 
     def __init__(
         self,
@@ -22,9 +21,7 @@ class Turret(Building, Attacker):
         Attacker.__init__(self, position, health, attackRange, attackDamage, attackInterval)
 
     def update(self, dt: float, enemies: list[Enemy]) -> None:
-        # Met à jour la tourelle pour une frame : cherche une cible en portée et tire
-        # si le temps de recharge est écoulé. Dégâts appliqués instantanément (pas de
-        # sprite de projectile pour ce niveau 1, à ajouter plus tard si besoin)
+        # Cherche une cible et attaque si le délai est écoulé.
         if not self.isOperational():
             return
         target = self.findClosestTarget(self.position, enemies)

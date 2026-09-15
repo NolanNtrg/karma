@@ -4,7 +4,7 @@ from karma.entities.buildings.transformer import Transformer
 
 
 class FastTransformer(Transformer):
-    # Variante sale et rapide de la transformation : fait baisser le karma tant qu'active
+    # Transformateur rapide qui diminue le karma quand actif
 
     def __init__(
         self,
