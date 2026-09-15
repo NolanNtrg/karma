@@ -7,16 +7,16 @@ from karma.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 
 class Menu:
     # Classe mère pour tous les menus du jeu
-    def __init__(self, title: str, title_color: str = "white") -> None:
+    def __init__(self, title: str = "", title_color: str = "white") -> None:
         self.font = pygame.font.Font(None, 60)
         self.title_surface = self.font.render(title, False, title_color)
         self.title_rect = self.title_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
         self.buttons: list[tuple[Button, str]] = []
 
-    def add_button(self, text: str, action: str, bg_color: tuple) -> None:
-        width, height = 200, 50 
+    def add_button(self, text: str, action: str) -> None:
+        width, height = 300, 150 
         x = (SCREEN_WIDTH - width) // 2 # centre le bouton horizontalement
-        button = Button(x, SCREEN_HEIGHT // 2 - 50 + 70 * len(self.buttons), width, height, text, "white", bg_color)
+        button = Button(x, SCREEN_HEIGHT // 2 - 80 + 100 * len(self.buttons), width, height, text, "white",)
         self.buttons.append((button, action))
 
     def draw(self, screen: pygame.Surface) -> None:
@@ -34,9 +34,9 @@ class Menu:
 class MainMenu(Menu):
     # Menu principal affiché au lancement du jeu
     def __init__(self) -> None:
-        super().__init__(title="Karma", title_color="white")
-        self.add_button("Jouer", StateType.Play, "blue")
-        self.add_button("Quitter", StateType.Quit, "red")
+        super().__init__(title_color="white")
+        self.add_button("Jouer", StateType.Play)
+        self.add_button("Quitter", StateType.Quit)
 
 
 class PauseMenu(Menu):
@@ -47,10 +47,10 @@ class PauseMenu(Menu):
         self.overlay.set_alpha(140)  # ~55% d'opacité (ajuste entre 100 et 180 selon le résultat voulu)
         self.overlay.fill((0, 0, 0))
         
-        self.add_button("Reprendre", StateType.Play, (40, 140, 60))
-        self.add_button("Menu Principal", StateType.Menu, (50, 90, 180))
-        self.add_button("Plein écran", ResolutionType.Fullscreen, (255, 90, 90))
-        self.add_button("Quitter", StateType.Quit, (180, 40, 40))
+        self.add_button("Reprendre", StateType.Play)
+        self.add_button("Menu Principal", StateType.Menu)
+        self.add_button("Plein écran", ResolutionType.Fullscreen)
+        self.add_button("Quitter", StateType.Quit)
 
     def draw(self, screen: pygame.Surface) -> None:
         screen.blit(self.overlay, (0, 0))
