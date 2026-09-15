@@ -71,7 +71,7 @@ class Game:
         else:
             # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan
             self.map_manager.render(self.screen)
-            self.player.draw(self.screen, (255, 255, 255))
+            self.player.draw(self.screen)
 
             if self.state == "PAUSE":
                 self.pause_menu.draw(self.screen)
@@ -82,6 +82,7 @@ class Game:
         while self.running:
             self.handle_events()
             dt = self.clock.tick(FPS)
+
             self.update(dt)
             self.draw()
 
