@@ -30,7 +30,7 @@ class Game:
 
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
-        self.pause_menu = PauseMenu(getResolution=lambda: self.resolution)
+        self.pause_menu = PauseMenu()
 
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
