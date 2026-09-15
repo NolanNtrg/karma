@@ -1,6 +1,6 @@
 import pygame
 
-from karma.entities.attacker import Attacker
+from karma.entities.core.attacker import Attacker
 
 
 class EnemyAI(Attacker):

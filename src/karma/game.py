@@ -1,7 +1,7 @@
 import sys 
 import pygame 
 from karma.interface.menu import Menu
-from karma.entities.player import Player
+from karma.entities.player.player import Player
 from karma.settings import (
     COLOR_BG,
     FPS,

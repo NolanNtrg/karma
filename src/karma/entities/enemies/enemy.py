@@ -1,9 +1,9 @@
 import pygame
 
-from karma.entities.entity import Entity
-from karma.entities.enemy_ai import EnemyAI
-from karma.entities.wall import Wall
-from karma.entities.base import Base
+from karma.entities.core.entity import Entity
+from karma.entities.enemies.enemy_ai import EnemyAI
+from karma.entities.buildings.wall import Wall
+from karma.entities.buildings.base import Base
 
 
 class Enemy(Entity):
