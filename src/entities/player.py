@@ -5,31 +5,30 @@ class Player():
     health: int = 100
     
     # Constructeur
-    def __init__(self, name: str, position: pygame.Vector2):
+    def __init__(self, name: str, position: pygame.Vector2, speed: float) -> None:
         # Déclatation des variables d'instances
         self.name: str = name
         self.position: pygame.Vector2 = position
+        self.speed: float = speed
 
+    # Récupère la direction du joueur et sort un vecteur normalisé de sa direction
+    def getDirection(self) -> pygame.Vector2:
+        keys = pygame.key.get_pressed()
+        dx: float = (keys[pygame.K_d] - keys[pygame.K_q])
+        dy: float = (keys[pygame.K_s] - keys[pygame.K_z])
+        direction: pygame.Vector2 = pygame.Vector2(dx, dy)
+
+        if direction.length_squared() == 0:
+            return direction
+        
+        return direction.normalize()
+
+    def update(self, dt: float):
+        direction = self.getDirection()
+        self.position += direction * self.speed * dt
     
     def draw(self, screen: pygame.Surface, color: tuple) -> None:
         # Rectangle pour le joueur
-        pygame.draw.rect(screen, color, (*self.position, 32, 32))
-
-    # Handler du mouvement du player
-    def inputHandler(self, screen: pygame.Surface, dt: int) -> type:
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_q]:
-            self.position.x -= 0.3 * dt
-            self.draw(screen, (255, 0, 0))
-        elif keys[pygame.K_d]:
-            self.position.x += 0.3 * dt
-            self.draw(screen, (255, 255, 0))
-        elif keys[pygame.K_z]:
-            self.position.y -= 0.3 * dt
-            self.draw(screen, (0, 255, 0))
-        elif keys[pygame.K_s]:
-            self.position.y += 0.3 * dt
-            self.draw(screen, (0, 0, 255))
-        else:
-            self.draw(screen, (255, 255, 255))
+        rect = pygame.Rect(self.position.x, self.position.y, 32, 32)
+        pygame.draw.rect(screen, color, rect)
 

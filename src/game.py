@@ -15,7 +15,7 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  
         pygame.display.set_caption(TITLE) 
         self.clock = pygame.time.Clock()
-        self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100))
+        self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.running: bool = True 
 
     def run(self):
@@ -27,7 +27,8 @@ class Game:
             dt = self.clock.tick(FPS)
             self.screen.fill(COLOR_BG)
 
-            self.player.inputHandler(self.screen, dt)
+            self.player.update(dt)
+            self.player.draw(self.screen, (255, 255, 255))
 
             pygame.display.flip()
 
