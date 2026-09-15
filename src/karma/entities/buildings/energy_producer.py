@@ -17,9 +17,9 @@ class EnergyProducer(Building):
         productionInterval: float,
     ) -> None:
         super().__init__(position, health, energyCost, karmaImpact)
-        self.productionAmount = productionAmount
-        self.productionInterval = productionInterval
-        self.timeSinceLastProduction = 0.0
+        self.productionAmount: int = productionAmount
+        self.productionInterval: float = productionInterval
+        self.timeSinceLastProduction: float = 0.0
 
     def tryProduce(self, dt: float) -> int:
         # dt : temps écoulé depuis la dernière frame, en millisecondes

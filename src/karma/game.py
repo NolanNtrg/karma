@@ -1,8 +1,10 @@
 import sys
 import pygame
 
+from karma.entities.buildings.building import Building
 from karma.entities.player.player import Player
 from karma.environment.map import MapManager
+from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.settings import (
     ASSETS_DIR,
@@ -26,6 +28,10 @@ class Game:
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
         self.map_manager = MapManager(ASSETS_DIR / "dayMap.tmx")
+
+        # self.buildings sera rempli par le futur système de construction/placement
+        self.buildings: list[Building] = []
+        self.karma_manager = KarmaManager()
 
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
@@ -61,6 +67,7 @@ class Game:
         # Mise à jour de la physique et des entités (seulement quand on joue)
         if self.state == "PLAY":
             self.player.update(dt)
+            self.karma_manager.update(dt, self.buildings)
 
     def draw(self) -> None:
         # Rendu graphique

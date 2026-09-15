@@ -18,10 +18,10 @@ class Transformer(Building):
         transformInterval: float,
     ) -> None:
         super().__init__(position, health, energyCost, karmaImpact)
-        self.rawMaterialCost = rawMaterialCost
-        self.energyOutput = energyOutput
-        self.transformInterval = transformInterval
-        self.timeSinceLastTransform = 0.0
+        self.rawMaterialCost: int = rawMaterialCost
+        self.energyOutput: int = energyOutput
+        self.transformInterval: float = transformInterval
+        self.timeSinceLastTransform: float = 0.0
 
     def tryTransform(self, dt: float, availableRawMaterial: int) -> int:
         # dt : temps écoulé depuis la dernière frame, en millisecondes

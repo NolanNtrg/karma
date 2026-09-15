@@ -16,5 +16,5 @@ class FastTransformer(Transformer):
         transformInterval: float,
     ) -> None:
         super().__init__(
-            position, health, energyCost, -1.0, rawMaterialCost, energyOutput, transformInterval
+            position, health, energyCost, -100.0, rawMaterialCost, energyOutput, transformInterval
         )

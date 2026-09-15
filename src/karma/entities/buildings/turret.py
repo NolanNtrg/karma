@@ -1,7 +1,7 @@
 import pygame
 
 from karma.entities.buildings.building import Building
-from karma.entities.core.attacker import Attacker
+from karma.entities.enemies.attacker import Attacker
 from karma.entities.enemies.enemy import Enemy
 
 
@@ -19,7 +19,7 @@ class Turret(Building, Attacker):
         attackInterval: float,
     ) -> None:
         Building.__init__(self, position, health, energyCost, karmaImpact=0.0)
-        Attacker.__init__(self, attackRange, attackDamage, attackInterval)
+        Attacker.__init__(self, position, health, attackRange, attackDamage, attackInterval)
 
     def update(self, dt: float, enemies: list[Enemy]) -> None:
         # Met à jour la tourelle pour une frame : cherche une cible en portée et tire
