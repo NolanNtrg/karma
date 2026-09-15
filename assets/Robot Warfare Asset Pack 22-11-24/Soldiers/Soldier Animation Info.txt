@@ -1,0 +1,7 @@
+The soldier animations in order from top to bottom in the sprite sheets are:
+
+idle, walk, crawl, fire, hit, death, throw.
+
+The first frame of the fire animation is designed to be used with the muzzle flash effect.
+
+There is a blood spatter effect designed to be placed over the first frame of the hit and death animations.
