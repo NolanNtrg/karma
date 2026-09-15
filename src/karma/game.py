@@ -1,6 +1,7 @@
 import sys 
 import pygame 
 from karma.interface.menu import Menu
+from karma.entities.player.player import Player
 from karma.settings import (
     COLOR_BG,
     FPS,
@@ -19,6 +20,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running: bool = True 
         self.state = "MENU" # Etat du menu, peut être "MENU", "PLAY"
+        self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.menu = Menu(title="Karma",title_color="white")
         self.map_manager = MapManager(ASSETS_DIR / "nightMap.tmx")
 
@@ -35,16 +37,17 @@ class Game:
                         self.running = False
 
 
+            dt = self.clock.tick(FPS)
             self.screen.fill(COLOR_BG)
 
             if self.state == "MENU":
                 self.menu.draw(self.screen)
             elif self.state == "PLAY":
                 self.map_manager.render(self.screen)
+                self.player.update(dt)
+                self.player.draw(self.screen, (255, 255, 255))
 
             pygame.display.flip()
-            self.clock.tick(FPS)
-
 
         pygame.quit()
         sys.exit()
