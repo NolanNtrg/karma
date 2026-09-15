@@ -1,6 +1,6 @@
 import pygame
-from interface.button import Button
-from settings import (
+from karma.interface.button import Button
+from karma.settings import (
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
 )
@@ -19,7 +19,7 @@ class Menu:
         screen.blit(self.title_menu, self.text_menu) # sert à superposer le texte sur l'écran
         self.btn_play.draw(screen)
         self.btn_quit.draw(screen)
-
+ 
     def handle_event(self, event):
         if self.btn_play.is_clicked(event):
             return "PLAY" 
