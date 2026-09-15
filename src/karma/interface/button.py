@@ -1,12 +1,15 @@
 import pygame
 
+from karma.settings import ASSETS_DIR
+
 class Button : 
-    def __init__(self, x, y, width, height, text,color,bg_color, font_size=30):
-        self.rect = pygame.Rect(x, y, width, height)
+    def __init__(self, x, y, width, height, text,color, font_size=30):
+        self.background = pygame.image.load(ASSETS_DIR / "Button_Background.png").convert_alpha()
+        self.background = pygame.transform.scale(self.background, (width, height))
+        self.rect = self.background.get_rect(topleft=(x, y))
         self.text = text
         self.font = pygame.font.Font(None, font_size)
         self.color = color  # Color for the text
-        self.bg_color = bg_color  # Color for the button background
         self.mouse_pos = pygame.mouse.get_pos()
 
         self.text_surface = self.font.render(self.text,False, self.color) # transforme le texte en image
@@ -14,9 +17,8 @@ class Button :
 
 
     def draw(self, screen):
-        
-        pygame.draw.rect(screen, self.bg_color, self.rect) # dessine le bouton avec la couleur de fond
-        screen.blit(self.text_surface, self.text_rect) # sert à superposer le texte sur le rectangle en fond
+        screen.blit(self.background, self.rect)
+        screen.blit(self.text_surface, self.text_rect)
 
     def is_clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
