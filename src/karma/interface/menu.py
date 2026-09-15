@@ -1,32 +1,50 @@
 import pygame
+
 from karma.interface.button import Button
-from karma.settings import (
-    SCREEN_HEIGHT,
-    SCREEN_WIDTH,
-)
-
-class Menu: 
-    def __init__(self, title,title_color):
-        self.police_size = 60
-        self.font = pygame.font.Font(None, self.police_size)
-        self.title_menu = self.font.render(title,False, title_color) # transforme le texte en image
-        self.text_menu = self.title_menu.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4)) # centre le texte sur l'écran
-
-        self.btn_play = Button(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 30, 200, 60, "Jouer", "white", "blue")
-        self.btn_quit = Button(SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 50, 200, 60, "Quitter", "white", "red")
-
-    def draw(self, screen):
-        screen.blit(self.title_menu, self.text_menu) # sert à superposer le texte sur l'écran
-        self.btn_play.draw(screen)
-        self.btn_quit.draw(screen)
- 
-    def handle_event(self, event):
-        if self.btn_play.is_clicked(event):
-            return "PLAY" 
-        elif self.btn_quit.is_clicked(event):
-            return "QUIT"
-        else : 
-            return None
+from karma.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 
 
+class Menu:
+    # Classe mère pour tous les menus du jeu
+    def __init__(self, title: str, title_color: str = "white") -> None:
+        self.font = pygame.font.Font(None, 60)
+        self.title_surface = self.font.render(title, False, title_color)
+        self.title_rect = self.title_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
+        self.buttons: list[tuple[Button, str]] = []
 
+    def add_button(self, y: int, text: str, action: str, bg_color: tuple) -> None:
+        # Ajoute un bouton centré horizontalement à la hauteur y demandée
+        width, height = 200, 50
+        x = (SCREEN_WIDTH - width) // 2
+        button = Button(x, y, width, height, text, "white", bg_color)
+        self.buttons.append((button, action))
+
+    def draw(self, screen: pygame.Surface) -> None:
+        # Affiche le titre et les boutons du menu
+        screen.blit(self.title_surface, self.title_rect)
+        for button, _ in self.buttons:
+            button.draw(screen)
+
+    def handle_event(self, event: pygame.event.Event) -> str | None:
+        # Vérifie si un bouton a été cliqué et retourne son action
+        for button, action in self.buttons:
+            if button.is_clicked(event):
+                return action
+        return None
+
+
+class MainMenu(Menu):
+    # Menu principal affiché au lancement du jeu
+    def __init__(self) -> None:
+        super().__init__(title="Karma", title_color="white")
+        self.add_button(SCREEN_HEIGHT // 2 - 30, "Jouer", "PLAY", "blue")
+        self.add_button(SCREEN_HEIGHT // 2 + 40, "Quitter", "QUIT", "red")
+
+
+class PauseMenu(Menu):
+    # Menu affiché lorsque le jeu est en pause
+    def __init__(self) -> None:
+        super().__init__(title="PAUSE", title_color="white")
+        self.add_button(SCREEN_HEIGHT // 2 - 50, "Reprendre", "RESUME", (40, 140, 60))
+        self.add_button(SCREEN_HEIGHT // 2 + 20, "Menu Principal", "MENU", (50, 90, 180))
+        self.add_button(SCREEN_HEIGHT // 2 + 90, "Quitter", "QUIT", (180, 40, 40))
