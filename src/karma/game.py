@@ -1,17 +1,22 @@
 import sys
 import pygame
 
+from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
+from karma.entities.buildings.wall import Wall
+from karma.entities.enemies.enemy import Enemy
+from karma.entities.enemies.spawner import EnemySpawner
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu
-from karma.entities.buildings.base import Base
 from karma.interface.hud import HUD
 from karma.settings import (
     ASSETS_DIR,
+    BASE_HEALTH,
     CAMERA_ZOOM,
     COLOR_BG,
+    ENEMY_SPAWN_INTERVAL,
     FPS,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
@@ -37,7 +42,7 @@ class Game:
         v_slot = self.dayMap.get_vaisseau_slot()
         v_pos = pygame.Vector2(v_slot.x, v_slot.y)
         self.player.position = pygame.Vector2(v_slot.x + 16, v_slot.y + 80)
-        self.base = Base(position=v_pos, health=500)
+        self.base = Base(position=v_pos, health=BASE_HEALTH)
 
         self.currentMap = self.dayMap  # Commence avec la carte de jour
 
@@ -47,6 +52,11 @@ class Game:
 
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
+        self.walls: list[Wall] = []
+
+        # gestion des ennemis
+        self.enemies: list[Enemy] = []
+        self.enemySpawner = EnemySpawner(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
 
         self.hud = HUD()
 
@@ -92,6 +102,15 @@ class Game:
             self.player.update(dt)
             self.base.update(dt, self.isDay)
             self.camera.update(self.player.getCenter())
+
+            newEnemy = self.enemySpawner.trySpawn(dt, not self.isDay, self.base.position)
+            if newEnemy is not None:
+                self.enemies.append(newEnemy)
+
+            for enemy in self.enemies:
+                enemy.update(dt, self.walls, self.base)
+            self.enemies = [enemy for enemy in self.enemies if not enemy.isDestroyed()]
+
             self.cycleTimer += dt
             if self.isDay and self.cycleTimer >= self.dayDuration:
                 self.isDay = False
@@ -116,6 +135,8 @@ class Game:
             self.game_surface.fill(COLOR_BG)
             self.currentMap.render(self.game_surface, self.camera)
             self.base.draw(self.game_surface, self.camera)
+            for enemy in self.enemies:
+                enemy.draw(self.game_surface, self.camera)
             self.player.draw(self.game_surface, self.camera)
             pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
