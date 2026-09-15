@@ -8,13 +8,6 @@ class MapManager:
         self.width = self.tmx_data.width * self.tmx_data.tilewidth
         self.height = self.tmx_data.height * self.tmx_data.tileheight
 
-    def getBasePosition(self) -> pygame.Vector2:
-        # Retourne le centre du slot du vaisseau, cible des ennemis.
-        for obj in self.tmx_data.objects:
-            if obj.type == "vaisseau_slot":
-                return pygame.Vector2(obj.x + obj.width / 2, obj.y + obj.height / 2)
-        raise ValueError("Aucun slot de vaisseau trouvé dans la carte.")
-
     def render(self, screen, camera=None):
         for layer in self.tmx_data.visible_layers:
             # On ne dessine que les calques de tuiles standards
@@ -26,3 +19,7 @@ class MapManager:
                         if camera:
                             position = camera.apply(position)
                         screen.blit(tile, position)
+
+
+    def get_vaisseau_slot(self):
+        return self.tmx_data.get_object_by_name("vaisseau")

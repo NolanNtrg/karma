@@ -9,7 +9,6 @@ from karma.entities.enemies.spawner import EnemySpawner
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
-from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.settings import (
     ASSETS_DIR,
@@ -39,6 +38,11 @@ class Game:
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
         self.nightMap = MapManager(ASSETS_DIR / "nightMap.tmx")
+        v_slot = self.dayMap.get_vaisseau_slot()
+        v_pos = pygame.Vector2(v_slot.x, v_slot.y)
+        self.player.position = pygame.Vector2(v_slot.x + 16, v_slot.y + 80)
+        self.base = Base(position=v_pos, health=BASE_HEALTH)
+
         self.currentMap = self.dayMap  # Commence avec la carte de jour
 
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.currentMap.width, self.currentMap.height)
@@ -48,10 +52,8 @@ class Game:
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
         self.walls: list[Wall] = []
-        self.karma_manager = KarmaManager()
 
         # gestion des ennemis
-        self.base = Base(self.currentMap.getBasePosition(), BASE_HEALTH)
         self.enemies: list[Enemy] = []
         self.enemySpawner = EnemySpawner(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
 
@@ -97,8 +99,8 @@ class Game:
         # Mise à jour de la physique et des entités (seulement quand on joue)
         if self.state == "PLAY":
             self.player.update(dt)
+            self.base.update(dt, self.isDay)
             self.camera.update(self.player.getCenter())
-            self.karma_manager.update(dt, self.buildings)
 
             newEnemy = self.enemySpawner.trySpawn(dt, not self.isDay, self.base.position)
             if newEnemy is not None:
