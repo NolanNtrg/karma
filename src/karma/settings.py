@@ -20,3 +20,8 @@ COLOR_BG: tuple[int, int, int] = (20, 20, 25)
 KARMA_START: float = 0.0
 KARMA_MIN: float = -1000.0
 KARMA_MAX: float = 1000.0
+
+BASE_HEALTH: int = 1000
+
+# Délai en millisecondes entre deux apparitions ennemis pendant la nuit
+ENEMY_SPAWN_INTERVAL: float = 1500.0

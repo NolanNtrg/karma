@@ -1,7 +1,11 @@
 import sys
 import pygame
 
+from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
+from karma.entities.buildings.wall import Wall
+from karma.entities.enemies.enemy import Enemy
+from karma.entities.enemies.spawner import EnemySpawner
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
@@ -9,8 +13,10 @@ from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.settings import (
     ASSETS_DIR,
+    BASE_HEALTH,
     CAMERA_ZOOM,
     COLOR_BG,
+    ENEMY_SPAWN_INTERVAL,
     FPS,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
@@ -41,7 +47,13 @@ class Game:
 
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
+        self.walls: list[Wall] = []
         self.karma_manager = KarmaManager()
+
+        # gestion des ennemis
+        self.base = Base(self.currentMap.getBasePosition(), BASE_HEALTH)
+        self.enemies: list[Enemy] = []
+        self.enemySpawner = EnemySpawner(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
 
         self.isDay = True
         self.dayDuration = 4000 # mettre 2 min dans le futur
@@ -87,6 +99,15 @@ class Game:
             self.player.update(dt)
             self.camera.update(self.player.getCenter())
             self.karma_manager.update(dt, self.buildings)
+
+            newEnemy = self.enemySpawner.trySpawn(dt, not self.isDay, self.base.position)
+            if newEnemy is not None:
+                self.enemies.append(newEnemy)
+
+            for enemy in self.enemies:
+                enemy.update(dt, self.walls, self.base)
+            self.enemies = [enemy for enemy in self.enemies if not enemy.isDestroyed()]
+
             self.cycleTimer += dt
             if self.isDay and self.cycleTimer >= self.dayDuration:
                 self.isDay = False
@@ -109,6 +130,9 @@ class Game:
             # zoomée, puis on l'étire vers l'écran.
             self.game_surface.fill(COLOR_BG)
             self.currentMap.render(self.game_surface, self.camera)
+            self.base.draw(self.game_surface, self.camera)
+            for enemy in self.enemies:
+                enemy.draw(self.game_surface, self.camera)
             self.player.draw(self.game_surface, self.camera)
             pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
