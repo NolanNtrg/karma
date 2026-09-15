@@ -3,11 +3,13 @@ import pygame
 
 from karma.entities.buildings.building import Building
 from karma.entities.player.player import Player
+from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.settings import (
     ASSETS_DIR,
+    CAMERA_ZOOM,
     COLOR_BG,
     FPS,
     SCREEN_HEIGHT,
@@ -27,6 +29,10 @@ class Game:
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
+        self.map_manager = MapManager(ASSETS_DIR / "dayMap.tmx")
+        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.map_manager.width, self.map_manager.height)
+        # Surface de jeu utilisée avant l'agrandissement à l'écran.
+        self.game_surface = pygame.Surface((round(self.camera.width), round(self.camera.height)))
 
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
@@ -79,6 +85,7 @@ class Game:
         # Mise à jour de la physique et des entités (seulement quand on joue)
         if self.state == "PLAY":
             self.player.update(dt)
+            self.camera.update(self.player.getCenter())
             self.karma_manager.update(dt, self.buildings)
             self.cycleTimer += dt
             if self.isDay and self.cycleTimer >= self.dayDuration:
@@ -97,6 +104,11 @@ class Game:
         if self.state == "MENU":
             self.main_menu.draw(self.screen)
         else:
+            # Le monde reste visible en pause et est agrandi sur l'écran.
+            self.game_surface.fill(COLOR_BG)
+            self.map_manager.render(self.game_surface, self.camera)
+            self.player.draw(self.game_surface, self.camera)
+            pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
             # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan
             self.currentMap.render(self.screen)
             self.player.draw(self.screen)
