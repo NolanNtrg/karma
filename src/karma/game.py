@@ -9,6 +9,7 @@ from karma.entities.player.karma_manager import KarmaManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.settings import (
     ASSETS_DIR,
+    CAMERA_ZOOM,
     COLOR_BG,
     FPS,
     SCREEN_HEIGHT,
@@ -29,7 +30,9 @@ class Game:
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
         self.map_manager = MapManager(ASSETS_DIR / "dayMap.tmx")
-        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, self.map_manager.width, self.map_manager.height)
+        self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.map_manager.width, self.map_manager.height)
+        # Surface de jeu utilisée avant l'agrandissement à l'écran.
+        self.game_surface = pygame.Surface((round(self.camera.width), round(self.camera.height)))
 
         # self.buildings sera rempli par le futur système de construction/placement
         self.buildings: list[Building] = []
@@ -79,9 +82,11 @@ class Game:
         if self.state == "MENU":
             self.main_menu.draw(self.screen)
         else:
-            # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan
-            self.map_manager.render(self.screen, self.camera)
-            self.player.draw(self.screen, self.camera)
+            # Le monde reste visible en pause et est agrandi sur l'écran.
+            self.game_surface.fill(COLOR_BG)
+            self.map_manager.render(self.game_surface, self.camera)
+            self.player.draw(self.game_surface, self.camera)
+            pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
             if self.state == "PAUSE":
                 self.pause_menu.draw(self.screen)

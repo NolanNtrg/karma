@@ -12,6 +12,9 @@ SCREEN_HEIGHT: int = 768
 FPS: int = 60
 TITLE: str = "Karma"
 
+# Facteur de zoom de la caméra (1.0 de base, grandi avec la valeur)
+CAMERA_ZOOM: float = 2
+
 COLOR_BG: tuple[int, int, int] = (20, 20, 25)
 
 KARMA_START: float = 0.0

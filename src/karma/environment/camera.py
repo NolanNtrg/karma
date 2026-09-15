@@ -4,9 +4,11 @@ import pygame
 class Camera:
     # Suit une cible et calcule le décalage à appliquer au rendu
 
-    def __init__(self, screen_width: int, screen_height: int, map_width: float | None = None, map_height: float | None = None) -> None:
-        self.width: int = screen_width
-        self.height: int = screen_height
+    def __init__(self, screen_width: int, screen_height: int, zoom: float = 1.0, map_width: float | None = None, map_height: float | None = None) -> None:
+        # Plus le zoom est grand, plus la zone visible est petite
+        self.zoom: float = zoom
+        self.width: float = screen_width / zoom
+        self.height: float = screen_height / zoom
         self.map_width: float | None = map_width
         self.map_height: float | None = map_height
         self.offset: pygame.Vector2 = pygame.Vector2(0, 0)
