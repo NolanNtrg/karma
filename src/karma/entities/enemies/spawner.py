@@ -7,11 +7,11 @@ from karma.entities.enemies.enemy import Enemy
 from karma.entities.enemies.prowler import Prowler
 from karma.entities.enemies.runner import Runner
 
-ENEMY_TYPES: list[type[Enemy]] = [Prowler, Runner, ArmoredUnit]
-
 
 class EnemySpawner:
     # Fait apparaître des ennemis sur les bords de la carte pendant la nuit.
+
+    ENEMY_TYPES: list[type[Enemy]] = [Prowler, Runner, ArmoredUnit]
 
     def __init__(self, mapWidth: float, mapHeight: float, spawnInterval: float) -> None:
         self.mapWidth: float = mapWidth
@@ -20,7 +20,7 @@ class EnemySpawner:
         self.timeSinceLastSpawn: float = 0.0
 
     def getRandomEdgePosition(self) -> pygame.Vector2:
-        # Choisit un point aléatoire sur un des quatre bords de la carte.
+        # Choisit un point aléatoire sur un des quatre bords de la carte
         side = random.choice(("top", "bottom", "left", "right"))
         if side == "top":
             return pygame.Vector2(random.uniform(0, self.mapWidth), 0)
@@ -31,7 +31,7 @@ class EnemySpawner:
         return pygame.Vector2(self.mapWidth, random.uniform(0, self.mapHeight))
 
     def trySpawn(self, dt: float, isNight: bool, target: pygame.Vector2) -> Enemy | None:
-        # Retourne un nouvel ennemi si le délai est écoulé et qu'il fait nuit.
+        # Retourne un nouvel ennemi si le délai est écoulé et qu'il fait nuit
         if not isNight:
             self.timeSinceLastSpawn = 0.0
             return None
@@ -41,5 +41,5 @@ class EnemySpawner:
             return None
 
         self.timeSinceLastSpawn = 0.0
-        enemyClass = random.choice(ENEMY_TYPES)
+        enemyClass = random.choice(self.ENEMY_TYPES)
         return enemyClass(self.getRandomEdgePosition(), target)

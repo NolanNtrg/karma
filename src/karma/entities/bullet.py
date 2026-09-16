@@ -15,6 +15,7 @@ class Bullet:
         self.hit: bool = False
 
     def update(self, dt: float) -> None:
+        # edge case au cas où la cible est détruite avant que la balle atteigne
         if self.target.isDestroyed():
             self.hit = True
             return

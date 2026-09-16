@@ -41,3 +41,10 @@ class Attacker(Entity):
                 closestTarget = candidate
                 closestDistance = distance
         return closestTarget
+
+    def tryAttackClosest(self, position: pygame.Vector2, candidates: Sequence[Entity], dt: float) -> tuple[Entity | None, int]:
+        # combine la recherche de cible et la tentative d'attaque pour les attaquants qui n'ont pas besoin de séparer les deux étapes
+        target = self.findClosestTarget(position, candidates)
+        if target is None:
+            return None, 0
+        return target, self.tryAttack(dt)
