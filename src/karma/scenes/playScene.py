@@ -15,7 +15,7 @@ class PlayScene:
 
         self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
 
-        for building in self.buildings : 
+        for building in self.buildings :
             if isinstance(building, Turret):
                 building.update(dt, self.combat_system.enemies, self.cycle_system.isDay)
 
