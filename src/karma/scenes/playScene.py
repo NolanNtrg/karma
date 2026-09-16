@@ -4,6 +4,7 @@ from karma.enums import RessourceType, StateType
 from karma.entities.buildings.turret import Turret
 from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
 from karma.entities.buildings.energy_producer import EnergyProducer
+from karma.entities.buildings.solar_panel import SolarPanel
 
 class PlayScene:
 
@@ -21,6 +22,11 @@ class PlayScene:
                 building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
             elif isinstance(building, EnergyProducer):
                 building.update(dt, self.cycle_system.isDay)
+                if isinstance(building, SolarPanel) and not self.cycle_system.isDay:
+                    continue
+                energy = building.tryProduce(dt)
+                if energy > 0:
+                    self.rm.add(RessourceType.Energy, energy)
 
         karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
         self.rm.applyKarmaDelta(karmaDelta)
