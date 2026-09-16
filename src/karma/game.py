@@ -71,7 +71,7 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=1000.0, nightDuration=1000000.0)
+        self.cycle_system = CycleSystem(dayDuration=8000.0, nightDuration=8000.0)
         self.building_system = BuildingsSystem()
 
         self.hud = HUD()
