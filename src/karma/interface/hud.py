@@ -44,30 +44,43 @@ class HUD:
         screen.blit(daySurf, dayRect)
         screen.blit(timerSurf, timerRect)
 
-        # 3. Textes ressources en haut à droite
+        # 3. Badges ressources en haut à droite
+        resources = [
+            (self.karmaIcon, str(RessourceManager().getStock(RessourceType.Karma)), self.fontRessourceKarma),
+            (self.energyIcon, str(RessourceManager().getStock(RessourceType.Energy)), self.fontRessourceEnergy),
+            (self.rawMaterialIcon, str(RessourceManager().getStock(RessourceType.RawMaterial)), self.fontRessourceRawMaterial),
+        ]
 
-        strRessourceKarma = str(RessourceManager().getStock(RessourceType.Karma))
-        strRessourceEnergy = str(RessourceManager().getStock(RessourceType.Energy))
-        strRessourceRawMaterial = str(RessourceManager().getStock(RessourceType.RawMaterial))
+        rendered_resources = []
+        max_text_width = 0
+        for icon, val_str, font in resources:
+            text_surf = font.render(val_str, False, "white")
+            max_text_width = max(max_text_width, text_surf.get_width())
+            rendered_resources.append((icon, text_surf))
 
-        karmaSurf = self.fontRessourceKarma.render(strRessourceKarma, False, "white")
-        energySurf = self.fontRessourceEnergy.render(strRessourceEnergy, False, "white")
-        rawMaterialSurf = self.fontRessourceRawMaterial.render(strRessourceRawMaterial, False, "white")
+        badge_height = 38
+        badge_width = max(130, max_text_width + 32 + 30)
+        border_radius = badge_height // 2
 
-        karmaIconRect = self.karmaIcon.get_rect(topright=(SCREEN_WIDTH - 25, 20))
-        karmaRect = karmaSurf.get_rect(midright=(karmaIconRect.left - 8, karmaIconRect.centery))
+        # Surface semi-transparente pour le fond noir
+        bg_surf = pygame.Surface((badge_width, badge_height), pygame.SRCALPHA)
+        pygame.draw.rect(bg_surf, (0, 0, 0, 160), bg_surf.get_rect(), border_radius=border_radius)
+        pygame.draw.rect(bg_surf, (255, 255, 255, 35), bg_surf.get_rect(), width=1, border_radius=border_radius)
 
-        energyIconRect = self.energyIcon.get_rect(topright=(SCREEN_WIDTH - 25, max(karmaIconRect.bottom, karmaRect.bottom) + 8))
-        energyRect = energySurf.get_rect(midright=(energyIconRect.left - 8, energyIconRect.centery))
+        top_y = 20
+        for icon, text_surf in rendered_resources:
+            badge_rect = pygame.Rect(0, 0, badge_width, badge_height)
+            badge_rect.topright = (SCREEN_WIDTH - 20, top_y)
 
-        rawMaterialIconRect = self.rawMaterialIcon.get_rect(topright=(SCREEN_WIDTH - 25, max(energyIconRect.bottom, energyRect.bottom) + 8))
-        rawMaterialRect = rawMaterialSurf.get_rect(midright=(rawMaterialIconRect.left - 8, rawMaterialIconRect.centery))
+            # Fond noir transparent
+            screen.blit(bg_surf, badge_rect)
 
-        screen.blit(karmaSurf, karmaRect)
-        screen.blit(self.karmaIcon, karmaIconRect)
+            # Icône à droite
+            icon_rect = icon.get_rect(midright=(badge_rect.right - 4, badge_rect.centery))
+            screen.blit(icon, icon_rect)
 
-        screen.blit(energySurf, energyRect)
-        screen.blit(self.energyIcon, energyIconRect)
+            # Texte
+            text_rect = text_surf.get_rect(midright=(icon_rect.left - 8, badge_rect.centery))
+            screen.blit(text_surf, text_rect)
 
-        screen.blit(rawMaterialSurf, rawMaterialRect)
-        screen.blit(self.rawMaterialIcon, rawMaterialIconRect)
+            top_y += badge_height + 8
