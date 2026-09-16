@@ -22,7 +22,6 @@ class Base(Entity):
         self.rect = pygame.Rect(int(self.position.x + 2), int(self.position.y + 10), 60, 50)
 
     def update(self, dt: float, is_day: bool = True) -> None:
-        # Frame en fonction du jour et de la nuit
         frames = self.day_frames if is_day else self.night_frames
         self.imageIndex += dt * 0.006
         frame_idx = int(self.imageIndex) % len(frames)

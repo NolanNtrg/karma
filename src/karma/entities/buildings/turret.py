@@ -5,7 +5,7 @@ from karma.entities.enemies.attacker import Attacker
 from karma.entities.enemies.enemy import Enemy
 
 
-class Turret(Building, Attacker):
+class Turret(Building):
     # Tourelle statique qui attaque les ennemis proches.
 
     def __init__(
@@ -17,15 +17,15 @@ class Turret(Building, Attacker):
         attackDamage: int,
         attackInterval: float,
     ) -> None:
-        Building.__init__(self, position, health, energyCost, karmaImpact=0.0)
-        Attacker.__init__(self, position, health, attackRange, attackDamage, attackInterval)
+        super().__init__(position, health, energyCost, karmaImpact=0.0)
+        self.attacker = Attacker(position, health, attackRange, attackDamage, attackInterval)
 
     def update(self, dt: float, enemies: list[Enemy]) -> None:
         # Cherche une cible et attaque si le délai est écoulé.
         if not self.isOperational():
             return
-        target = self.findClosestTarget(self.position, enemies)
+        target = self.attacker.findClosestTarget(self.position, enemies)
         if target is not None:
-            damage = self.tryAttack(dt)
+            damage = self.attacker.tryAttack(dt)
             if damage:
                 target.takeDamage(damage)

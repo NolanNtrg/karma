@@ -1,6 +1,7 @@
 import pygame
 
 from karma.entities.enemies.enemy import Enemy
+from karma.entities.sprite import getSprite
 from karma.settings import ASSETS_DIR
 
 # Centipede.png n'a que 4 orientations dessinées par section (E, N, W, S) :
@@ -16,6 +17,7 @@ TAIL_COLUMNS = {"E": 0, "N": 2, "W": 4, "S": 6}
 
 SEGMENT_SPACING = 13.0
 WALK_ANIMATION_SPEED = 0.006
+# Décale le cycle d'animation de chaque segment pour qu'ils ne bougent pas tous en même temps.
 SEGMENT_PHASE_OFFSET = 120.0
 
 
@@ -64,15 +66,14 @@ class ArmoredUnit(Enemy):
             segmentPosition = self.position - self.heading * SEGMENT_SPACING * index
 
             if index == 0:
-                phase = self.animationTime + index * SEGMENT_PHASE_OFFSET
-                frame = int(phase * WALK_ANIMATION_SPEED) % HEAD_FRAME_COUNT
-                image = self.getSprite(headRow, frame)
+                frame = int(self.animationTime * WALK_ANIMATION_SPEED) % HEAD_FRAME_COUNT
+                image = getSprite(self.spriteSheet, headRow, frame)
             elif index == self.segmentCount - 1:
-                image = self.getSprite(TAIL_ROW, tailColumn)
+                image = getSprite(self.spriteSheet, TAIL_ROW, tailColumn)
             else:
                 phase = self.animationTime + index * SEGMENT_PHASE_OFFSET
                 frame = int(phase * WALK_ANIMATION_SPEED) % BODY_FRAME_COUNT
-                image = self.getSprite(bodyRow, frame)
+                image = getSprite(self.spriteSheet, bodyRow, frame)
 
             drawPosition = camera.apply(segmentPosition) if camera else segmentPosition
             drawPosition -= pygame.Vector2(image.get_size()) / 2
