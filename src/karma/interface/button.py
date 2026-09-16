@@ -3,12 +3,12 @@ import pygame
 from karma.settings import ASSETS_DIR
 
 class Button : 
-    def __init__(self, x, y, width, height, text,color, font_size=30):
+    def __init__(self, x, y, width, height, text,color, font_size=25):
         self.background = pygame.image.load(ASSETS_DIR / "Button_Background.png").convert_alpha()
         self.background = pygame.transform.scale(self.background, (width, height))
         self.rect = self.background.get_rect(topleft=(x, y))
         self.text = text
-        self.font = pygame.font.Font(None, font_size)
+        self.font = pygame.font.Font(ASSETS_DIR / "fonts" / "Pixelify_Sans" / "static" / "PixelifySans-Bold.ttf", font_size)
         self.color = color  # Color for the text
         self.mouse_pos = pygame.mouse.get_pos()
 
