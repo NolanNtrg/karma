@@ -83,7 +83,10 @@ class Game:
             if self.state == StateType.Menu:
 
                 action = self.main_menu.handle_event(event)
-                if action == StateType.Play:
+                if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
+                    self.resolution = action
+                    pygame.display.toggle_fullscreen()
+                elif action == StateType.Play:
                     self.state = StateType.Play
                 elif action == StateType.Quit:
                     self.running = False

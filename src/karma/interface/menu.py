@@ -36,6 +36,7 @@ class MainMenu(Menu):
     def __init__(self) -> None:
         super().__init__(title_color="white")
         self.add_button("Jouer", StateType.Play)
+        self.add_button("Plein écran", ResolutionType.Fullscreen)
         self.add_button("Quitter", StateType.Quit)
 
 
@@ -44,7 +45,7 @@ class PauseMenu(Menu):
     def __init__(self) -> None:
         super().__init__(title="PAUSE", title_color="white")
         self.overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.overlay.set_alpha(140)  # ~55% d'opacité (ajuste entre 100 et 180 selon le résultat voulu)
+        self.overlay.set_alpha(140)
         self.overlay.fill((0, 0, 0))
         
         self.add_button("Reprendre", StateType.Play)
