@@ -1,9 +1,8 @@
-from pathlib import Path
-
 import pygame
 from karma.settings import ASSETS_DIR
 
 from karma.entities.entity import Entity
+from karma.entities.sprite import SpriteAnimator
 
 
 class Player(Entity):
@@ -16,16 +15,11 @@ class Player(Entity):
             self.name: str = name
             self.speed: float = speed
 
-            spriteSheetPath: Path = ASSETS_DIR / "Soldiers" / "SquadLeader.png"
-            self.spriteSheet: pygame.Surface = pygame.image.load(spriteSheetPath).convert_alpha()
-
-            self.idleFrame: list[pygame.Surface] = [self.getSprite(0,0), self.getSprite(0,1)]
-            self.movingFrames: list[pygame.Surface] = [self.getSprite(1,0), self.getSprite(1,1)]
-
-            self.imageIndex: float = 0.0
-            self.flip: bool = False
-            self.currentFrame: list[pygame.Surface] = self.idleFrame
-            self.image: pygame.Surface = self.currentFrame[0]
+            self.animator = SpriteAnimator(
+                ASSETS_DIR / "Soldiers" / "SquadLeader.png",
+                idleFrameCoords=[(0, 0), (0, 1)],
+                walkFrameCoords=[(1, 0), (1, 1)],
+            )
         return self.instance
 
 
@@ -40,31 +34,14 @@ class Player(Entity):
 
         return direction.normalize()
 
-    def getSprite(self, row: int, col:int) -> pygame.Surface:
-        img: pygame.Surface = pygame.Surface((16, 16), pygame.SRCALPHA)
-        img.blit(self.spriteSheet, (0,0), (col*16, row*16, 16, 16))
-        return pygame.transform.scale_by(img, 2)
-
     def update(self, dt: float) -> None:
         direction = self.getDirection()
         self.position += direction * self.speed * dt
-        isMoving: bool = direction.length_squared() > 0 
-        if isMoving:
-            self.currentFrame = self.movingFrames
-            if direction.x < 0:
-                self.flip = True
-            elif direction.x > 0:
-                self.flip = False
-        else:
-            self.currentFrame = self.idleFrame
+        self.animator.update(dt, direction.length_squared() > 0, direction)
 
-        self.imageIndex += dt * 0.007
-        frame = self.currentFrame[int(self.imageIndex % len(self.currentFrame))]
-        self.image = pygame.transform.flip(frame, self.flip, False)
-    
     def getCenter(self) -> pygame.Vector2:
-        return self.position + pygame.Vector2(self.image.get_size()) / 2
+        return self.position + pygame.Vector2(self.animator.image.get_size()) / 2
 
     def draw(self, screen: pygame.Surface, camera=None) -> None:
         position = camera.apply(self.position) if camera else self.position
-        screen.blit(self.image, position)
+        screen.blit(self.animator.image, position)

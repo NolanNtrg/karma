@@ -23,8 +23,7 @@ class Attacker(Entity):
         self.timeSinceLastAttack: float = attackInterval
 
     def tryAttack(self, dt: float) -> int:
-        # Retourne les dégâts si le délai d'attaque est écoulé.
-        # La portée doit être vérifiée par l'appelant.
+        # La portée doit être vérifiée par l'appelant avant d'appeler tryAttack.
         self.timeSinceLastAttack += dt
         if self.timeSinceLastAttack >= self.attackInterval:
             self.timeSinceLastAttack = 0.0
@@ -32,7 +31,6 @@ class Attacker(Entity):
         return 0
 
     def findClosestTarget(self, position: pygame.Vector2, candidates: Sequence[Entity]) -> Entity | None:
-        # Cherche la cible vivante la plus proche et à portée.
         closestTarget: Entity | None = None
         closestDistance: float = self.attackRange
         for candidate in candidates:
@@ -43,3 +41,10 @@ class Attacker(Entity):
                 closestTarget = candidate
                 closestDistance = distance
         return closestTarget
+
+    def tryAttackClosest(self, position: pygame.Vector2, candidates: Sequence[Entity], dt: float) -> tuple[Entity | None, int]:
+        # combine la recherche de cible et la tentative d'attaque pour les attaquants qui n'ont pas besoin de séparer les deux étapes
+        target = self.findClosestTarget(position, candidates)
+        if target is None:
+            return None, 0
+        return target, self.tryAttack(dt)

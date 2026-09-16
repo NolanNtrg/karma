@@ -10,11 +10,9 @@ class Entity:
         self.health: int = health
 
     def takeDamage(self, amount: int) -> None:
-        # Réduit les points de vie de l'entité
         self.health -= amount
         if self.health < 0:
             self.health = 0
 
     def isDestroyed(self) -> bool:
-        # Vrai si l'entité n'a plus de points de vie
         return self.health <= 0
