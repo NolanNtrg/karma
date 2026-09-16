@@ -103,7 +103,8 @@ class Game():
             self.state = action
         elif action == StateType.Quit:
              self.running = False
-
+            
+           
     def play_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -116,6 +117,7 @@ class Game():
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # position de la souris convertit en coord
             self.player.shoot(self.camera.screenToWorld(pygame.Vector2(event.pos)))
+
 
     def pause_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
