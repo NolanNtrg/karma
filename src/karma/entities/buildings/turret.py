@@ -5,6 +5,7 @@ from karma.entities.bullet import Bullet
 from karma.entities.enemies.attacker import Attacker
 from karma.entities.enemies.enemy import Enemy
 from karma.entities.shooter import Shooter
+from karma.environment.camera import Camera
 from karma.settings import ASSETS_DIR
 
 
@@ -31,9 +32,9 @@ class Turret(Building):
 
         dayImage = pygame.image.load(ASSETS_DIR / "buildings" / "turret" / "turret_assembled_day.png").convert_alpha()
         nightImage = pygame.image.load(ASSETS_DIR / "buildings" / "turret" / "turret_assembled_night.png").convert_alpha()
-        self.dayImage = pygame.transform.scale(dayImage, self.TURRET_SIZE)
-        self.nightImage = pygame.transform.scale(nightImage, self.TURRET_SIZE)
-        self.image = self.dayImage
+        dayImage = pygame.transform.scale(dayImage, self.TURRET_SIZE)
+        nightImage = pygame.transform.scale(nightImage, self.TURRET_SIZE)
+        self.setFrames([dayImage], [nightImage])
 
         self.shooter = Shooter(Bullet.loadImage(self.BULLET_SIZE))
 
@@ -46,8 +47,8 @@ class Turret(Building):
         return self.getCenter() + self.facing * self.CANNON_LENGTH
 
     # MaJ tourelles et balles en fonction des ennemies à portés et du temps écoulé
-    def update(self, dt: float, enemies: list[Enemy], camera=None, isDay: bool = True) -> None:
-        self.image = self.dayImage if isDay else self.nightImage
+    def update(self, dt: float, enemies: list[Enemy], camera: Camera | None = None, isDay: bool = True) -> None:
+        self.updateSprite(dt, isDay)
         self.shooter.updateBullets(dt, enemies, camera)
 
         if not self.isOperational():
@@ -64,7 +65,8 @@ class Turret(Building):
         if damage:
             self.shooter.spawnBullet(self.getCannonTip(), direction, damage, self.BULLET_SPEED)
 
-    def draw(self, screen: pygame.Surface, camera=None) -> None:
+    def draw(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
+        assert self.image is not None
         # L'image de base pointe vers la droite: on calcule l'angle pour la tourner vers la cible
         angle = self.facing.angle_to(pygame.Vector2(1, 0))
         rotatedImage = pygame.transform.rotate(self.image, angle)

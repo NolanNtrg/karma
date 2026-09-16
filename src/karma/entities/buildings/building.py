@@ -1,10 +1,13 @@
 import pygame
 
 from karma.entities.entity import Entity
+from karma.environment.camera import Camera
 
 
 class Building(Entity):
     # Base des bâtiments constructibles avec un coût et un effet sur le karma.
+
+    ANIMATION_SPEED: float = 0.006
 
     def __init__(
         self,
@@ -17,6 +20,32 @@ class Building(Entity):
         self.energyCost: int = energyCost
         self.karmaImpact: float = karmaImpact
         self.isActive: bool = True
+
+        self.dayFrames: list[pygame.Surface] = []
+        self.nightFrames: list[pygame.Surface] = []
+        self.imageIndex: float = 0.0
+        self.image: pygame.Surface | None = None
+
+    def setFrames(self, dayFrames: list[pygame.Surface], nightFrames: list[pygame.Surface]) -> None:
+        # Enregistre les frames jour/nuit et affiche la première frame de jour.
+        self.dayFrames = dayFrames
+        self.nightFrames = nightFrames
+        self.image = self.dayFrames[0]
+
+    def updateSprite(self, dt: float, isDay: bool) -> None:
+        # Anime le sprite courant et bascule entre les frames jour et nuit.
+        frames = self.dayFrames if isDay else self.nightFrames
+        if not frames:
+            return
+        self.imageIndex += dt * self.ANIMATION_SPEED
+        self.image = frames[int(self.imageIndex) % len(frames)]
+
+    def draw(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
+        # Affiche le sprite courant à la position du bâtiment, en tenant compte de la caméra.
+        if self.image is None:
+            return
+        position = camera.apply(self.position) if camera else self.position
+        screen.blit(self.image, position)
 
     def activate(self) -> None:
         self.isActive = True

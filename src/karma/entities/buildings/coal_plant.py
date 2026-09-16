@@ -14,4 +14,4 @@ class CoalPlant(EnergyProducer):
         productionAmount: int,
         productionInterval: float,
     ) -> None:
-        super().__init__(position, health, energyCost, -100.0, productionAmount, productionInterval)
+        super().__init__(position, health, energyCost, -100.0, productionAmount, productionInterval, "coal_plant")

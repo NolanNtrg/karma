@@ -3,6 +3,7 @@ import pygame
 from karma.enums import StateType
 from karma.entities.buildings.turret import Turret
 from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
+from karma.entities.buildings.energy_producer import EnergyProducer
 
 class PlayScene:
 
@@ -18,6 +19,8 @@ class PlayScene:
         for building in self.buildings :
             if isinstance(building, Turret):
                 building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
+            elif isinstance(building, EnergyProducer):
+                building.update(dt, self.cycle_system.isDay)
 
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)
