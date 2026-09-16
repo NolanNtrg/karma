@@ -9,9 +9,11 @@ from karma.entities.buildings.wall import Wall
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
-from karma.interface.menu import MainMenu, PauseMenu, CreditsMenu
+from karma.interface.menu import MainMenu, PauseMenu, CreditsMenu, GameOverMenu
+from karma.enums import RessourceType
 from karma.interface.hud import HUD
 from karma.interface.cinematic import CinematicAction, CinematicPlayer
+from karma.interface.explosion import ExplosionAnimation
 from karma.systems import CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
 from karma.resources.ressourceManager import RessourceManager
@@ -27,6 +29,9 @@ from karma.settings import (
     TITLE,
     SOUNDS_DIR,
     VIDEO_DIR,
+    ENERGY_START,
+    RAW_MATERIAL_START,
+    KARMA_START,
 )
 
 class Game():
@@ -39,13 +44,16 @@ class Game():
         self.state: StateType = StateType.Menu  # États possibles : "MENU", "PLAY", "PAUSE", "CINEMATIC"
         self.resolution: ResolutionType = ResolutionType.Base # États possibles : "BASE", "FULLSCREEN"
         self.cinematic_player: CinematicPlayer | None = None
+        self.explosion: ExplosionAnimation | None = None
         self.cinematic_return_state: StateType = StateType.Menu
         self.paused_from_cinematic: bool = False
+        self.paused_from_explosion: bool = False
 
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
         self.credits_menu = CreditsMenu()
+        self.game_over_menu = GameOverMenu()
 
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
@@ -69,7 +77,7 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=8000.0, nightDuration=8000.0)
+        self.cycle_system = CycleSystem(dayDuration=8000.0, nightDuration=32000.0)
         self.building_system = BuildingsSystem()
 
         self.hud = HUD()
@@ -89,10 +97,8 @@ class Game():
                 self.pause_handle_events(event)
             elif self.state == StateType.Credits:
                 self.credits_handle_events(event)
-                
-            
-            elif event.type == pygame.QUIT:
-                self.running = False
+            elif self.state == StateType.GameOver:
+                self.game_over_handle_events(event)
             elif self.state == StateType.Cinematic:
                 self.cinematic_handle_events(event)
 
@@ -140,6 +146,8 @@ class Game():
         if self.paused_from_cinematic:
             self.cinematic_pause_handle_events(event)
             return
+        if self.paused_from_explosion:
+            return
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.state = StateType.Play
@@ -158,6 +166,63 @@ class Game():
         if action == StateType.Menu:
             self.state = action
 
+    def game_over_handle_events(self, event: pygame.event.Event) -> None:
+        action = self.game_over_menu.handle_event(event)
+        if action == StateType.Play:
+            self.reset_game()
+            self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
+            pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+            pygame.mixer.music.play(-1)
+        elif action == StateType.Quit:
+            self.running = False
+
+    def reset_game(self) -> None:
+        v_slot = self.dayMap.get_vaisseau_slot()
+        v_pos = pygame.Vector2(v_slot.x, v_slot.y)
+        self.player.position = pygame.Vector2(v_slot.x + 16, v_slot.y + 80)
+        self.player.health = self.player.max_health
+        self.player.timeSinceLastAttack = self.player.ATTACK_INTERVAL
+        self.player.muzzleFlashTimer = 0.0
+        self.player.shooter.bullets.clear()
+        self.base = Base(position=v_pos, health=BASE_HEALTH)
+        self.currentMap = self.dayMap
+        self.buildings.clear()
+        self.walls.clear()
+        self.combat_system.enemies.clear()
+        self.combat_system.enemySpawner.timeSinceLastSpawn = 0.0
+        self.cycle_system.isDay = True
+        self.cycle_system.cycleTimer = 0.0
+        self.cycle_system.currentDay = 1
+        self.building_system.currentSlot = None
+        self.building_system.dictOccupedSlot.clear()
+        self.rm.stocks.update({
+            RessourceType.Energy: ENERGY_START,
+            RessourceType.RawMaterial: RAW_MATERIAL_START,
+            RessourceType.Karma: KARMA_START,
+        })
+        self.paused_from_cinematic = False
+        self.paused_from_explosion = False
+        self.cinematic_player = None
+
+    def start_bad_ending(self) -> None:
+        pygame.mixer.music.stop()
+        self.building_menu.isVisible = False
+        self.start_cinematic(VIDEO_DIR / "Vidéo Fin Eclipse", StateType.GameOver)
+
+    def start_explosion(self) -> None:
+        self.explosion = ExplosionAnimation(
+            ASSETS_DIR / "Effects" / "big-explosion.png",
+            self.base.position,
+        )
+        self.paused_from_explosion = True
+        self.state = StateType.Pause
+
+    def update_explosion(self, dt: float) -> None:
+        if self.explosion is not None and self.explosion.update(dt):
+            self.explosion = None
+            self.paused_from_explosion = False
+            self.start_bad_ending()
+
     def start_cinematic(self, directory, return_state: StateType) -> None:
         self.cinematic_player = CinematicPlayer(
             directory,
@@ -166,6 +231,7 @@ class Game():
         )
         self.cinematic_return_state = return_state
         self.paused_from_cinematic = False
+        self.paused_from_explosion = False
         self.state = StateType.Cinematic
 
     def update_cinematic(self, dt: float) -> None:
@@ -206,7 +272,9 @@ class Game():
 
     def finish_cinematic(self) -> None:
         self.cinematic_player = None
+        self.explosion = None
         self.paused_from_cinematic = False
+        self.paused_from_explosion = False
         self.state = self.cinematic_return_state
 
     def run(self) -> None:

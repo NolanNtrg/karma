@@ -16,6 +16,7 @@ class StateType(Enum):
     Credits = auto()
     Quit = auto()
     Cinematic = auto()
+    GameOver = auto()
 
 class BuildingType(Enum):
     Turret = auto()

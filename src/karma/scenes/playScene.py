@@ -16,6 +16,10 @@ class PlayScene:
 
         self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
 
+        if self.base.isDestroyed():
+            self.start_explosion()
+            return
+
         for building in self.buildings :
             if isinstance(building, Turret):
                 building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
@@ -51,13 +55,16 @@ class PlayScene:
     def drawPlayScene(self) -> None:
         self.game_surface.fill(COLOR_BG)
         self.currentMap.render(self.game_surface, self.camera)
-        self.base.draw(self.game_surface, self.camera)
+        if not self.paused_from_explosion:
+            self.base.draw(self.game_surface, self.camera)
 
         for building in self.buildings:
                 building.draw(self.game_surface, self.camera)
                 
         self.combat_system.draw(self.game_surface, self.camera)
         self.player.draw(self.game_surface, self.camera)
+        if self.paused_from_explosion and self.explosion is not None:
+            self.explosion.draw(self.game_surface, self.camera)
         pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
         self.hud.draw(
@@ -72,5 +79,5 @@ class PlayScene:
 
         self.building_menu.draw(self.screen)
 
-        if self.state == StateType.Pause:
+        if self.state == StateType.Pause and not self.paused_from_explosion:
             self.pause_menu.draw(self.screen)
