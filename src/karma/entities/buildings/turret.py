@@ -4,6 +4,7 @@ from karma.entities.buildings.building import Building
 from karma.entities.bullet import Bullet
 from karma.entities.enemies.attacker import Attacker
 from karma.entities.enemies.enemy import Enemy
+from karma.entities.shooter import Shooter
 from karma.settings import ASSETS_DIR
 
 
@@ -26,7 +27,6 @@ class Turret(Building):
     ) -> None:
         super().__init__(position, health, energyCost, karmaImpact=0.0)
         self.attacker = Attacker(position, health, attackRange, attackDamage, attackInterval)
-        self.bullets: list[Bullet] = []
         self.facing: pygame.Vector2 = pygame.Vector2(1, 0)
 
         dayImage = pygame.image.load(ASSETS_DIR / "buildings" / "turret" / "turret_assembled_day.png").convert_alpha()
@@ -35,10 +35,7 @@ class Turret(Building):
         self.nightImage = pygame.transform.scale(nightImage, self.TURRET_SIZE)
         self.image = self.dayImage
 
-        bulletSpriteSheet = pygame.image.load(ASSETS_DIR / "Projectiles" / "bullets+plasma.png").convert_alpha()
-        # une seule case de la sprite sheet, découpée pour représenter la balle
-        bulletFrame = bulletSpriteSheet.subsurface((8, 0, 8, 8))
-        self.bulletImage = pygame.transform.scale(bulletFrame, self.BULLET_SIZE)
+        self.shooter = Shooter(Bullet.loadImage(self.BULLET_SIZE))
 
     # calcule le centre de l'image
     def getCenter(self) -> pygame.Vector2:
@@ -48,12 +45,10 @@ class Turret(Building):
     def getCannonTip(self) -> pygame.Vector2:
         return self.getCenter() + self.facing * self.CANNON_LENGTH
 
-    def update(self, dt: float, enemies: list[Enemy], isDay: bool = True) -> None:
+    # MaJ tourelles et balles en fonction des ennemies à portés et du temps écoulé
+    def update(self, dt: float, enemies: list[Enemy], camera=None, isDay: bool = True) -> None:
         self.image = self.dayImage if isDay else self.nightImage
-
-        for bullet in self.bullets:
-            bullet.update(dt)
-        self.bullets = [bullet for bullet in self.bullets if not bullet.hit]
+        self.shooter.updateBullets(dt, enemies, camera)
 
         if not self.isOperational():
             return
@@ -62,13 +57,12 @@ class Turret(Building):
         if target is None:
             return
 
-        direction = target.position - self.getCenter()
+        direction = target.getCenter() - self.getCenter()
         if direction.length() > 0:
             self.facing = direction.normalize()
 
         if damage:
-            bullet = Bullet(self.getCannonTip(), target, damage, self.BULLET_SPEED, self.bulletImage)
-            self.bullets.append(bullet)
+            self.shooter.spawnBullet(self.getCannonTip(), direction, damage, self.BULLET_SPEED)
 
     def draw(self, screen: pygame.Surface, camera=None) -> None:
         # L'image de base pointe vers la droite: on calcule l'angle pour la tourner vers la cible
@@ -80,5 +74,4 @@ class Turret(Building):
         position = camera.apply(pygame.Vector2(rect.topleft)) if camera else pygame.Vector2(rect.topleft)
         screen.blit(rotatedImage, position)
 
-        for bullet in self.bullets:
-            bullet.draw(screen, camera)
+        self.shooter.drawBullets(screen, camera)

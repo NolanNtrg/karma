@@ -26,3 +26,12 @@ class Camera:
 
     def apply(self, position: pygame.Vector2) -> pygame.Vector2:
         return position - self.offset
+
+    def screenToWorld(self, screenPosition: pygame.Vector2) -> pygame.Vector2:
+        # opération inverse de apply(): retrouve la position dans le monde depuis une position à l'écran
+        return pygame.Vector2(screenPosition) / self.zoom + self.offset
+
+    def contains(self, worldPosition: pygame.Vector2) -> bool:
+        # vérifie si une position du monde est actuellement visible dans le champ de la caméra
+        local = worldPosition - self.offset
+        return 0 <= local.x <= self.width and 0 <= local.y <= self.height

@@ -52,6 +52,8 @@ class Game():
         self.currentMap = self.dayMap  # Commence avec la carte de jour
 
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.currentMap.width, self.currentMap.height)
+        # la caméra suit le joueur
+        self.camera.update(self.player.getCenter())
         # Surface de jeu utilisée avant l'agrandissement à l'écran.
         self.game_surface = pygame.Surface((round(self.camera.width), round(self.camera.height)))
 
@@ -103,14 +105,17 @@ class Game():
              self.running = False
 
     def play_handle_events(self, event: pygame.event.Event) -> None:
-         if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    self.state = StateType.Pause
-                elif event.key == pygame.K_e:  # Appuyer sur E pour construire
-                    new_building = self.building_system.build("turret", self.rm, amount=100)
-                    if new_building:
-                        self.buildings.append(new_building)
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.state = StateType.Pause
+            elif event.key == pygame.K_e:  # Appuyer sur E pour construire
+                new_building = self.building_system.build("turret", self.rm, amount=100)
+                if new_building:
+                    self.buildings.append(new_building)
+        # Gestion du tir joueur avec clic gauche
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # position de la souris convertit en coord
+            self.player.shoot(self.camera.screenToWorld(pygame.Vector2(event.pos)))
 
     def pause_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
