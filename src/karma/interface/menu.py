@@ -8,10 +8,12 @@ from karma.settings import SCREEN_HEIGHT, SCREEN_WIDTH, ASSETS_DIR
 class Menu:
     # Classe mère pour tous les menus du jeu
     def __init__(self, title: str = "", title_color: str = "white") -> None:
-        self.font = pygame.font.Font(ASSETS_DIR / "fonts" / "Pixelify_Sans" / "static" / "PixelifySans-Bold.ttf", 48)
+        self.font = pygame.font.Font(ASSETS_DIR / "fonts" / "Pixelify_Sans" / "static" / "PixelifySans-Bold.ttf", 30)
         self.title_surface = self.font.render(title, False, title_color)
         self.title_rect = self.title_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
         self.buttons: list[tuple[Button, str]] = []
+        self.texts: list[tuple[pygame.Surface, pygame.Rect]] = []
+
 
     def add_button(self, text: str, action: str, oneButton: bool = False) -> None:
         width, height = 300, 150 
@@ -22,10 +24,18 @@ class Menu:
             button = Button(x, SCREEN_HEIGHT // 2 - 80 + 100 * len(self.buttons), width, height, text, "white",)
         self.buttons.append((button, action))
 
+    def add_text(self, text: str) -> None:
+        surface = self.font.render(text, False, "white")
+        y = 250 + len(self.texts) * 50
+        rect = surface.get_rect(centerx=SCREEN_WIDTH // 2, top=y)
+        self.texts.append((surface, rect))
+
     def draw(self, screen: pygame.Surface) -> None:
         screen.blit(self.title_surface, self.title_rect)
         for button, _ in self.buttons:
             button.draw(screen)
+        for surface, rect in self.texts:
+            screen.blit(surface,rect)
 
     def handle_event(self, event: pygame.event.Event) -> str | None:
         for button, action in self.buttons:
@@ -63,4 +73,10 @@ class PauseMenu(Menu):
 class CreditsMenu(Menu):
     def __init__(self) -> None:
         super().__init__(title_color="white")
+        self.add_text("Menus, joueur, système de ressources créés par Nolan")
+        self.add_text("Map, sound design, cinématiques et lore créés par Macéo")
+        self.add_text("Assets, bâtiments, caméra créés par Enzo")
+        self.add_text("Base, architecture, ennemis créés par Gabriel")
+        self.add_text("Cycle d'éclipse, musiques, placement des bâtiments créés par Paul")
+        self.add_text("Merci d'avoir joué !")
         self.add_button("Retour", StateType.Menu, True)
