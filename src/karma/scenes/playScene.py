@@ -32,6 +32,12 @@ class PlayScene:
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)
 
+        slot = self.building_system.currentSlot
+        if slot is not None and self.building_system.isSlotFree(slot["id"]):
+            self.building_menu.isVisible= True
+        else:
+            self.building_menu.isVisible = False
+            
         if self.cycle_system.update(dt):
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
             if self.cycle_system.isDay:
@@ -70,6 +76,8 @@ class PlayScene:
             self.base.health,
             self.base.max_health,
         )
+
+        self.building_menu.draw(self.screen)
 
         if self.state == StateType.Pause:
             self.pause_menu.draw(self.screen)
