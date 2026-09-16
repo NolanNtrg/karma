@@ -19,7 +19,6 @@ class Building(Entity):
         super().__init__(position, health)
         self.energyCost: int = energyCost
         self.karmaImpact: float = karmaImpact
-        self.isActive: bool = True
 
         self.dayFrames: list[pygame.Surface] = []
         self.nightFrames: list[pygame.Surface] = []
@@ -47,17 +46,6 @@ class Building(Entity):
         position = camera.apply(self.position) if camera else self.position
         screen.blit(self.image, position)
 
-    def activate(self) -> None:
-        self.isActive = True
-
-    def deactivate(self) -> None:
-        # Désactive le bâtiment sans le détruire.
-        self.isActive = False
-
-    def isOperational(self) -> bool:
-        # Indique si le bâtiment peut fonctionner.
-        return self.isActive and not self.isDestroyed()
-
     def isClean(self) -> bool:
         # Indique si le bâtiment augmente le karma
         return self.karmaImpact > 0
@@ -68,7 +56,7 @@ class Building(Entity):
 
     def getKarmaImpact(self, dt: float) -> float:
         # Calcule l'effet du bâtiment sur le karma pour cette frame
-        if not self.isOperational():
+        if self.isDestroyed():
             return 0.0
         # (dt converti en minutes car karmaImpact est exprimé par minute.)
         return self.karmaImpact * dt / 60000.0
