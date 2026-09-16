@@ -58,12 +58,11 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=4000.0, nightDuration=4000.0)
+        self.cycle_system = CycleSystem(dayDuration=10000.0, nightDuration=10000.0)
 
         self.hud = HUD()
 
-        pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
-        pygame.mixer.music.play()
+       
 
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
@@ -84,6 +83,8 @@ class Game():
             pygame.display.toggle_fullscreen()
         elif action == StateType.Play:
              self.state = StateType.Play
+             pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+             pygame.mixer.music.play(-1)
         elif action == StateType.Quit:
              self.running = False
 

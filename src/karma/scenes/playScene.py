@@ -1,7 +1,7 @@
 import pygame
 
 from karma.enums import StateType
-from karma.settings import ASSETS_DIR, COLOR_BG, SCREEN_HEIGHT, SCREEN_WIDTH
+from karma.settings import ASSETS_DIR, COLOR_BG, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
 
 class PlayScene:
 
@@ -16,6 +16,13 @@ class PlayScene:
 
         if self.cycle_system.update(dt):
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
+            if self.cycle_system.isDay:
+                self.combat_system.enemies.clear()
+                pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+                pygame.mixer.music.play(-1)
+            else:
+                pygame.mixer.music.load(SOUNDS_DIR / "BadAtmosphere.wav")
+                pygame.mixer.music.play(-1)
 
     def drawPlayScene(self) -> None:
         self.game_surface.fill(COLOR_BG)
