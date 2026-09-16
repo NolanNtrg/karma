@@ -7,26 +7,33 @@ from karma.entities.entity import Entity
 
 
 class Player(Entity):
-    instance = None
+    _instance = None
 
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+    
     # Constructeur
     def __init__(self, name: str, position: pygame.Vector2, speed: float, health: int = 100) -> None:
-        if self.instance is None:
-            self.instance = super().__init__(position, health)
-            self.name: str = name
-            self.speed: float = speed
+        if self._initialized:
+            return
+        super().__init__(position, health)
+        self.name: str = name
+        self.speed: float = speed
 
-            spriteSheetPath: Path = ASSETS_DIR / "Soldiers" / "SquadLeader.png"
-            self.spriteSheet: pygame.Surface = pygame.image.load(spriteSheetPath).convert_alpha()
+        spriteSheetPath: Path = ASSETS_DIR / "Soldiers" / "SquadLeader.png"
+        self.spriteSheet: pygame.Surface = pygame.image.load(spriteSheetPath).convert_alpha()
 
-            self.idleFrame: list[pygame.Surface] = [self.getSprite(0,0), self.getSprite(0,1)]
-            self.movingFrames: list[pygame.Surface] = [self.getSprite(1,0), self.getSprite(1,1)]
+        self.idleFrame: list[pygame.Surface] = [self.getSprite(0,0), self.getSprite(0,1)]
+        self.movingFrames: list[pygame.Surface] = [self.getSprite(1,0), self.getSprite(1,1)]
 
-            self.imageIndex: float = 0.0
-            self.flip: bool = False
-            self.currentFrame: list[pygame.Surface] = self.idleFrame
-            self.image: pygame.Surface = self.currentFrame[0]
-        return self.instance
+        self.imageIndex: float = 0.0
+        self.flip: bool = False
+        self.currentFrame: list[pygame.Surface] = self.idleFrame
+        self.image: pygame.Surface = self.currentFrame[0]
+        self._initialized = True
 
 
     def getDirection(self) -> pygame.Vector2:
