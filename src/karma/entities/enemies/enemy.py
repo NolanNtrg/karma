@@ -85,7 +85,7 @@ class Enemy(Attacker):
             return
 
         # Attaque la base si elle est en vie et à portée
-        if not base.isDestroyed() and self.is_in_range_of_base(base):
+        if not base.isDestroyed() and self.isInRangeOfBase(base):
             damage = self.tryAttack(dt)
             if damage:
                 base.takeDamage(damage)
