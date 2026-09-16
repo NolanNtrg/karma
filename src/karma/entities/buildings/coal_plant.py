@@ -1,6 +1,7 @@
 import pygame
 
 from karma.entities.buildings.energy_producer import EnergyProducer
+from karma.settings import ASSETS_DIR
 
 
 class CoalPlant(EnergyProducer):
@@ -14,4 +15,4 @@ class CoalPlant(EnergyProducer):
         productionAmount: int,
         productionInterval: float,
     ) -> None:
-        super().__init__(position, health, energyCost, -100.0, productionAmount, productionInterval)
+        super().__init__(position, health, energyCost, -100.0, productionAmount, productionInterval, "coal_plant")

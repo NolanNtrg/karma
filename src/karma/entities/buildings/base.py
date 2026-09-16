@@ -29,5 +29,5 @@ class Base(Entity):
 
     def draw(self, screen: pygame.Surface, camera=None) -> None:
         # Applique la caméra comme pour le joueur
-        position = camera.apply(self.position) if camera else self.position
+        position = camera.apply(self.position)
         screen.blit(self.image, position)

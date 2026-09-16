@@ -14,7 +14,6 @@ class Menu:
         self.buttons: list[tuple[Button, str]] = []
         self.texts: list[tuple[pygame.Surface, pygame.Rect]] = []
 
-
     def add_button(self, text: str, action: str, oneButton: bool = False) -> None:
         width, height = 300, 150 
         x = (SCREEN_WIDTH - width) // 2 # centre le bouton horizontalement
