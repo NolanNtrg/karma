@@ -11,7 +11,12 @@ class PlayScene:
     def updatePlayScene(self, dt: float) -> None:
         if self.state != StateType.Play:
             return
-        self.player.update(dt, self.combat_system.enemies, self.camera)
+        self.player.update(
+            dt,
+            self.combat_system.enemies,
+            self.camera,
+            (self.currentMap.width, self.currentMap.height),
+        )
         self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
 

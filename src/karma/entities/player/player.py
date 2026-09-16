@@ -53,9 +53,21 @@ class Player(Entity):
 
         return direction.normalize()
 
-    def update(self, dt: float, enemies: list[Enemy] | None = None, camera=None) -> None:
+    def update(
+        self,
+        dt: float,
+        enemies: list[Enemy] | None = None,
+        camera=None,
+        map_size: tuple[float, float] | None = None,
+    ) -> None:
         direction = self.getDirection()
         self.position += direction * self.speed * dt
+        if map_size is not None:
+            sprite_width, sprite_height = self.animator.image.get_size()
+            max_x = max(0.0, map_size[0] - sprite_width)
+            max_y = max(0.0, map_size[1] - sprite_height)
+            self.position.x = max(0.0, min(self.position.x, max_x))
+            self.position.y = max(0.0, min(self.position.y, max_y))
         self.animator.update(dt, direction.length_squared() > 0, direction)
 
         self.timeSinceLastAttack += dt
