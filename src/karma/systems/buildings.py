@@ -38,17 +38,12 @@ class BuildingsSystem:
                 print("[BUILD] Le joueur est sorti de la zone de construction.")
 
     def build(self,building_type : Building, ressource_manager : RessourceManager , amount : int) :
-        print("etape 1")
         if self.currentSlot != None :
-            print("etape 2")
             if self.isSlotFree(self.currentSlot["id"]) :
-                print("etape 3")
                 if ressource_manager.hasEnough(RessourceType.RawMaterial, amount):
-                    print("etape 4")
-                    print(ressource_manager.getStock(RessourceType.RawMaterial))
                     ressource_manager.consume(RessourceType.RawMaterial, amount)
-                    print(ressource_manager.getStock(RessourceType.RawMaterial))
-                    position = pygame.Vector2(self.currentSlot["rect"].x, self.currentSlot["rect"].y)
+                    slot_center = self.currentSlot["rect"].center
+                    position = pygame.Vector2(slot_center[0] - 32, slot_center[1] - 32)
                     
                     # se servir de building_type après pour faire des ifs pour chaque building au cas par cas
 

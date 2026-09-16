@@ -2,6 +2,7 @@ import pygame
 
 from karma.enums import StateType
 from karma.settings import ASSETS_DIR, COLOR_BG, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
+from karma.entities.buildings.turret import Turret
 
 class PlayScene:
 
@@ -13,6 +14,10 @@ class PlayScene:
         self.camera.update(self.player.getCenter())
 
         self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
+
+        for building in self.buildings : 
+            if isinstance(building, Turret):
+                building.update(dt, self.combat_system.enemies, self.cycle_system.isDay)
 
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)
@@ -31,6 +36,10 @@ class PlayScene:
         self.game_surface.fill(COLOR_BG)
         self.currentMap.render(self.game_surface, self.camera)
         self.base.draw(self.game_surface, self.camera)
+
+        for building in self.buildings:
+                building.draw(self.game_surface, self.camera)
+                
         self.combat_system.draw(self.game_surface, self.camera)
         self.player.draw(self.game_surface, self.camera)
         pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
