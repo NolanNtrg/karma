@@ -1,11 +1,11 @@
 import pygame
 
 from karma.enums import StateType
-from karma.settings import ASSETS_DIR, SCREEN_HEIGHT, SCREEN_WIDTH
+from karma.settings import ASSETS_DIR, COLOR_BG, SCREEN_HEIGHT, SCREEN_WIDTH
 
-class PlayScene():
+class PlayScene:
 
-    def updatePlayScene(self, dt: float):
+    def updatePlayScene(self, dt: float) -> None:
         if self.state != StateType.Play:
             return
         self.player.update(dt)
@@ -17,8 +17,8 @@ class PlayScene():
         if self.cycle_system.update(dt):
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
 
-        
     def drawPlayScene(self) -> None:
+        self.game_surface.fill(COLOR_BG)
         self.currentMap.render(self.game_surface, self.camera)
         self.base.draw(self.game_surface, self.camera)
         self.combat_system.draw(self.game_surface, self.camera)
@@ -31,6 +31,8 @@ class PlayScene():
             self.cycle_system.isDay,
             self.cycle_system.cycleTimer,
             self.cycle_system.currentDuration(),
+            self.base.health,
+            self.base.max_health,
         )
 
         if self.state == StateType.Pause:
