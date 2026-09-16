@@ -15,6 +15,7 @@ from karma.interface.cinematic import CinematicAction, CinematicPlayer
 from karma.systems import CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
 from karma.resources.ressourceManager import RessourceManager
+from karma.interface.buildingMenu import BuildingMenu
 from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
@@ -68,11 +69,11 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=1000.0, nightDuration=1000000.0)
+        self.cycle_system = CycleSystem(dayDuration=8000.0, nightDuration=8000.0)
         self.building_system = BuildingsSystem()
 
         self.hud = HUD()
-
+        self.building_menu = BuildingMenu()
         self.rm = RessourceManager()  # Le gestionnaire de ressources
 
     def handle_events(self) -> None:
