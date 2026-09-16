@@ -5,13 +5,12 @@ from karma.enums import ResolutionType, StateType
 from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
-from karma.entities.enemies.enemy import Enemy
-from karma.entities.enemies.spawner import EnemySpawner
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.interface.hud import HUD
+from karma.systems import CombatSystem, CycleSystem
 from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
@@ -57,17 +56,11 @@ class Game:
         self.buildings: list[Building] = []
         self.walls: list[Wall] = []
 
-        # gestion des ennemis
-        self.enemies: list[Enemy] = []
-        self.enemySpawner = EnemySpawner(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
+        # Systèmes
+        self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
+        self.cycle_system = CycleSystem(dayDuration=4000.0, nightDuration=4000.0)
 
         self.hud = HUD()
-
-        self.isDay = True
-        self.dayDuration = 4000 # mettre 2 min dans le futur
-        self.nightDuration = 4000 # pareil mais 1 min
-        self.cycleTimer = 0.0
-        self.currentDay = 1
 
         pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
         pygame.mixer.music.play()
@@ -113,27 +106,13 @@ class Game:
         # Mise à jour de la physique et des entités (seulement quand on joue)
         if self.state == StateType.Play:
             self.player.update(dt)
-            self.base.update(dt, self.isDay)
+            self.base.update(dt, self.cycle_system.isDay)
             self.camera.update(self.player.getCenter())
 
-            newEnemy = self.enemySpawner.trySpawn(dt, not self.isDay, self.base.position)
-            if newEnemy is not None:
-                self.enemies.append(newEnemy)
+            self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
 
-            for enemy in self.enemies:
-                enemy.update(dt, self.walls, self.base)
-            self.enemies = [enemy for enemy in self.enemies if not enemy.isDestroyed()]
-
-            self.cycleTimer += dt
-            if self.isDay and self.cycleTimer >= self.dayDuration:
-                self.isDay = False
-                self.currentMap = self.nightMap
-                self.cycleTimer = 0.0   
-            elif not self.isDay and self.cycleTimer >= self.nightDuration:
-                self.isDay = True
-                self.currentMap = self.dayMap
-                self.cycleTimer = 0.0
-                self.currentDay += 1 # on passe au jour suivant
+            if self.cycle_system.update(dt):
+                self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
 
     def draw(self) -> None:
         # Rendu graphique
@@ -150,13 +129,17 @@ class Game:
             self.game_surface.fill(COLOR_BG)
             self.currentMap.render(self.game_surface, self.camera)
             self.base.draw(self.game_surface, self.camera)
-            for enemy in self.enemies:
-                enemy.draw(self.game_surface, self.camera)
+            self.combat_system.draw(self.game_surface, self.camera)
             self.player.draw(self.game_surface, self.camera)
             pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
-            duration = self.dayDuration if self.isDay else self.nightDuration
-            self.hud.draw(self.screen, self.currentDay, self.isDay, self.cycleTimer, duration)
+            self.hud.draw(
+                self.screen,
+                self.cycle_system.currentDay,
+                self.cycle_system.isDay,
+                self.cycle_system.cycleTimer,
+                self.cycle_system.currentDuration(),
+            )
 
             if self.state == StateType.Pause:
                 self.pause_menu.draw(self.screen)
