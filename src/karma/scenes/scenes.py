@@ -13,8 +13,8 @@ class Scene:
 
     def drawScenes(self) -> None:
         # Rendu graphique
-        if self.state == StateType.Menu:
-            MenuScene.drawMenuScene(self)
+        if self.state == StateType.Menu or self.state == StateType.Credits:
+            MenuScene.drawMenuScene(self, self.state)
         else:
             PlayScene.drawPlayScene(self)
 
