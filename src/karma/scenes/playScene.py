@@ -17,7 +17,7 @@ class PlayScene:
 
         for building in self.buildings :
             if isinstance(building, Turret):
-                building.update(dt, self.combat_system.enemies, self.cycle_system.isDay)
+                building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
 
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)
