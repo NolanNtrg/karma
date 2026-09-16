@@ -9,7 +9,7 @@ from karma.entities.buildings.wall import Wall
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
-from karma.interface.menu import MainMenu, PauseMenu
+from karma.interface.menu import MainMenu, PauseMenu, CreditsMenu
 from karma.interface.hud import HUD
 from karma.systems import CombatSystem, CycleSystem
 from karma.settings import (
@@ -37,6 +37,7 @@ class Game():
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
         self.pause_menu = PauseMenu()
+        self.credits_menu = CreditsMenu()
 
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
@@ -68,24 +69,29 @@ class Game():
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
             if self.state == StateType.Menu:
                 self.menu_handle_events(event)
             elif self.state == StateType.Play:
                 self.play_handle_events(event)
             elif self.state == StateType.Pause:
                 self.pause_handle_events(event)
-            elif event.type == pygame.QUIT:
-                self.running = False
-
+            elif self.state == StateType.Credits:
+                self.credits_handle_events(event)
+                
+            
     def menu_handle_events(self, event: pygame.event.Event) -> None:
         action = self.main_menu.handle_event(event)
+        if action == StateType.Quit:
+            self.running = False
         if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
             self.resolution = action
             pygame.display.toggle_fullscreen()
         elif action == StateType.Play:
-             self.state = StateType.Play
-        elif action == StateType.Quit:
-             self.running = False
+            self.state = action
+        elif action == StateType.Credits:
+            self.state = action
 
     def play_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -103,6 +109,11 @@ class Game():
                 self.running = False
             elif action == StateType.Play or action == StateType.Menu:
                 self.state = action
+
+    def credits_handle_events(self, event: pygame.event.Event) -> None:
+        action = self.credits_menu.handle_event(event)
+        if action == StateType.Menu:
+            self.state = action
 
     def run(self) -> None:
         while self.running:
