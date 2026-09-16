@@ -15,5 +15,4 @@ class CoalPlant(EnergyProducer):
         productionAmount: int,
         productionInterval: float,
     ) -> None:
-        super().__init__(position, health, energyCost, -100.0, productionAmount, productionInterval)
-        self.image = ASSETS_DIR / "buildings" / "coal_plant" / "idle_1.png"
+        super().__init__(position, health, energyCost, -100.0, productionAmount, productionInterval, "coal_plant")
