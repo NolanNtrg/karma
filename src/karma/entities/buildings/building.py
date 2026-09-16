@@ -13,8 +13,7 @@ class Building(Entity):
         energyCost: int,
         karmaImpact: float = 0.0,
     ) -> None:
-        # Appel direct nécessaire à cause de l'héritage multiple de Turret.
-        Entity.__init__(self, position, health)
+        super().__init__(position, health)
         self.energyCost: int = energyCost
         self.karmaImpact: float = karmaImpact
         self.isActive: bool = True
@@ -39,10 +38,10 @@ class Building(Entity):
         return self.karmaImpact < 0
 
     def getKarmaImpact(self, dt: float) -> float:
-        # Calcule l'effet du bâtiment sur le karma pour cette frame.
-        # dt est converti en minutes car karmaImpact est exprimé par minute.
+        # Calcule l'effet du bâtiment sur le karma pour cette frame
         if not self.isOperational():
             return 0.0
+        # (dt converti en minutes car karmaImpact est exprimé par minute.)
         return self.karmaImpact * dt / 60000.0
 
     def canAfford(self, availableEnergy: int) -> bool:
