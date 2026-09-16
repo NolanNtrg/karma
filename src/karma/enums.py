@@ -13,4 +13,5 @@ class StateType(Enum):
     Menu = auto()
     Play = auto()
     Pause = auto()
+    Credits = auto()
     Quit = auto()
