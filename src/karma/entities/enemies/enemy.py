@@ -5,7 +5,7 @@ import pygame
 from karma.entities.buildings.base import Base
 from karma.entities.buildings.wall import Wall
 from karma.entities.enemies.attacker import Attacker
-from karma.entities.sprite import FRAME_SIZE, SCALE, SpriteAnimator
+from karma.entities.sprite import SpriteAnimator
 
 
 class Enemy(Attacker):
@@ -33,7 +33,7 @@ class Enemy(Attacker):
             self.animator = SpriteAnimator(spriteSheetPath, idleFrameCoords, walkFrameCoords)
 
     def getCenter(self) -> pygame.Vector2:
-        half_size = (FRAME_SIZE * SCALE) / 2
+        half_size = (SpriteAnimator.FRAME_SIZE * SpriteAnimator.SCALE) / 2
         return pygame.Vector2(self.position.x + half_size, self.position.y + half_size)
 
     def isInRangeOfBase(self, base: Base) -> bool:
