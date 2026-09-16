@@ -26,7 +26,7 @@ class CombatSystem:
         self.enemySpawner = EnemySpawner(mapWidth, mapHeight, spawnInterval)
 
     def computeSpawnInterval(self, currentDay: int) -> float:
-        # Le délai de base se resserre avec les jours, puis le karma l'ajuste de +/- KARMA_SPAWN_INFLUENCE.
+        # Le délai de base diminue avec les jours, puis le karma l'ajuste selon sa valeur
         dayFactor = max(ENEMY_DAY_DIFFICULTY_FLOOR, 1.0 - (currentDay - 1) * ENEMY_DAY_DIFFICULTY_STEP)
         karmaRatio = RessourceManager().getStock(RessourceType.Karma) / KARMA_MAX
         karmaFactor = 1.0 + karmaRatio * KARMA_SPAWN_INFLUENCE
