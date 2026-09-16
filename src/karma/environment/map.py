@@ -23,3 +23,19 @@ class MapManager:
 
     def get_vaisseau_slot(self):
         return self.tmx_data.get_object_by_name("vaisseau")
+
+    def get_build_slots(self): 
+        # retourne la liste des slots en rectangle
+        slots = []
+        try : 
+            layer = self.tmx_data.get_layer_by_name("BuildSlots")
+            for buildSlot in layer:
+                if getattr(buildSlot, "type", None) == "built_slot" :
+                    slots.append({
+                        "id" : buildSlot.id,
+                        "name" : buildSlot.name,
+                        "rect": pygame.Rect(round(buildSlot.x),round(buildSlot.y),round(buildSlot.width),round(buildSlot.height))
+                    })
+        except :
+            pass
+        return slots
