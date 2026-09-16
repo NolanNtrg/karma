@@ -49,6 +49,8 @@ class Game():
         self.currentMap = self.dayMap  # Commence avec la carte de jour
 
         self.camera = Camera(SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_ZOOM, self.currentMap.width, self.currentMap.height)
+        # la caméra suit le joueur
+        self.camera.update(self.player.getCenter())
         # Surface de jeu utilisée avant l'agrandissement à l'écran.
         self.game_surface = pygame.Surface((round(self.camera.width), round(self.camera.height)))
 
@@ -91,6 +93,10 @@ class Game():
     def play_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.state = StateType.Pause
+        # Gestion du tir joueur avec clic gauche
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # position de la souris convertit en coord
+            self.player.shoot(self.camera.screenToWorld(pygame.Vector2(event.pos)))
 
     def pause_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
