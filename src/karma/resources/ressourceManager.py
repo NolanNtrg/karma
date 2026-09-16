@@ -9,15 +9,20 @@ from karma.enums import RessourceType
     
 class RessourceManager:
 
-    def __init__(self, initialEnergy: int = ENERGY_START, initialRawMaterial: int = RAW_MATERIAL_START, initialKarma: int = KARMA_START) -> None:
-        self.stocks: dict[RessourceType, int] = {
+    def __init__(self, initialEnergy: int = ENERGY_START, initialRawMaterial: int = RAW_MATERIAL_START, initialKarma: float = KARMA_START) -> None:
+        self.stocks: dict[RessourceType, float] = {
             RessourceType.Energy: initialEnergy,
             RessourceType.RawMaterial: initialRawMaterial,
             RessourceType.Karma: initialKarma
         }
 
-    def getStock(self, ressourceType: RessourceType) -> int:
+    def getStock(self, ressourceType: RessourceType) -> float:
         return self.stocks.get(ressourceType, 0)
+
+    def applyKarmaDelta(self, delta: float) -> None:
+        # En float car le karma s'accumule par petites fractions à chaque frame
+        newValue = self.stocks[RessourceType.Karma] + delta
+        self.stocks[RessourceType.Karma] = max(KARMA_MIN, min(KARMA_MAX, newValue))
 
     def hasEnough(self, ressourceType: RessourceType, amount: int) -> bool:
         if amount < 0:

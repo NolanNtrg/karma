@@ -20,7 +20,7 @@ class HUD:
         self.energyIcon = pygame.image.load(ASSETS_DIR / "hud" / "energy.png").convert_alpha()
         self.rawMaterialIcon = pygame.image.load(ASSETS_DIR / "hud" / "rawMaterials.png").convert_alpha()
 
-    def draw(self,screen: pygame.Surface,currentDay: int,isDay: bool,cycleTimer: float,totalDuration: float) -> None:
+    def draw(self,screen: pygame.Surface,currentDay: int,isDay: bool,cycleTimer: float,totalDuration: float,resourceManager: RessourceManager) -> None:
         # 1. Icône Jour / Nuit en haut à gauche
         icon = self.sunImg if isDay else self.moonImg
         screen.blit(icon, (20, 20))
@@ -46,9 +46,9 @@ class HUD:
 
         # 3. Textes ressources en haut à droite
 
-        strRessourceKarma = str(RessourceManager().getStock(RessourceType.Karma))
-        strRessourceEnergy = str(RessourceManager().getStock(RessourceType.Energy))
-        strRessourceRawMaterial = str(RessourceManager().getStock(RessourceType.RawMaterial))
+        strRessourceKarma = str(int(round(resourceManager.getStock(RessourceType.Karma))))
+        strRessourceEnergy = str(int(resourceManager.getStock(RessourceType.Energy)))
+        strRessourceRawMaterial = str(int(resourceManager.getStock(RessourceType.RawMaterial)))
 
         karmaSurf = self.fontRessourceKarma.render(strRessourceKarma, False, "white")
         energySurf = self.fontRessourceEnergy.render(strRessourceEnergy, False, "white")

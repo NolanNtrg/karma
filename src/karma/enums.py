@@ -14,3 +14,9 @@ class StateType(Enum):
     Play = auto()
     Pause = auto()
     Quit = auto()
+
+class BuildingKind(Enum):
+    SolarPanel = auto()
+    CoalPlant = auto()
+    Wall = auto()
+    Turret = auto()

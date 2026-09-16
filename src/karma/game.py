@@ -4,17 +4,18 @@ import pygame
 from karma.scenes.scenes import Scene
 from karma.enums import ResolutionType, StateType
 from karma.entities.buildings.base import Base
-from karma.entities.buildings.building import Building
-from karma.entities.buildings.wall import Wall
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
+from karma.interface.buildMenu import BuildMenu
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.interface.hud import HUD
-from karma.systems import CombatSystem, CycleSystem
+from karma.resources.ressourceManager import RessourceManager
+from karma.systems import BuildingSystem, CombatSystem, CycleSystem
 from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
+    BUILD_INTERACTION_RANGE,
     CAMERA_ZOOM,
     ENEMY_SPAWN_INTERVAL,
     FPS,
@@ -52,15 +53,16 @@ class Game():
         # Surface de jeu utilisée avant l'agrandissement à l'écran.
         self.game_surface = pygame.Surface((round(self.camera.width), round(self.camera.height)))
 
-        # self.buildings sera rempli par le futur système de construction/placement
-        self.buildings: list[Building] = []
-        self.walls: list[Wall] = []
+        self.resource_manager = RessourceManager()
+        # Les slots sont identiques sur les deux maps, dayMap suffit
+        self.building_system = BuildingSystem(self.dayMap)
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
         self.cycle_system = CycleSystem(dayDuration=4000.0, nightDuration=4000.0)
 
         self.hud = HUD()
+        self.build_menu = BuildMenu()
 
         pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
         pygame.mixer.music.play()
@@ -88,8 +90,23 @@ class Game():
              self.running = False
 
     def play_handle_events(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.state = StateType.Pause
+        if event.type != pygame.KEYDOWN:
+            return
+
+        if event.key == pygame.K_ESCAPE:
+            if self.building_system.isMenuOpen():
+                self.building_system.closeMenu()
+            else:
+                self.state = StateType.Pause
+            return
+
+        if event.key == pygame.K_e:
+            self.building_system.interact(self.player.getCenter(), BUILD_INTERACTION_RANGE, self.resource_manager, self.base.rect)
+            return
+
+        if self.building_system.isMenuOpen() and pygame.K_1 <= event.key <= pygame.K_9:
+            key = event.key - pygame.K_1 + 1
+            self.building_system.build(key, self.resource_manager)
 
     def pause_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:

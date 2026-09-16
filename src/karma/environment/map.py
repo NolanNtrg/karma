@@ -23,3 +23,7 @@ class MapManager:
 
     def get_vaisseau_slot(self):
         return self.tmx_data.get_object_by_name("vaisseau")
+
+    def get_build_slots(self):
+        # Même calque et mêmes coordonnées sur les deux maps, donc peu importe laquelle
+        return list(self.tmx_data.get_layer_by_name("BuildSlots"))

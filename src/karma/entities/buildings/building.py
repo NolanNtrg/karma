@@ -6,6 +6,10 @@ from karma.entities.entity import Entity
 class Building(Entity):
     # Base des bâtiments constructibles avec un coût et un effet sur le karma.
 
+    # Couleur de substitution utilisée tant qu'un bâtiment n'a pas de sprite dédié
+    COLOR: tuple[int, int, int] = (150, 150, 150)
+    SIZE: tuple[int, int] = (32, 32)
+
     def __init__(
         self,
         position: pygame.Vector2,
@@ -48,3 +52,10 @@ class Building(Entity):
     def canAfford(self, availableEnergy: int) -> bool:
         # Indique si le joueur peut payer le bâtiment.
         return availableEnergy >= self.energyCost
+
+    def draw(self, screen: pygame.Surface, camera=None) -> None:
+        # Rendu par défaut (rectangle coloré) pour les bâtiments sans sprite dédié
+        position = camera.apply(self.position) if camera else self.position
+        rect = pygame.Rect(int(position.x), int(position.y), *self.SIZE)
+        pygame.draw.rect(screen, self.COLOR, rect)
+        pygame.draw.rect(screen, (20, 20, 20), rect, 2)
