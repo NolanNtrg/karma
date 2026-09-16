@@ -135,7 +135,6 @@ class Game():
             self.paused_from_cinematic = False
             self.state = StateType.Pause
 
-
     def pause_handle_events(self, event: pygame.event.Event) -> None:
         if self.paused_from_cinematic:
             self.cinematic_pause_handle_events(event)
