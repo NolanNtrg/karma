@@ -9,12 +9,24 @@ from karma.enums import RessourceType
     
 class RessourceManager:
 
+    _instance = None
+    
+    def __new__(cls, *args, **kwargs):
+        # Si l'instance n'existe pas encore, on la crée
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self, initialEnergy: int = ENERGY_START, initialRawMaterial: int = RAW_MATERIAL_START, initialKarma: int = KARMA_START) -> None:
+        if self._initialized :
+            return
         self.stocks: dict[RessourceType, int] = {
             RessourceType.Energy: initialEnergy,
             RessourceType.RawMaterial: initialRawMaterial,
             RessourceType.Karma: initialKarma
         }
+        self._initialized = True
 
     def getStock(self, ressourceType: RessourceType) -> int:
         return self.stocks.get(ressourceType, 0)

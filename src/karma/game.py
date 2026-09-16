@@ -12,6 +12,8 @@ from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.interface.hud import HUD
 from karma.systems import CombatSystem, CycleSystem
+from karma.systems.buildings import BuildingsSystem
+from karma.resources.ressourceManager import RessourceManager
 from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
@@ -59,8 +61,12 @@ class Game():
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
         self.cycle_system = CycleSystem(dayDuration=10000.0, nightDuration=10000.0)
+        self.building_system = BuildingsSystem()
 
         self.hud = HUD()
+
+        self.rm = RessourceManager()  # Le gestionnaire de ressources
+
 
        
 
@@ -89,8 +95,14 @@ class Game():
              self.running = False
 
     def play_handle_events(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.state = StateType.Pause
+         if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.state = StateType.Pause
+                elif event.key == pygame.K_e:  # Appuyer sur E pour construire
+                    new_building = self.building_system.build("turret", self.rm, amount=100)
+                    if new_building:
+                        self.buildings.append(new_building)
+
 
     def pause_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:

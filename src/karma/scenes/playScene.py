@@ -14,6 +14,9 @@ class PlayScene:
 
         self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
 
+        build_slots = self.currentMap.get_build_slots()
+        self.building_system.update(self.player, build_slots)
+
         if self.cycle_system.update(dt):
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
             if self.cycle_system.isDay:
