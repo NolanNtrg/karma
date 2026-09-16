@@ -1,8 +1,8 @@
 import pygame
 
 from karma.enums import StateType
-from karma.settings import ASSETS_DIR, COLOR_BG, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
 from karma.entities.buildings.turret import Turret
+from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
 
 class PlayScene:
 
@@ -31,6 +31,13 @@ class PlayScene:
             else:
                 pygame.mixer.music.load(SOUNDS_DIR / "BadAtmosphere.wav")
                 pygame.mixer.music.play(-1)
+
+            cinematic_directory = (
+                VIDEO_DIR / "Vidéo Fin Eclipse"
+                if self.cycle_system.isDay
+                else VIDEO_DIR / "Vidéo Début Eclipse"
+            )
+            self.start_cinematic(cinematic_directory, StateType.Play)
 
     def drawPlayScene(self) -> None:
         self.game_surface.fill(COLOR_BG)

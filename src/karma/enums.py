@@ -15,3 +15,4 @@ class StateType(Enum):
     Pause = auto()
     Credits = auto()
     Quit = auto()
+    Cinematic = auto()

@@ -6,6 +6,7 @@ ASSETS_DIR: Path = BASE_DIR / "assets"
 MAPS_DIR: Path = ASSETS_DIR / "maps"
 SPRITES_DIR: Path = ASSETS_DIR / "sprites"
 SOUNDS_DIR: Path = ASSETS_DIR / "sounds"
+VIDEO_DIR: Path = ASSETS_DIR / "video"
 
 SCREEN_WIDTH: int = 1280
 SCREEN_HEIGHT: int = 720

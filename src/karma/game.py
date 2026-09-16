@@ -11,6 +11,7 @@ from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu, CreditsMenu
 from karma.interface.hud import HUD
+from karma.interface.cinematic import CinematicAction, CinematicPlayer
 from karma.systems import CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
 from karma.resources.ressourceManager import RessourceManager
@@ -23,7 +24,8 @@ from karma.settings import (
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
     TITLE,
-    SOUNDS_DIR
+    SOUNDS_DIR,
+    VIDEO_DIR,
 )
 
 class Game():
@@ -33,8 +35,11 @@ class Game():
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         self.running: bool = True
-        self.state: StateType = StateType.Menu  # États possibles : "MENU", "PLAY", "PAUSE"
+        self.state: StateType = StateType.Menu  # États possibles : "MENU", "PLAY", "PAUSE", "CINEMATIC"
         self.resolution: ResolutionType = ResolutionType.Base # États possibles : "BASE", "FULLSCREEN"
+        self.cinematic_player: CinematicPlayer | None = None
+        self.cinematic_return_state: StateType = StateType.Menu
+        self.paused_from_cinematic: bool = False
 
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu()
@@ -88,6 +93,11 @@ class Game():
                 self.credits_handle_events(event)
                 
             
+            elif event.type == pygame.QUIT:
+                self.running = False
+            elif self.state == StateType.Cinematic:
+                self.cinematic_handle_events(event)
+
     def menu_handle_events(self, event: pygame.event.Event) -> None:
         action = self.main_menu.handle_event(event)
         if action == StateType.Quit:
@@ -97,12 +107,13 @@ class Game():
             pygame.display.toggle_fullscreen()
         elif action == StateType.Play:
             self.state = action
+            self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
             pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
             pygame.mixer.music.play(-1)
         elif action == StateType.Credits:
             self.state = action
         elif action == StateType.Quit:
-             self.running = False
+            self.running = False
 
     def play_handle_events(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN:
@@ -116,8 +127,15 @@ class Game():
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # position de la souris convertit en coord
             self.player.shoot(self.camera.screenToWorld(pygame.Vector2(event.pos)))
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.paused_from_cinematic = False
+            self.state = StateType.Pause
 
     def pause_handle_events(self, event: pygame.event.Event) -> None:
+        if self.paused_from_cinematic:
+            self.cinematic_pause_handle_events(event)
+            return
+
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.state = StateType.Play
         else:
@@ -134,6 +152,57 @@ class Game():
         action = self.credits_menu.handle_event(event)
         if action == StateType.Menu:
             self.state = action
+
+    def start_cinematic(self, directory, return_state: StateType) -> None:
+        self.cinematic_player = CinematicPlayer(
+            directory,
+            (SCREEN_WIDTH, SCREEN_HEIGHT),
+            fps=10.0,
+        )
+        self.cinematic_return_state = return_state
+        self.paused_from_cinematic = False
+        self.state = StateType.Cinematic
+
+    def update_cinematic(self, dt: float) -> None:
+        if self.cinematic_player is not None and self.cinematic_player.update(dt):
+            self.finish_cinematic()
+
+    def cinematic_handle_events(self, event: pygame.event.Event) -> None:
+        action = self.cinematic_player.handle_event(event)
+        if action == CinematicAction.Skip:
+            self.finish_cinematic()
+        elif action == CinematicAction.Pause:
+            self.paused_from_cinematic = True
+            self.state = StateType.Pause
+
+    def cinematic_pause_handle_events(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.paused_from_cinematic = False
+            self.state = StateType.Cinematic
+            self.cinematic_player.resume()
+            return
+
+        if event.type != pygame.MOUSEBUTTONDOWN:
+            return
+
+        action = self.pause_menu.handle_event(event)
+        if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
+            self.resolution = action
+            pygame.display.toggle_fullscreen()
+        elif action == StateType.Play:
+            self.paused_from_cinematic = False
+            self.state = StateType.Cinematic
+            self.cinematic_player.resume()
+        elif action == StateType.Menu:
+            self.finish_cinematic()
+            self.state = StateType.Menu
+        elif action == StateType.Quit:
+            self.running = False
+
+    def finish_cinematic(self) -> None:
+        self.cinematic_player = None
+        self.paused_from_cinematic = False
+        self.state = self.cinematic_return_state
 
     def run(self) -> None:
         while self.running:
