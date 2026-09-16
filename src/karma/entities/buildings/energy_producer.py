@@ -29,3 +29,7 @@ class EnergyProducer(Building):
             self.timeSinceLastProduction = 0.0
             return self.productionAmount
         return 0
+
+    def draw(self, screen: pygame.Surface, camera=None) -> None:
+        position = camera.apply(self.position)
+        screen.blit(self.image, position)

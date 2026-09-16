@@ -2,7 +2,7 @@ import sys
 import pygame
 
 from karma.scenes.scenes import Scene
-from karma.enums import ResolutionType, StateType
+from karma.enums import ResolutionType, StateType, BuildingType
 from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
@@ -68,9 +68,6 @@ class Game():
 
         self.rm = RessourceManager()  # Le gestionnaire de ressources
 
-
-       
-
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
         for event in pygame.event.get():
@@ -106,8 +103,16 @@ class Game():
          if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.state = StateType.Pause
-                elif event.key == pygame.K_e:  # Appuyer sur E pour construire
-                    new_building = self.building_system.build("turret", self.rm, amount=100)
+                elif event.key == pygame.K_3:  # Appuyer sur 3 pour construire une tourelle 
+                    new_building = self.building_system.build(BuildingType.Turret, self.rm, amount=100)
+                    if new_building:
+                        self.buildings.append(new_building)
+                elif event.key == pygame.K_1:  # Appuyer sur 1 pour construire une centrale a charbon  
+                    new_building = self.building_system.build(BuildingType.CoalPlant, self.rm, amount=300)
+                    if new_building:
+                        self.buildings.append(new_building)
+                elif event.key == pygame.K_2:  # Appuyer sur 2 pour construire un panneau solaire 
+                    new_building = self.building_system.build(BuildingType.SolarPanel, self.rm, amount=300)
                     if new_building:
                         self.buildings.append(new_building)
 

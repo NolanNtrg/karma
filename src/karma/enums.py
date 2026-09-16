@@ -15,3 +15,9 @@ class StateType(Enum):
     Pause = auto()
     Credits = auto()
     Quit = auto()
+
+class BuildingType(Enum):
+    Turret = auto()
+    CoalPlant = auto()
+    SolarPanel = auto()
+    Wall = auto()

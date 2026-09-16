@@ -1,6 +1,7 @@
 import pygame
 
 from karma.entities.buildings.energy_producer import EnergyProducer
+from karma.settings import ASSETS_DIR
 
 
 class CoalPlant(EnergyProducer):
@@ -15,3 +16,4 @@ class CoalPlant(EnergyProducer):
         productionInterval: float,
     ) -> None:
         super().__init__(position, health, energyCost, -100.0, productionAmount, productionInterval)
+        self.image = ASSETS_DIR / "buildings" / "coal_plant" / "idle_1.png"
