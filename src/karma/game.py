@@ -6,13 +6,12 @@ from karma.enums import ResolutionType, StateType
 from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
-from karma.entities.enemies.enemy import Enemy
-from karma.entities.enemies.spawner import EnemySpawner
 from karma.entities.player.player import Player
 from karma.environment.camera import Camera
 from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu
 from karma.interface.hud import HUD
+from karma.systems import CombatSystem, CycleSystem
 from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
@@ -57,17 +56,11 @@ class Game():
         self.buildings: list[Building] = []
         self.walls: list[Wall] = []
 
-        # gestion des ennemis
-        self.enemies: list[Enemy] = []
-        self.enemySpawner = EnemySpawner(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
+        # Systèmes
+        self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
+        self.cycle_system = CycleSystem(dayDuration=4000.0, nightDuration=4000.0)
 
         self.hud = HUD()
-
-        self.isDay = True
-        self.dayDuration = 4000 # mettre 2 min dans le futur
-        self.nightDuration = 4000 # pareil mais 1 min
-        self.cycleTimer = 0.0
-        self.currentDay = 1
 
         pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
         pygame.mixer.music.play()

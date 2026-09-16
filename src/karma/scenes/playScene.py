@@ -9,41 +9,29 @@ class PlayScene():
         if self.state != StateType.Play:
             return
         self.player.update(dt)
-        self.base.update(dt, self.isDay)
+        self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
 
-        newEnemy = self.enemySpawner.trySpawn(dt, not self.isDay, self.base.position)
-        if newEnemy is not None:
-            self.enemies.append(newEnemy)
+        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
 
-        for enemy in self.enemies:
-            enemy.update(dt, self.walls, self.base)
-        self.enemies = [enemy for enemy in self.enemies if not enemy.isDestroyed()]
+        if self.cycle_system.update(dt):
+            self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
 
-        self.cycleTimer += dt
-        if self.isDay and self.cycleTimer >= self.dayDuration:
-            self.isDay = False
-            self.currentMap = self.nightMap
-            self.cycleTimer = 0.0   
-        elif not self.isDay and self.cycleTimer >= self.nightDuration:
-            self.isDay = True
-            self.currentMap = self.dayMap
-            self.cycleTimer = 0.0
-            self.currentDay += 1 # on passe au jour suivant
         
     def drawPlayScene(self) -> None:
-        # En PLAY ou en PAUSE, le jeu reste visible en arrière-plan.
-        # On dessine la carte du cycle jour/nuit courante sur la surface
-        # zoomée, puis on l'étire vers l'écran.
         self.currentMap.render(self.game_surface, self.camera)
         self.base.draw(self.game_surface, self.camera)
-        for enemy in self.enemies:
-            enemy.draw(self.game_surface, self.camera)
+        self.combat_system.draw(self.game_surface, self.camera)
         self.player.draw(self.game_surface, self.camera)
         pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
-        duration = self.dayDuration if self.isDay else self.nightDuration
-        self.hud.draw(self.screen, self.currentDay, self.isDay, self.cycleTimer, duration)
+        self.hud.draw(
+            self.screen,
+            self.cycle_system.currentDay,
+            self.cycle_system.isDay,
+            self.cycle_system.cycleTimer,
+            self.cycle_system.currentDuration(),
+        )
 
         if self.state == StateType.Pause:
             self.pause_menu.draw(self.screen)
