@@ -77,3 +77,4 @@ class ArmoredUnit(Enemy):
             drawPosition = camera.apply(segmentPosition) if camera else segmentPosition
             drawPosition -= pygame.Vector2(image.get_size()) / 2
             screen.blit(image, drawPosition)
+

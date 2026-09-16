@@ -6,6 +6,7 @@ class Entity:
 
     def __init__(self, position: pygame.Vector2, health: int) -> None:
         self.position: pygame.Vector2 = position
+        self.max_health: int = health
         self.health: int = health
 
     def takeDamage(self, amount: int) -> None:

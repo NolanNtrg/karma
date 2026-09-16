@@ -17,9 +17,13 @@ class CombatSystem:
 
     def update(self, dt: float, isDay: bool, base: Base, walls: list[Wall]) -> None:
         # Apparition d'un ennemi la nuit si le délai est écoulé
-        newEnemy = self.enemySpawner.trySpawn(dt, not isDay, base.position)
-        if newEnemy is not None:
-            self.enemies.append(newEnemy)
+        if not isDay:
+            target = pygame.Vector2(base.rect.center)
+            newEnemy = self.enemySpawner.trySpawn(dt, True, target)
+            if newEnemy is not None:
+                self.enemies.append(newEnemy)
+        else:
+            self.enemySpawner.timeSinceLastSpawn = 0.0
 
         # Mise à jour des ennemis et de leurs attaques
         for enemy in self.enemies:
