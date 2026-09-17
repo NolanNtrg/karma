@@ -1,13 +1,25 @@
 class CycleSystem:
     # Gestion du temps et du cycle jour / nuit.
 
+    _instance = None
+    
+    def __new__(cls, *args, **kwargs):
+        # Si l'instance n'existe pas encore, on la crée (singleton)
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+    
     def __init__(self, dayDuration: float = 4000.0, nightDuration: float = 4000.0) -> None:
+        if self._initialized :
+            return
         self.isDay: bool = True
         self.dayDuration: float = dayDuration
         self.nightDuration: float = nightDuration
         self.cycleTimer: float = 0.0
         self.currentDay: int = 1
-
+        self._initialized = True
+    
     def currentDuration(self) -> float:
         return self.dayDuration if self.isDay else self.nightDuration
 

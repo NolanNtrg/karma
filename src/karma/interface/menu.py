@@ -4,7 +4,7 @@ import pygame
 from karma.enums import StateType, ResolutionType, VolumeAction
 from karma.interface.button import Button
 from karma.settings import SCREEN_HEIGHT, SCREEN_WIDTH, ASSETS_DIR
-
+from karma.systems.scoreManager import ScoreManager
 
 class Menu:
     # Classe mère pour tous les menus du jeu
@@ -15,10 +15,12 @@ class Menu:
         self.buttons: list[tuple[Button, Any]] = []
         self.texts: list[tuple[pygame.Surface, pygame.Rect]] = []
 
-    def add_button(self, text: str, action: Any, oneButton: bool = False) -> Button:
+    def add_button(self, text: str, action: Any, oneButton: bool = False, reverse: bool = False) -> Button:
         width, height = 300, 110
         x = (SCREEN_WIDTH - width) // 2 # centre le bouton horizontalement
-        if oneButton:
+        if reverse:
+            button = Button(x, SCREEN_HEIGHT - 140 - 85 * len(self.buttons), width, height, text, "white")
+        elif oneButton:
             button = Button(x, SCREEN_HEIGHT - 140, width, height, text, "white")
         else:
             button = Button(x, 210 + 85 * len(self.buttons), width, height, text, "white")
@@ -110,5 +112,7 @@ class CreditsMenu(Menu):
 class GameOverMenu(Menu):
     def __init__(self) -> None:
         super().__init__()
-        self.add_button("Recommencer", StateType.Play)
-        self.add_button("Quitter", StateType.Quit, True)
+        score: int = int(ScoreManager.calculateScore())
+        self.add_button("Quitter", StateType.Quit, False, True)
+        self.add_button("Recommencer", StateType.Play, False, True)
+        self.add_text("Score : " + str(score))
