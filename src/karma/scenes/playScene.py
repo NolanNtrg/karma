@@ -26,6 +26,14 @@ class PlayScene:
 
         self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.buildings, self.cycle_system.currentDay)
 
+        self.building_system.removeDestroyed(self.walls)
+
+        # mise à jour des bâtiments, suppression de ceux détruits
+        self.buildings = [building for building in self.buildings if not building.isDestroyed()]
+
+        # mise à jour des murs
+        self.walls = [wall for wall in self.walls if not wall.isDestroyed()]
+
         if self.base.isDestroyed():
             self.start_explosion()
             return
@@ -40,6 +48,9 @@ class PlayScene:
                 produced = building.tryProduce(dt)
                 if produced > 0:
                     self.rm.add(building.resourceType, produced)
+
+        for wall in self.walls:
+            wall.update(self.cycle_system.isDay)
 
         karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
         self.rm.applyKarmaDelta(karmaDelta)
@@ -81,7 +92,10 @@ class PlayScene:
 
         for building in self.buildings:
                 building.draw(self.game_surface, self.camera)
-                
+
+        for wall in self.walls:
+                wall.draw(self.game_surface, self.camera)
+
         self.combat_system.draw(self.game_surface, self.camera)
         self.player.draw(self.game_surface, self.camera)
         if self.paused_from_explosion and self.explosion is not None:
