@@ -127,7 +127,7 @@ class Game():
         elif action == StateType.Play:
             self.state = action
             self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
-            pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+            pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
             pygame.mixer.music.play(-1)
         elif action == StateType.Credits:
             self.state = action
