@@ -11,7 +11,7 @@ class MenuScene:
     @staticmethod
     def drawMenuScene(game, state: StateType) -> None:
         if state == StateType.HowToPlay:
-            MenuScene.drawHowToPlayScene(game)
+            MenuScene.drawHowToPlayScene(game) 
             return
         if MenuScene.background is None:
                 backgroundOriginal = pygame.image.load(ASSETS_DIR / "Main-Menu.jpg").convert()
@@ -31,5 +31,5 @@ class MenuScene:
             MenuScene.how_build_image = pygame.transform.scale(build_orig, (SCREEN_WIDTH, SCREEN_HEIGHT))
             karma_orig = pygame.image.load(ASSETS_DIR / "menu-how-to-play" / "how-karma.jpeg").convert()
             MenuScene.how_karma_image = pygame.transform.scale(karma_orig, (SCREEN_WIDTH, SCREEN_HEIGHT))
-        current_img = MenuScene.how_build_image if game.how_to_play_index == 0 else MenuScene.how_karma_image
+        current_img = MenuScene.how_build_image if game.how_to_play_index == 0 else MenuScene.how_karma_image # récupère la page du tutoriel selon l'index
         game.screen.blit(current_img, (0, 0))

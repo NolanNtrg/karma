@@ -39,12 +39,12 @@ class RessourcesProducer(Building):
         self.setFrames(dayFrames, nightFrames)
 
     def tryProduce(self, dt: float) -> int:
-        if self.isDestroyed():
+        if self.isDestroyed(): # si batiment détruit pas de production
             return 0
-        self.timeSinceLastProduction += dt
-        if self.timeSinceLastProduction >= self.productionInterval:
+        self.timeSinceLastProduction += dt # on fait avancer le timer
+        if self.timeSinceLastProduction >= self.productionInterval: # si temps écoulé on reset à 0
             self.timeSinceLastProduction = 0.0
-            return self.productionAmount
+            return self.productionAmount # donne les ressources
         return 0
 
     def update(self, dt: float, isDay: bool) -> None:
