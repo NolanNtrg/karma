@@ -54,7 +54,7 @@ class PlayScene:
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
             if self.cycle_system.isDay:
                 self.combat_system.enemies.clear()
-                pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+                pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
                 pygame.mixer.music.play(-1)
             else:
                 pygame.mixer.music.load(SOUNDS_DIR / "NightMusic.mp3")
