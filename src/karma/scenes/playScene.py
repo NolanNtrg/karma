@@ -1,6 +1,6 @@
 import pygame
 
-from karma.enums import RessourceType, StateType
+from karma.enums import StateType
 from karma.entities.buildings.turret import Turret
 from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
 from karma.entities.buildings.ressourcesProducer import RessourcesProducer
@@ -40,10 +40,6 @@ class PlayScene:
 
         karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
         self.rm.applyKarmaDelta(karmaDelta)
-
-        if self.base.isDestroyed() and not self.game_over:
-            self.game_over = True
-            self.final_karma = self.rm.getStock(RessourceType.Karma)
 
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)

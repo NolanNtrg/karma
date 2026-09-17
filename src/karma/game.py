@@ -13,6 +13,7 @@ from karma.interface.menu import MainMenu, PauseMenu, CreditsMenu, GameOverMenu
 from karma.enums import RessourceType
 from karma.interface.hud import HUD
 from karma.interface.cinematic import CinematicAction, CinematicPlayer
+from karma.interface.explosion import ExplosionAnimation
 from karma.systems import CheatSystem, CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
 from karma.systems.resourceManager import RessourceManager
@@ -52,8 +53,6 @@ class Game():
         self.explosion: ExplosionAnimation | None = None
         self.cinematic_return_state: StateType = StateType.Menu
         self.paused_from_cinematic: bool = False
-        self.game_over: bool = False
-        self.final_karma: float | None = None
         self.paused_from_explosion: bool = False
 
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
