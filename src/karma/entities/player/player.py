@@ -1,11 +1,14 @@
 import pygame
 from karma.settings import ASSETS_DIR
 
+from typing import Any
+
 from karma.entities.entity import Entity
 from karma.entities.bullet import Bullet
 from karma.entities.enemies.enemy import Enemy
 from karma.entities.shooter import Shooter
 from karma.entities.sprite import SpriteAnimator
+from karma.environment.camera import Camera
 
 
 class Player(Entity):
@@ -22,7 +25,7 @@ class Player(Entity):
 
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args: Any, **kwargs: Any) -> "Player":
         # Si l'instance n'existe pas encore, on la crée
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -67,7 +70,7 @@ class Player(Entity):
         self,
         dt: float,
         enemies: list[Enemy] | None = None,
-        camera=None,
+        camera: Camera | None = None,
         map_size: tuple[float, float] | None = None,
     ) -> None:
         direction = self.getDirection()
@@ -104,7 +107,7 @@ class Player(Entity):
     def getCenter(self) -> pygame.Vector2:
         return self.position + pygame.Vector2(self.animator.image.get_size()) / 2
 
-    def draw(self, screen: pygame.Surface, camera=None) -> None:
+    def draw(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
         position = camera.apply(self.position) if camera else self.position
         # affiche le muzzle flash si le joueur vient de tirer, sinon affiche l'image normale
         isFiring = self.muzzleFlashTimer > 0

@@ -9,7 +9,7 @@ class Scene:
     current_music: MusicType | None = None
 
     @staticmethod
-    def playMusic(music: MusicType):
+    def playMusic(music: MusicType) -> None:
         if Scene.current_music == music:
             return
 

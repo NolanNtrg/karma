@@ -1,4 +1,6 @@
 import sys
+from pathlib import Path
+
 import pygame
 
 from karma.scenes.scenes import Scene
@@ -282,7 +284,7 @@ class Game():
             self.paused_from_explosion = False
             self.start_bad_ending()
 
-    def start_cinematic(self, directory, return_state: StateType) -> None:
+    def start_cinematic(self, directory: Path, return_state: StateType) -> None:
         self.cinematic_player = CinematicPlayer(
             directory,
             (SCREEN_WIDTH, SCREEN_HEIGHT),

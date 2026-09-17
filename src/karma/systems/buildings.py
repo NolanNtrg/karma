@@ -53,17 +53,17 @@ class BuildingsSystem:
 
     building_sound = None
 
-    def __init__(self) :
+    def __init__(self) -> None:
         if BuildingsSystem.building_sound is None:
             BuildingsSystem.building_sound = pygame.mixer.Sound(SOUNDS_DIR / "building-sound.mp3")
         self.currentSlot : dict | None = None
         self.dictOccupedSlot : dict[int, Building] = {}
         self.occupiedWallCells: set[tuple[int, int]] = set()
 
-    def isSlotFree(self, slotId):
+    def isSlotFree(self, slotId: int) -> bool:
         return slotId not in self.dictOccupedSlot
 
-    def update(self, player : Player, buildSlots : list[dict]) :
+    def update(self, player : Player, buildSlots : list[dict]) -> None:
         playerCenter = player.getCenter()
 
         foundSlot = None
@@ -75,7 +75,7 @@ class BuildingsSystem:
         if foundSlot != self.currentSlot :
             self.currentSlot = foundSlot
 
-    def build(self, building_type: BuildingType, ressource_manager: RessourceManager):
+    def build(self, building_type: BuildingType, ressource_manager: RessourceManager) -> Building | None:
         if self.currentSlot is not None:
             if self.isSlotFree(self.currentSlot["id"]):
                 cost_type = RessourceType.Energy if building_type == BuildingType.Turret else RessourceType.RawMaterial
@@ -132,13 +132,14 @@ class BuildingsSystem:
                     self.dictOccupedSlot[self.currentSlot["id"]] = building
                     BuildingsSystem.building_sound.play()
                     return building
+        return None
 
     def buildWallAt(
         self,
         worldPosition: pygame.Vector2,
         ressource_manager: RessourceManager,
         forbiddenRects: list[pygame.Rect],
-    ):
+    ) -> Wall | None:
         # Un mur se place librement sur une grille, sauf sur la base ou un slot prédéfini.
         cell = (
             int(worldPosition.x // WALL_SIZE) * WALL_SIZE,

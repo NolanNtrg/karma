@@ -2,11 +2,20 @@ import pygame
 
 from karma.settings import ASSETS_DIR, SOUNDS_DIR
 
-class Button : 
+class Button :
 
     click_sound = None
 
-    def __init__(self, x, y, width, height, text,color, font_size=25):
+    def __init__(
+        self,
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        text: str,
+        color: pygame.Color | str | tuple[int, int, int],
+        font_size: int = 25,
+    ) -> None:
         if Button.click_sound is None:
             Button.click_sound = pygame.mixer.Sound(SOUNDS_DIR / "minecraft-click.mp3")
         self.background = pygame.image.load(ASSETS_DIR / "Button_Background.png").convert_alpha()
@@ -25,11 +34,11 @@ class Button :
         self.text_surface = self.font.render(self.text, False, self.color)
         self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
         screen.blit(self.background, self.rect)
         screen.blit(self.text_surface, self.text_rect)
 
-    def is_clicked(self, event):
+    def is_clicked(self, event: pygame.event.Event) -> bool:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             Button.click_sound.play()
             return self.rect.collidepoint(event.pos) # on vérifie si le clic est dans le rectangle du bouton
