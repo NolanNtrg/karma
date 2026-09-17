@@ -2,7 +2,7 @@ import pygame
 
 from karma.entities.enemies.enemy import Enemy
 from karma.entities.sprite import SpriteAnimator
-from karma.settings import ASSETS_DIR
+from karma.settings import ARMORED_UNIT_ATTACK_DAMAGE, ARMORED_UNIT_ATTACK_INTERVAL, ARMORED_UNIT_HEALTH, ARMORED_UNIT_SPEED, ASSETS_DIR
 
 
 class ArmoredUnit(Enemy):
@@ -16,12 +16,12 @@ class ArmoredUnit(Enemy):
 
     def __init__(self, position: pygame.Vector2, target: pygame.Vector2) -> None:
         super().__init__(
-            position, 
-            health=6700, 
-            target=target, 
-            speed=16 / 1000,
-            attackDamage=680, 
-            attackInterval=1000.0, 
+            position,
+            health=ARMORED_UNIT_HEALTH,
+            target=target,
+            speed=ARMORED_UNIT_SPEED,
+            attackDamage=ARMORED_UNIT_ATTACK_DAMAGE,
+            attackInterval=ARMORED_UNIT_ATTACK_INTERVAL,
             spriteSheetPath=None,
         )
         self.spriteSheet = pygame.image.load(ASSETS_DIR / "Robots" / "Centipede.png").convert_alpha()
@@ -30,6 +30,19 @@ class ArmoredUnit(Enemy):
         direction = target - position
         # on normalise la direction pour que la vitesse soit constante
         self.heading = direction.normalize() if direction.length_squared() > 0 else pygame.Vector2(0, 0)
+
+    # override getCenter car contrairement aux autres ennemis, self.position est déjà
+    # le centre de la tête (voir draw) et non le coin supérieur gauche d'un sprite
+    def getCenter(self) -> pygame.Vector2:
+        # la tête
+        return self.getSegmentPosition(0)
+
+    def getSegmentPosition(self, index: int) -> pygame.Vector2:
+        return self.position - self.heading * self.SEGMENT_SPACING * index
+
+    # une balle peut toucher n'importe quel segment du centipède, pas seulement la tête
+    def getHitPoints(self) -> list[pygame.Vector2]:
+        return [self.getSegmentPosition(index) for index in range(self.segmentCount)]
 
     # override updateAnimation juste pour MaJ la direction de l'ennemi
     def updateAnimation(self, dt: float, isMoving: bool, direction: pygame.Vector2) -> None:
@@ -54,7 +67,7 @@ class ArmoredUnit(Enemy):
             image = pygame.transform.flip(image, flip, False)
 
             # calcule la position du segment en fonction de l'index et de l'espacement
-            position = self.position - self.heading * self.SEGMENT_SPACING * index
+            position = self.getSegmentPosition(index)
             # on pose en prenant en compte adaptation au scroll camera
             position = camera.apply(position) if camera else position
             screen.blit(image, position - pygame.Vector2(image.get_size()) / 2)
