@@ -44,6 +44,7 @@ class Game():
     lobotomy_sound = None
 
     def __init__(self) -> None:
+        # Initialisation de Pygame et de la fenêtre du jeu
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED)
         pygame.display.set_caption(TITLE)
@@ -60,6 +61,7 @@ class Game():
         self.paused_from_cinematic: bool = False
         self.paused_from_explosion: bool = False
 
+       # Initialisation des composants du jeu
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu(self.volume)
         self.pause_menu = PauseMenu(self.volume)
