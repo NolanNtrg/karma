@@ -28,6 +28,11 @@ RAW_MATERIAL_START = 2000
 
 BASE_HEALTH: int = 1000
 
+# durée du jour et de la nuit en ms (1 min chacun)
+DAY_DURATION: float = 60000.0
+NIGHT_DURATION: float = 60000.0
+
+# -ennemis/difficulté-
 # délai en ms entre deux apparitions d'ennemis
 ENEMY_SPAWN_INTERVAL: float = 1500.0
 # dlai minimum autorisé (pas d'exceptions)
@@ -38,3 +43,42 @@ ENEMY_DAY_DIFFICULTY_STEP: float = 0.33
 ENEMY_DAY_DIFFICULTY_FLOOR: float = 0.4
 # influence du karma sur le délai de spawn
 KARMA_SPAWN_INFLUENCE: float = 0.5
+
+# -bâtiments-
+# tourelle : défense active, payée en Énergie
+TURRET_HEALTH: int = 100
+TURRET_COST: int = 100  # Énergie
+TURRET_ATTACK_RANGE: float = 350.0
+TURRET_ATTACK_DAMAGE: int = 30
+TURRET_ATTACK_INTERVAL: float = 600.0  # ms entre deux tirs
+
+# centrale à charbon : production continue (jour+nuit) mais baisse le karma
+COAL_PLANT_HEALTH: int = 200
+COAL_PLANT_COST: int = 300  # Matière première
+COAL_PLANT_PRODUCTION_AMOUNT: int = 10  # Énergie par tick -> 5 Énergie/s
+COAL_PLANT_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
+
+# panneau solaire : production plus faible et limitée au jour mais augmente le karma
+SOLAR_PANEL_HEALTH: int = 150
+SOLAR_PANEL_COST: int = 300  # Matière première
+SOLAR_PANEL_PRODUCTION_AMOUNT: int = 6  # Énergie par tick -> 3 Énergie/s
+SOLAR_PANEL_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
+
+# -ennemis-
+# coureur : rapide et fragile, dégâts faibles
+RUNNER_HEALTH: int = 60
+RUNNER_SPEED: float = 40 / 1000  # pixels par ms
+RUNNER_ATTACK_DAMAGE: int = 40
+RUNNER_ATTACK_INTERVAL: float = 1000.0
+
+# rôdeur : standard, équilibré entre vie et dégâts
+PROWLER_HEALTH: int = 220
+PROWLER_SPEED: float = 24 / 1000
+PROWLER_ATTACK_DAMAGE: int = 90
+PROWLER_ATTACK_INTERVAL: float = 1000.0
+
+# centipède : lent mais résistant et inflige beaucoup de dégats
+ARMORED_UNIT_HEALTH: int = 500
+ARMORED_UNIT_SPEED: float = 10 / 1000
+ARMORED_UNIT_ATTACK_DAMAGE: int = 160
+ARMORED_UNIT_ATTACK_INTERVAL: float = 1000.0

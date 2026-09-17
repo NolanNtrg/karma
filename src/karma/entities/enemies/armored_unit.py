@@ -42,6 +42,7 @@ class ArmoredUnit(Enemy):
 
     # une balle peut toucher n'importe quel segment du centipède, pas seulement la tête
     def getHitPoints(self) -> list[pygame.Vector2]:
+        # liste des positions de tous les segments du centipède, de la tête à la queue
         return [self.getSegmentPosition(index) for index in range(self.segmentCount)]
 
     # override updateAnimation juste pour MaJ la direction de l'ennemi

@@ -36,6 +36,10 @@ class Enemy(Attacker):
         half_size = (SpriteAnimator.FRAME_SIZE * SpriteAnimator.SCALE) / 2
         return pygame.Vector2(self.position.x + half_size, self.position.y + half_size)
 
+    def getHitPoints(self) -> list[pygame.Vector2]:
+        # points testés pour les collisions comme la balle, etc. (par défaut un seul point au centre)
+        return [self.getCenter()]
+
     def isInRangeOfBase(self, base: Base) -> bool:
         # vérifie si le centre de l'ennemi est à portée de la hitbox de la base
         attack_zone = base.rect.inflate(int(self.attackRange * 2), int(self.attackRange * 2))
