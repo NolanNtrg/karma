@@ -42,6 +42,7 @@ BUILDING_COSTS: dict[BuildingType, int] = {
 }
 
 
+
 class BuildingsSystem:
     def __init__(self) :
         self.currentSlot : dict | None = None
