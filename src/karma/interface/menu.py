@@ -15,10 +15,12 @@ class Menu:
         self.buttons: list[tuple[Button, Any]] = []
         self.texts: list[tuple[pygame.Surface, pygame.Rect]] = []
 
-    def add_button(self, text: str, action: Any, oneButton: bool = False) -> Button:
+    def add_button(self, text: str, action: Any, oneButton: bool = False, reverse: bool = False) -> Button:
         width, height = 300, 110
         x = (SCREEN_WIDTH - width) // 2 # centre le bouton horizontalement
-        if oneButton:
+        if reverse:
+            button = Button(x, SCREEN_HEIGHT - 140 - 85 * len(self.buttons), width, height, text, "white")
+        elif oneButton:
             button = Button(x, SCREEN_HEIGHT - 140, width, height, text, "white")
         else:
             button = Button(x, 210 + 85 * len(self.buttons), width, height, text, "white")
@@ -98,6 +100,6 @@ class GameOverMenu(Menu):
     def __init__(self) -> None:
         super().__init__()
         score: int = int(ScoreManager.calculateScore())
-        self.add_button("Recommencer", StateType.Play)
+        self.add_button("Quitter", StateType.Quit, False, True)
+        self.add_button("Recommencer", StateType.Play, False, True)
         self.add_text("Score : " + str(score))
-        self.add_button("Quitter", StateType.Quit, True)

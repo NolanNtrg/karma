@@ -25,12 +25,14 @@ class ScoreManager:
     @staticmethod
     def calculateScore() -> float:
         karma: float = RessourceManager().getStock(RessourceType.Karma)
+        rawMaterial: float = RessourceManager().getStock(RessourceType.RawMaterial)
+        energy: float = RessourceManager().getStock(RessourceType.Energy)
         totalEnemiesKilled: int = Bullet.enemies_killed
         cycleSystem = CycleSystem()
         numberDays: int = cycleSystem.currentDay
         factor = -2 if karma < 0 else 1
 
-        score: float = totalEnemiesKilled * numberDays + factor * karma
+        score: float = totalEnemiesKilled * numberDays + factor * karma + 0.5 * (rawMaterial + energy)
         return int(score)
 
     @staticmethod
