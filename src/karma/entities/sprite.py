@@ -11,9 +11,8 @@ class SpriteAnimator:
 
     # méthode statique car utilisée par des entités qui n'ont pas d'instance de SpriteAnimator
     @staticmethod
-    def getSprite(spriteSheet: pygame.Surface, row: int, col: int) -> pygame.Surface:
+    def getSprite(spriteSheet: pygame.Surface, row: int, col: int, frameSize: int = FRAME_SIZE) -> pygame.Surface:
         # Découpe une frame dans la sprite sheet et l'agrandit.
-        frameSize = SpriteAnimator.FRAME_SIZE
         img = pygame.Surface((frameSize, frameSize), pygame.SRCALPHA)
         img.blit(spriteSheet, (0, 0), (col * frameSize, row * frameSize, frameSize, frameSize))
         return pygame.transform.scale_by(img, SpriteAnimator.SCALE)

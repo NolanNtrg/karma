@@ -93,3 +93,9 @@ class CreditsMenu(Menu):
         self.add_text("Cycle d'éclipse, musiques, placement des bâtiments créés par Paul")
         self.add_text("Merci d'avoir joué !")
         self.add_button("Retour", StateType.Menu, True)
+
+class GameOverMenu(Menu):
+    def __init__(self) -> None:
+        super().__init__()
+        self.add_button("Recommencer", StateType.Play)
+        self.add_button("Quitter", StateType.Quit, True)
