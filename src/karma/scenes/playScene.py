@@ -15,7 +15,7 @@ class PlayScene:
             dt,
             self.combat_system.enemies,
             self.camera,
-            (self.currentMap.width, self.currentMap.height),
+            (self.dayMap.width, self.dayMap.height),
         )
         self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
