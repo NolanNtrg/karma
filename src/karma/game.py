@@ -140,24 +140,24 @@ class Game():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.state = StateType.Pause
-            elif event.key == pygame.K_3:  # Appuyer sur 3 pour construire une tourelle
-                new_building = self.building_system.build(BuildingType.Turret, self.rm)
+            elif event.key == pygame.K_1:
+                new_building = self.building_system.build(BuildingType.Driller, self.rm, amount=100)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_4:  # Appuyer sur 4 pour construire une plantation
-                new_building = self.building_system.build(BuildingType.Plantation, self.rm)
+            elif event.key == pygame.K_2:
+                new_building = self.building_system.build(BuildingType.Plantation, self.rm, amount=100)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_5:  # Appuyer sur 5 pour construire une foreuse
-                new_building = self.building_system.build(BuildingType.Driller, self.rm)
+            elif event.key == pygame.K_5: 
+                new_building = self.building_system.build(BuildingType.Turret, self.rm, amount=100)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_1:  # Appuyer sur 1 pour construire une centrale a charbon
-                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm)
+            elif event.key == pygame.K_4: 
+                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm, amount=300)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_2:  # Appuyer sur 2 pour construire un panneau solaire
-                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm)
+            elif event.key == pygame.K_3: 
+                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm, amount=300)
                 if new_building:
                     self.buildings.append(new_building)
             else:
