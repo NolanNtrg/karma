@@ -12,6 +12,8 @@ class Button :
         self.background = pygame.image.load(ASSETS_DIR / "Button_Background.png").convert_alpha()
         self.background = pygame.transform.scale(self.background, (width, height))
         self.rect = self.background.get_rect(topleft=(x, y))
+        # hitbox réduit pour la hitbox
+        self.hitbox = self.rect.inflate(-int(width * 0.12), -int(height * 0.5))
         self.text = text
         self.font = pygame.font.Font(ASSETS_DIR / "fonts" / "Pixelify_Sans" / "static" / "PixelifySans-Bold.ttf", font_size)
         self.color = color  # Color for the text
@@ -31,6 +33,7 @@ class Button :
 
     def is_clicked(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            Button.click_sound.play()
-            return self.rect.collidepoint(event.pos) # on vérifie si le clic est dans le rectangle du bouton
+            if self.hitbox.collidepoint(event.pos): # on vérifie si le clic est dans la zone visible du bouton
+                Button.click_sound.play()
+                return True
         return False

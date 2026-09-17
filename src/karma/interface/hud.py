@@ -55,7 +55,7 @@ class HUD:
         screen.blit(timerSurf, timerRect)
 
     def DrawRessources(self, screen: pygame.Surface) -> None:
-        """Badges ressources en haut à droite avec fond semi-transparent."""
+        # Badges ressources en haut à droite avec fond semi-transparent
         resources = [
             (self.karmaIcon, str(round(RessourceManager().getStock(RessourceType.Karma))), self.fontRessourceKarma),
             (self.energyIcon, str(RessourceManager().getStock(RessourceType.Energy)), self.fontRessourceEnergy),
@@ -93,7 +93,7 @@ class HUD:
             top_y += badge_height + 8
 
     def DrawBaseHealth(self, screen: pygame.Surface, health: int, max_health: int) -> None:
-        """Jauge de santé du Vaisseau en bas à gauche."""
+        # Jauge de santé du Vaisseau en bas à gauche.
         width, height = 220, 25
         ratio = max(0.0, min(1.0, health / max_health)) if max_health > 0 else 0.0
 

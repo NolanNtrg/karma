@@ -73,6 +73,8 @@ class Player(Entity):
         direction = self.getDirection()
         self.position += direction * self.speed * dt
         if map_size is not None:
+            # on retire la taille du sprite de la borne max pour garder le sprite entier dans la carte
+            # (position est le coin haut-gauche, donc sans ça le bord droit/bas pourrait dépasser)
             sprite_width, sprite_height = self.animator.image.get_size()
             max_x = max(0.0, map_size[0] - sprite_width)
             max_y = max(0.0, map_size[1] - sprite_height)

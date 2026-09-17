@@ -48,7 +48,7 @@ KARMA_SPAWN_INFLUENCE: float = 0.5
 # -bâtiments-
 # tourelle : défense active, payée en Énergie
 TURRET_HEALTH: int = 600
-TURRET_COST: int = 100  # Énergie
+TURRET_COST: int = 150  # Énergie
 TURRET_ATTACK_RANGE: float = 350.0
 TURRET_ATTACK_DAMAGE: int = 30
 TURRET_ATTACK_INTERVAL: float = 600.0  # ms entre deux tirs
@@ -68,13 +68,13 @@ SOLAR_PANEL_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 # plantation : production de matière première limitée au jour mais augmente le karma
 PLANTATION_HEALTH: int = 300
 PLANTATION_COST: int = 60  # Matière première
-PLANTATION_PRODUCTION_AMOUNT: int = 15  # Matière première par tick
+PLANTATION_PRODUCTION_AMOUNT: int = 10  # Matière première par tick -> 5 Matière première/s
 PLANTATION_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # foreuse : production continue (jour+nuit) de matière première mais baisse le karma
 DRILLER_HEALTH: int = 400
 DRILLER_COST: int = 100  # Matière première
-DRILLER_PRODUCTION_AMOUNT: int = 25  # Matière première par tick
+DRILLER_PRODUCTION_AMOUNT: int = 20  # Matière première par tick -> 10 Matière première/s
 DRILLER_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # mur : bloque/canalise les ennemis, placé librement sur la carte

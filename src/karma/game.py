@@ -45,6 +45,7 @@ class Game():
     lobotomy_sound = None
 
     def __init__(self) -> None:
+        # Initialisation de Pygame et de la fenêtre du jeu
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED)
         pygame.display.set_caption(TITLE)
@@ -61,6 +62,7 @@ class Game():
         self.paused_from_cinematic: bool = False
         self.paused_from_explosion: bool = False
 
+       # Initialisation des composants du jeu
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu(self.volume)
         self.pause_menu = PauseMenu(self.volume)
@@ -229,6 +231,8 @@ class Game():
         self.player.muzzleFlashTimer = 0.0
         self.player.shooter.bullets.clear()
         self.base = Base(position=v_pos, health=BASE_HEALTH)
+        self.cheat_system.base = self.base
+        self.cheat_system.godmode = False
         self.currentMap = self.dayMap
         self.buildings.clear()
         self.walls.clear()

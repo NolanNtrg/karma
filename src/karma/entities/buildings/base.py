@@ -29,6 +29,7 @@ class Base(Entity):
 
     def update(self, dt: float, is_day: bool = True) -> None:
         frames = self.day_frames if is_day else self.night_frames
+        # 0.006 = vitesse de l'animation : dt (ms) accumulé, puis modulo pour boucler sur les frames
         self.imageIndex += dt * 0.006
         frame_idx = int(self.imageIndex) % len(frames)
         self.image = frames[frame_idx]

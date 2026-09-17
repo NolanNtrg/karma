@@ -36,6 +36,7 @@ class Building(Entity):
         frames = self.dayFrames if isDay else self.nightFrames
         if not frames:
             return
+        # ANIMATION_SPEED contrôle la vitesse de défilement : dt (ms) accumulé, puis modulo pour boucler sur les frames
         self.imageIndex += dt * self.ANIMATION_SPEED
         self.image = frames[int(self.imageIndex) % len(frames)]
 

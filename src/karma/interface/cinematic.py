@@ -14,7 +14,7 @@ class CinematicAction(Enum):
 
 
 class CinematicPlayer:
-    # Reads an image sequence at a fixed frame rate.
+    # Lis une séquence d'image à un rhythme fixé
 
     IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
