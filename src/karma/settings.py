@@ -48,7 +48,7 @@ KARMA_SPAWN_INFLUENCE: float = 0.5
 # -bâtiments-
 # tourelle : défense active, payée en Énergie
 TURRET_HEALTH: int = 600
-TURRET_COST: int = 100  # Énergie
+TURRET_COST: int = 150  # Énergie
 TURRET_ATTACK_RANGE: float = 350.0
 TURRET_ATTACK_DAMAGE: int = 30
 TURRET_ATTACK_INTERVAL: float = 600.0  # ms entre deux tirs

@@ -39,6 +39,7 @@ class SpriteAnimator:
         elif direction.x > 0:
             self.flip = False
 
+        # 0.007 = vitesse de l'animation : dt (ms) accumulé dans imageIndex, puis modulo pour boucler sur les frames
         self.imageIndex += dt * 0.007
         frame = self.currentFrames[int(self.imageIndex % len(self.currentFrames))]
         self.image = pygame.transform.flip(frame, self.flip, False)

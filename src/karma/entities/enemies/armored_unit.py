@@ -38,6 +38,8 @@ class ArmoredUnit(Enemy):
         return self.getSegmentPosition(0)
 
     def getSegmentPosition(self, index: int) -> pygame.Vector2:
+        # place le segment `index` derrière la tête, dans le sens opposé au heading, espacé de SEGMENT_SPACING
+        # pour que le corps suive la direction de déplacement de la tête
         return self.position - self.heading * self.SEGMENT_SPACING * index
 
     # une balle peut toucher n'importe quel segment du centipède, pas seulement la tête

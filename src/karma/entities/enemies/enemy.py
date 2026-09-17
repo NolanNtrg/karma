@@ -44,6 +44,7 @@ class Enemy(Attacker):
 
     def isInRangeOfBase(self, base: Base) -> bool:
         # vérifie si le centre de l'ennemi est à portée de la hitbox de la base
+        # inflate() répartit l'agrandissement sur les deux bords, donc *2 donne bien attackRange de marge par côté
         attack_zone = base.rect.inflate(int(self.attackRange * 2), int(self.attackRange * 2))
         return attack_zone.collidepoint(self.getCenter())
 

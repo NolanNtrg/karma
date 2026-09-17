@@ -32,6 +32,7 @@ class CombatSystem:
         karmaRatio = RessourceManager().getStock(RessourceType.Karma) / KARMA_MAX
         karmaFactor = 1.0 + karmaRatio * KARMA_SPAWN_INFLUENCE
         return max(ENEMY_SPAWN_INTERVAL_MIN, self.baseSpawnInterval * dayFactor * karmaFactor)
+    # exemple : pour 1000 karma, le délai est réduit de 50% (1.0 + 1.0 * 0.5 = 1.5) donc les ennemis apparaissent plus vite
 
     def update(self, dt: float, isDay: bool, base: Base, walls: list[Wall], buildings: list[Building], currentDay: int = 1) -> None:
         # Apparition d'un ennemi la nuit si le délai est écoulé

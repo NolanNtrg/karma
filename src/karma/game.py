@@ -228,6 +228,8 @@ class Game():
         self.player.muzzleFlashTimer = 0.0
         self.player.shooter.bullets.clear()
         self.base = Base(position=v_pos, health=BASE_HEALTH)
+        self.cheat_system.base = self.base
+        self.cheat_system.godmode = False
         self.currentMap = self.dayMap
         self.buildings.clear()
         self.walls.clear()
