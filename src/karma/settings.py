@@ -77,7 +77,15 @@ DRILLER_COST: int = 100  # Matière première
 DRILLER_PRODUCTION_AMOUNT: int = 25  # Matière première par tick
 DRILLER_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
+# mur : bloque/canalise les ennemis, placé librement sur la carte
+WALL_HEALTH: int = 200
+WALL_COST: int = 20  # Matière première
+WALL_SIZE: int = 32
+
 # -ennemis-
+# portée de mêlée : distance à laquelle un ennemi engage un mur/bâtiment sur son chemin
+ENEMY_ATTACK_RANGE: float = 32.0
+
 # coureur : rapide et fragile, dégâts faibles
 RUNNER_HEALTH: int = 60
 RUNNER_SPEED: float = 40 / 1000  # pixels par ms
