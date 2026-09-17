@@ -1,6 +1,7 @@
 import pygame
 
 from karma.entities.entity import Entity
+from karma.environment.camera import Camera
 from karma.settings import ASSETS_DIR
 
 class Base(Entity):
@@ -34,7 +35,7 @@ class Base(Entity):
         frame_idx = int(self.imageIndex) % len(frames)
         self.image = frames[frame_idx]
 
-    def draw(self, screen: pygame.Surface, camera=None) -> None:
+    def draw(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
         # Applique la caméra comme pour le joueur
         position = camera.apply(self.position)
         screen.blit(self.image, position)

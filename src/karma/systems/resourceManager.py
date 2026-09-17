@@ -1,3 +1,5 @@
+from typing import Any
+
 from karma.settings import (
     RAW_MATERIAL_START,
     ENERGY_START,
@@ -6,12 +8,12 @@ from karma.settings import (
     KARMA_MAX
 )
 from karma.enums import RessourceType
-    
+
 class RessourceManager:
 
     _instance = None
-    
-    def __new__(cls, *args, **kwargs):
+
+    def __new__(cls, *args: Any, **kwargs: Any) -> "RessourceManager":
         # Si l'instance n'existe pas encore, on la crée
         if cls._instance is None:
             cls._instance = super().__new__(cls)

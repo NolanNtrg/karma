@@ -3,6 +3,7 @@ from pathlib import Path
 import pygame
 
 from karma.entities.sprite import SpriteAnimator
+from karma.environment.camera import Camera
 from karma.interface.frameSequencer import FrameSequencer
 
 
@@ -29,7 +30,7 @@ class ExplosionAnimation:
     def update(self, dt: float) -> bool:
         return self.sequencer.update(dt)
 
-    def draw(self, screen: pygame.Surface, camera) -> None:
+    def draw(self, screen: pygame.Surface, camera: Camera) -> None:
         position = camera.apply(self.position)
         frame = self.frames[self.sequencer.current_frame]
         rect = frame.get_rect(center=(round(position.x + 32), round(position.y + 32)))

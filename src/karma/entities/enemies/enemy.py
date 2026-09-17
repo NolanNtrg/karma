@@ -7,6 +7,7 @@ from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
 from karma.entities.enemies.attacker import Attacker
 from karma.entities.sprite import SpriteAnimator
+from karma.environment.camera import Camera
 from karma.settings import ENEMY_ATTACK_RANGE
 
 
@@ -83,6 +84,6 @@ class Enemy(Attacker):
         else:
             self.updateAnimation(dt, False, pygame.Vector2(0, 0))
 
-    def draw(self, screen: pygame.Surface, camera=None) -> None:
+    def draw(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
         position = camera.apply(self.position) if camera else self.position
         screen.blit(self.animator.image, position)

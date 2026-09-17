@@ -3,6 +3,7 @@ from typing import Sequence
 import pygame
 
 from karma.entities.enemies.enemy import Enemy
+from karma.environment.camera import Camera
 from karma.settings import ASSETS_DIR
 
 
@@ -32,7 +33,7 @@ class Bullet:
 
     # si la balle touche un ennemi, on inflige les dégâts 
     # et on marque la balle comme "hit" pour qu'elle disparaisse
-    def update(self, dt: float, enemies: Sequence[Enemy] = (), camera=None) -> None:
+    def update(self, dt: float, enemies: Sequence[Enemy] = (), camera: Camera | None = None) -> None:
         for enemy in enemies:
             if enemy.isDestroyed():
                 continue
@@ -50,6 +51,6 @@ class Bullet:
         if camera is not None and not camera.contains(self.position):
             self.hit = True
 
-    def draw(self, screen: pygame.Surface, camera=None) -> None:
+    def draw(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
         position = camera.apply(self.position) if camera else self.position
         screen.blit(self.image, position)
