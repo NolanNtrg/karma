@@ -82,6 +82,6 @@ class CreditsMenu(Menu):
 
 class GameOverMenu(Menu):
     def __init__(self) -> None:
-        super().__init__(title="VAISSEAU DETRUIT", title_color="white")
+        super().__init__()
         self.add_button("Recommencer", StateType.Play)
         self.add_button("Quitter", StateType.Quit, True)

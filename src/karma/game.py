@@ -207,7 +207,7 @@ class Game():
     def start_bad_ending(self) -> None:
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
-        self.start_cinematic(VIDEO_DIR / "Vidéo Fin Eclipse", StateType.GameOver)
+        self.start_cinematic(VIDEO_DIR / "Vidéo Bad Ending", StateType.GameOver)
 
     def start_explosion(self) -> None:
         self.explosion = ExplosionAnimation(
