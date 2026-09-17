@@ -41,7 +41,7 @@ class Scene:
     @staticmethod
     def drawScenes(game) -> None:
         # Rendu graphique
-        if game.state in (StateType.Menu, StateType.Credits, StateType.BadEnding, StateType.GoodEnding, StateType.HowToPlay):
+        if game.state in (StateType.Menu, StateType.Credits, StateType.BadEnding, StateType.MidEnding, StateType.GoodEnding, StateType.HowToPlay):
             MenuScene.drawMenuScene(game, game.state)
         elif game.state == StateType.Cinematic:
             game.cinematic_player.draw(game.screen)
