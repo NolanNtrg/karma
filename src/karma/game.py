@@ -44,6 +44,7 @@ class Game():
         self.state: StateType = StateType.Menu  # États possibles : "MENU", "PLAY", "PAUSE", "CINEMATIC"
         self.resolution: ResolutionType = ResolutionType.Base # États possibles : "BASE", "FULLSCREEN"
         self.cinematic_player: CinematicPlayer | None = None
+        self.next_cinematic_player: CinematicPlayer | None = None
         self.explosion: ExplosionAnimation | None = None
         self.cinematic_return_state: StateType = StateType.Menu
         self.paused_from_cinematic: bool = False
@@ -77,7 +78,7 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=8000.0, nightDuration=32000.0)
+        self.cycle_system = CycleSystem(dayDuration=1000.0, nightDuration=1000.0)
         self.building_system = BuildingsSystem()
 
         self.hud = HUD()
@@ -203,11 +204,22 @@ class Game():
         self.paused_from_cinematic = False
         self.paused_from_explosion = False
         self.cinematic_player = None
+        self.next_cinematic_player = None
 
     def start_bad_ending(self) -> None:
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
         self.start_cinematic(VIDEO_DIR / "Vidéo Bad Ending", StateType.GameOver)
+
+    def start_good_ending(self) -> None:
+        pygame.mixer.music.stop()
+        self.building_menu.isVisible = False
+        self.start_cinematic(VIDEO_DIR / "Vidéo Fin Eclipse", StateType.GameOver)
+        self.next_cinematic_player = CinematicPlayer(
+            VIDEO_DIR / "Vidéo Good Ending",
+            (SCREEN_WIDTH, SCREEN_HEIGHT),
+            fps=10.0,
+        )
 
     def start_explosion(self) -> None:
         self.explosion = ExplosionAnimation(
@@ -236,7 +248,12 @@ class Game():
 
     def update_cinematic(self, dt: float) -> None:
         if self.cinematic_player is not None and self.cinematic_player.update(dt):
-            self.finish_cinematic()
+            if self.next_cinematic_player is not None:
+                self.cinematic_player = self.next_cinematic_player
+                self.next_cinematic_player = None
+                self.cinematic_player.resume()
+            else:
+                self.finish_cinematic()
 
     def cinematic_handle_events(self, event: pygame.event.Event) -> None:
         action = self.cinematic_player.handle_event(event)
@@ -272,6 +289,7 @@ class Game():
 
     def finish_cinematic(self) -> None:
         self.cinematic_player = None
+        self.next_cinematic_player = None
         self.explosion = None
         self.paused_from_cinematic = False
         self.paused_from_explosion = False

@@ -33,9 +33,11 @@ class CinematicPlayer:
 		self.current_frame = 0
 		self.paused = False
 		self.finished = False
-		self.frames = self._load_frames(directory)
+		self.frame_paths = self._load_frame_paths(directory)
+		self.frames: list[pygame.Surface | None] = [None] * len(self.frame_paths)
+		self._ensure_frame(0)
 
-	def _load_frames(self, directory: Path) -> list[pygame.Surface]:
+	def _load_frame_paths(self, directory: Path) -> list[Path]:
 		paths = [
 			path
 			for path in directory.iterdir()
@@ -46,7 +48,11 @@ class CinematicPlayer:
 		if not paths:
 			raise ValueError(f"No image found in cinematic directory: {directory}")
 
-		return [pygame.image.load(path).convert() for path in paths]
+		return paths
+
+	def _ensure_frame(self, frame_index: int) -> None:
+		if self.frames[frame_index] is None:
+			self.frames[frame_index] = pygame.image.load(self.frame_paths[frame_index]).convert()
 
 	@staticmethod
 	def _frame_sort_key(path: Path) -> tuple[int, str]:
@@ -65,11 +71,14 @@ class CinematicPlayer:
 				self.current_frame = len(self.frames) - 1
 				self.finished = True
 				break
+			self._ensure_frame(self.current_frame)
 
 		return self.finished
 
 	def draw(self, screen: pygame.Surface) -> None:
+		self._ensure_frame(self.current_frame)
 		frame = self.frames[self.current_frame]
+		assert frame is not None
 		frame_ratio = frame.get_width() / frame.get_height()
 		screen_ratio = self.screen_size[0] / self.screen_size[1]
 
