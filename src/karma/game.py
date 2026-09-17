@@ -20,9 +20,11 @@ from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
     CAMERA_ZOOM,
+    DAY_DURATION,
     DEFAULT_VOLUME,
     ENEMY_SPAWN_INTERVAL,
     FPS,
+    NIGHT_DURATION,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
     TITLE,
@@ -74,7 +76,7 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=8000.0, nightDuration=8000.0)
+        self.cycle_system = CycleSystem(dayDuration=DAY_DURATION, nightDuration=NIGHT_DURATION)
         self.building_system = BuildingsSystem()
 
         self.hud = HUD()
@@ -138,24 +140,24 @@ class Game():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.state = StateType.Pause
-            elif event.key == pygame.K_5:
-                new_building = self.building_system.build(BuildingType.Driller, self.rm, amount=100)
+            elif event.key == pygame.K_3:  # Appuyer sur 3 pour construire une tourelle
+                new_building = self.building_system.build(BuildingType.Turret, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_4:
-                new_building = self.building_system.build(BuildingType.Plantation, self.rm, amount=100)
+            elif event.key == pygame.K_4:  # Appuyer sur 4 pour construire une plantation
+                new_building = self.building_system.build(BuildingType.Plantation, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_3:  # Appuyer sur 3 pour construire une tourelle 
-                new_building = self.building_system.build(BuildingType.Turret, self.rm, amount=100)
+            elif event.key == pygame.K_5:  # Appuyer sur 5 pour construire une foreuse
+                new_building = self.building_system.build(BuildingType.Driller, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_1:  # Appuyer sur 1 pour construire une centrale a charbon  
-                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm, amount=300)
+            elif event.key == pygame.K_1:  # Appuyer sur 1 pour construire une centrale a charbon
+                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
             elif event.key == pygame.K_2:  # Appuyer sur 2 pour construire un panneau solaire
-                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm, amount=300)
+                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
             else:
