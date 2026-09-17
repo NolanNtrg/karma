@@ -46,32 +46,32 @@ KARMA_SPAWN_INFLUENCE: float = 0.5
 
 # -bâtiments-
 # tourelle : défense active, payée en Énergie
-TURRET_HEALTH: int = 100
+TURRET_HEALTH: int = 600
 TURRET_COST: int = 100  # Énergie
 TURRET_ATTACK_RANGE: float = 350.0
 TURRET_ATTACK_DAMAGE: int = 30
 TURRET_ATTACK_INTERVAL: float = 600.0  # ms entre deux tirs
 
 # centrale à charbon : production continue (jour+nuit) mais baisse le karma
-COAL_PLANT_HEALTH: int = 200
+COAL_PLANT_HEALTH: int = 400
 COAL_PLANT_COST: int = 200  # Matière première
 COAL_PLANT_PRODUCTION_AMOUNT: int = 10  # Énergie par tick -> 5 Énergie/s
 COAL_PLANT_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # panneau solaire : production plus faible et limitée au jour mais augmente le karma
-SOLAR_PANEL_HEALTH: int = 150
+SOLAR_PANEL_HEALTH: int = 300
 SOLAR_PANEL_COST: int = 150  # Matière première
 SOLAR_PANEL_PRODUCTION_AMOUNT: int = 6  # Énergie par tick -> 3 Énergie/s
 SOLAR_PANEL_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # plantation : production de matière première limitée au jour mais augmente le karma
-PLANTATION_HEALTH: int = 150
+PLANTATION_HEALTH: int = 300
 PLANTATION_COST: int = 60  # Matière première
 PLANTATION_PRODUCTION_AMOUNT: int = 10  # Matière première par tick
 PLANTATION_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # foreuse : production continue (jour+nuit) de matière première mais baisse le karma
-DRILLER_HEALTH: int = 200
+DRILLER_HEALTH: int = 400
 DRILLER_COST: int = 100  # Matière première
 DRILLER_PRODUCTION_AMOUNT: int = 25  # Matière première par tick
 DRILLER_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks

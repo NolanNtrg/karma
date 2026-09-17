@@ -3,6 +3,7 @@ from pathlib import Path
 import pygame
 
 from karma.entities.buildings.base import Base
+from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
 from karma.entities.enemies.attacker import Attacker
 from karma.entities.sprite import SpriteAnimator
@@ -54,12 +55,13 @@ class Enemy(Attacker):
     def updateAnimation(self, dt: float, isMoving: bool, direction: pygame.Vector2) -> None:
         self.animator.update(dt, isMoving, direction)
 
-    def update(self, dt: float, walls: list[Wall], base: Base) -> None:
-        blockingWall = self.findClosestTarget(self.position, walls)
-        if blockingWall is not None:
+    def update(self, dt: float, walls: list[Wall], buildings: list[Building], base: Base) -> None:
+        # Attaque tout mur ou bâtiment rencontré sur le chemin vers la base
+        blockingTarget = self.findClosestTarget(self.position, [*walls, *buildings])
+        if blockingTarget is not None:
             damage = self.tryAttack(dt)
             if damage:
-                blockingWall.takeDamage(damage)
+                blockingTarget.takeDamage(damage)
             self.updateAnimation(dt, False, pygame.Vector2(0, 0))
             return
 

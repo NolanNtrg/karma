@@ -21,7 +21,7 @@ class PlayScene:
         self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
 
-        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.cycle_system.currentDay)
+        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.buildings, self.cycle_system.currentDay)
 
         for building in self.buildings:
             if isinstance(building, Turret):
