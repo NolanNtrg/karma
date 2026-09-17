@@ -8,6 +8,7 @@ from karma.entities.buildings.solar_panel import SolarPanel
 
 class PlayScene:
 
+    @staticmethod
     def updatePlayScene(self, dt: float) -> None:
         if self.state != StateType.Play:
             return
@@ -56,7 +57,7 @@ class PlayScene:
                 pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
                 pygame.mixer.music.play(-1)
             else:
-                pygame.mixer.music.load(SOUNDS_DIR / "BadAtmosphere.wav")
+                pygame.mixer.music.load(SOUNDS_DIR / "NightMusic.mp3")
                 pygame.mixer.music.play(-1)
 
             cinematic_directory = (
@@ -67,7 +68,6 @@ class PlayScene:
             self.start_cinematic(cinematic_directory, StateType.Play)
 
     def drawPlayScene(self) -> None:
-        self.game_surface.fill(COLOR_BG)
         self.currentMap.render(self.game_surface, self.camera)
         self.base.draw(self.game_surface, self.camera)
 
