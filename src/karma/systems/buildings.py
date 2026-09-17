@@ -40,19 +40,23 @@ class BuildingsSystem:
             else:
                 print("[BUILD] Le joueur est sorti de la zone de construction.")
 
-    def build(self,building_type : BuildingType, ressource_manager : RessourceManager , amount : int) :
-        if self.currentSlot != None :
-            if self.isSlotFree(self.currentSlot["id"]) :
-                if ressource_manager.hasEnough(RessourceType.RawMaterial, amount):
-                    ressource_manager.consume(RessourceType.RawMaterial, amount)
+    def build(self, building_type: BuildingType, ressource_manager: RessourceManager, amount: int):
+        if self.currentSlot is not None:
+            if self.isSlotFree(self.currentSlot["id"]):
+                cost_type = RessourceType.Energy if building_type == BuildingType.Turret else RessourceType.RawMaterial
+
+                if ressource_manager.hasEnough(cost_type, amount):
+                    ressource_manager.consume(cost_type, amount)
                     slot_center = self.currentSlot["rect"].center
                     position = pygame.Vector2(slot_center[0] - 32, slot_center[1] - 32)
-                    if building_type == BuildingType.Turret : 
-                        building = Turret(position,health=100,energyCost=10,attackRange=150.0,attackDamage=25,attackInterval=1000.0)
-                    elif building_type == BuildingType.CoalPlant : 
-                        building = CoalPlant(position, 200, 100, 200, 2)
-                    elif building_type == BuildingType.SolarPanel : 
-                        building = SolarPanel(position, 200, 100, 200, 2)
+
+                    if building_type == BuildingType.Turret: 
+                        building = Turret(position, health=100, energyCost=10, attackRange=150.0, attackDamage=25, attackInterval=1000.0)
+                    elif building_type == BuildingType.CoalPlant: 
+                        building = CoalPlant(position, health=200, energyCost=100, productionAmount=25, productionInterval=2000.0)
+                    elif building_type == BuildingType.SolarPanel: 
+                        building = SolarPanel(position, health=150, energyCost=100, productionAmount=10, productionInterval=2000.0)
+
                     self.dictOccupedSlot[self.currentSlot["id"]] = building
                     return building
                 

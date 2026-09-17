@@ -1,26 +1,44 @@
 import pygame
 
-from karma.enums import StateType
+from karma.enums import RessourceType, StateType
 from karma.entities.buildings.turret import Turret
 from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
 from karma.entities.buildings.energy_producer import EnergyProducer
+from karma.entities.buildings.solar_panel import SolarPanel
 
 class PlayScene:
 
     def updatePlayScene(self, dt: float) -> None:
         if self.state != StateType.Play:
             return
-        self.player.update(dt, self.combat_system.enemies, self.camera)
+        self.player.update(
+            dt,
+            self.combat_system.enemies,
+            self.camera,
+            (self.currentMap.width, self.currentMap.height),
+        )
         self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
 
-        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
+        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.cycle_system.currentDay)
 
         for building in self.buildings :
             if isinstance(building, Turret):
                 building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
             elif isinstance(building, EnergyProducer):
                 building.update(dt, self.cycle_system.isDay)
+                if isinstance(building, SolarPanel) and not self.cycle_system.isDay:
+                    continue
+                energy = building.tryProduce(dt)
+                if energy > 0:
+                    self.rm.add(RessourceType.Energy, energy)
+
+        karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
+        self.rm.applyKarmaDelta(karmaDelta)
+
+        if self.base.isDestroyed() and not self.game_over:
+            self.game_over = True
+            self.final_karma = self.rm.getStock(RessourceType.Karma)
 
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)

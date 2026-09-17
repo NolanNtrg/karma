@@ -24,9 +24,17 @@ KARMA_MIN: float = -1000.0
 KARMA_MAX: float = 1000.0
 
 ENERGY_START = 100
-RAW_MATERIAL_START = 500
+RAW_MATERIAL_START = 2000
 
 BASE_HEALTH: int = 1000
 
-# Délai en millisecondes entre deux apparitions d'ennemis pendant la nuit
+# délai en ms entre deux apparitions d'ennemis
 ENEMY_SPAWN_INTERVAL: float = 1500.0
+# dlai minimum autorisé (pas d'exceptions)
+ENEMY_SPAWN_INTERVAL_MIN: float = 300.0
+# Réduction du délai de spawn par jour écoulé (33% par jour)
+ENEMY_DAY_DIFFICULTY_STEP: float = 0.33
+# Le délai ne descend jamais sous ce ratio du délai de base à cause des jours seuls
+ENEMY_DAY_DIFFICULTY_FLOOR: float = 0.4
+# influence du karma sur le délai de spawn
+KARMA_SPAWN_INFLUENCE: float = 0.5

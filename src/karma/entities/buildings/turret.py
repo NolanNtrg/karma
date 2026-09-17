@@ -51,7 +51,7 @@ class Turret(Building):
         self.updateSprite(dt, isDay)
         self.shooter.updateBullets(dt, enemies, camera)
 
-        if not self.isOperational():
+        if self.isDestroyed():
             return
 
         target, damage = self.attacker.tryAttackClosest(self.getCenter(), enemies, dt)

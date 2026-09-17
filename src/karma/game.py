@@ -44,6 +44,8 @@ class Game():
         self.cinematic_player: CinematicPlayer | None = None
         self.cinematic_return_state: StateType = StateType.Menu
         self.paused_from_cinematic: bool = False
+        self.game_over: bool = False
+        self.final_karma: float | None = None
 
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
         self.main_menu = MainMenu(self.volume)
