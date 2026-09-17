@@ -43,6 +43,7 @@ from karma.settings import (
 class Game():
 
     lobotomy_sound = None
+    explosion_sound = None
 
     def __init__(self) -> None:
         # Initialisation de Pygame et de la fenêtre du jeu
@@ -103,6 +104,8 @@ class Game():
 
         if Game.lobotomy_sound is None:
             Game.lobotomy_sound = pygame.mixer.Sound(SOUNDS_DIR / "LOBOTOMY.mp3")
+        if Game.explosion_sound is None:
+            Game.explosion_sound = pygame.mixer.Sound(SOUNDS_DIR / "explosion.mp3")
 
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
@@ -304,6 +307,7 @@ class Game():
             ASSETS_DIR / "Effects" / "big-explosion.png",
             self.base.position,
         )
+        Game.explosion_sound.play()
         self.paused_from_explosion = True
         self.state = StateType.Pause
 

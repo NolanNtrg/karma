@@ -1,3 +1,5 @@
+from karma.settings import DAY_DURATION, NIGHT_DURATION
+
 class CycleSystem:
     # Gestion du temps et du cycle jour / nuit.
 
@@ -10,7 +12,7 @@ class CycleSystem:
             cls._instance._initialized = False
         return cls._instance
     
-    def __init__(self, dayDuration: float = 4000.0, nightDuration: float = 4000.0) -> None:
+    def __init__(self, dayDuration: float = DAY_DURATION, nightDuration: float = NIGHT_DURATION) -> None:
         if self._initialized :
             return
         self.isDay: bool = True
