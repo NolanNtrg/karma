@@ -68,13 +68,13 @@ SOLAR_PANEL_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 # plantation : production de matière première limitée au jour mais augmente le karma
 PLANTATION_HEALTH: int = 300
 PLANTATION_COST: int = 60  # Matière première
-PLANTATION_PRODUCTION_AMOUNT: int = 15  # Matière première par tick
+PLANTATION_PRODUCTION_AMOUNT: int = 10  # Matière première par tick -> 5 Matière première/s
 PLANTATION_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # foreuse : production continue (jour+nuit) de matière première mais baisse le karma
 DRILLER_HEALTH: int = 400
 DRILLER_COST: int = 100  # Matière première
-DRILLER_PRODUCTION_AMOUNT: int = 25  # Matière première par tick
+DRILLER_PRODUCTION_AMOUNT: int = 17  # Matière première par tick -> 8.5 Matière première/s
 DRILLER_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # mur : bloque/canalise les ennemis, placé librement sur la carte
