@@ -7,6 +7,7 @@ from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
 from karma.entities.enemies.attacker import Attacker
 from karma.entities.sprite import SpriteAnimator
+from karma.settings import ENEMY_ATTACK_RANGE
 
 
 class Enemy(Attacker):
@@ -23,7 +24,7 @@ class Enemy(Attacker):
         spriteSheetPath: Path | None,
         idleFrameCoords: list[tuple[int, int]] | None = None,
         walkFrameCoords: list[tuple[int, int]] | None = None,
-        attackRange: float = 4.0,
+        attackRange: float = ENEMY_ATTACK_RANGE,
     ) -> None:
         super().__init__(position, health, attackRange, attackDamage, attackInterval)
         self.target: pygame.Vector2 = target

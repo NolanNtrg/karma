@@ -1,5 +1,6 @@
 import pygame
 from karma.entities.buildings.building import Building
+from karma.entities.buildings.wall import Wall
 from karma.entities.player.player import Player
 from karma.enums import RessourceType
 from karma.systems.resourceManager import RessourceManager
@@ -31,7 +32,10 @@ from karma.settings import (
     TURRET_ATTACK_RANGE,
     TURRET_COST,
     TURRET_HEALTH,
-    SOUNDS_DIR
+    SOUNDS_DIR,
+    WALL_COST,
+    WALL_HEALTH,
+    WALL_SIZE,
 )
 
 BUILDING_COSTS: dict[BuildingType, int] = {
@@ -40,6 +44,7 @@ BUILDING_COSTS: dict[BuildingType, int] = {
     BuildingType.SolarPanel: SOLAR_PANEL_COST,
     BuildingType.Plantation: PLANTATION_COST,
     BuildingType.Driller: DRILLER_COST,
+    BuildingType.Wall: WALL_COST,
 }
 
 
@@ -53,6 +58,7 @@ class BuildingsSystem:
             BuildingsSystem.building_sound = pygame.mixer.Sound(SOUNDS_DIR / "building-sound.mp3")
         self.currentSlot : dict | None = None
         self.dictOccupedSlot : dict[int, Building] = {}
+        self.occupiedWallCells: set[tuple[int, int]] = set()
 
     def isSlotFree(self, slotId):
         return slotId not in self.dictOccupedSlot
@@ -126,4 +132,44 @@ class BuildingsSystem:
                     self.dictOccupedSlot[self.currentSlot["id"]] = building
                     BuildingsSystem.building_sound.play()
                     return building
+
+    def buildWallAt(
+        self,
+        worldPosition: pygame.Vector2,
+        ressource_manager: RessourceManager,
+        forbiddenRects: list[pygame.Rect],
+    ):
+        # Un mur se place librement sur une grille, sauf sur la base ou un slot prédéfini.
+        cell = (
+            int(worldPosition.x // WALL_SIZE) * WALL_SIZE,
+            int(worldPosition.y // WALL_SIZE) * WALL_SIZE,
+        )
+        if cell in self.occupiedWallCells:
+            return None
+
+        wallRect = pygame.Rect(cell[0], cell[1], WALL_SIZE, WALL_SIZE)
+        if any(wallRect.colliderect(rect) for rect in forbiddenRects):
+            return None
+
+        if not ressource_manager.hasEnough(RessourceType.RawMaterial, WALL_COST):
+            return None
+
+        ressource_manager.consume(RessourceType.RawMaterial, WALL_COST)
+        wall = Wall(pygame.Vector2(cell[0], cell[1]), health=WALL_HEALTH, energyCost=WALL_COST)
+        self.occupiedWallCells.add(cell)
+        return wall
+
+    def removeDestroyed(self, walls: list[Wall]) -> None:
+        # Libère le slot/la case des bâtiments et murs détruits pour permettre de reconstruire dessus.
+        self.dictOccupedSlot = {
+            slot_id: building
+            for slot_id, building in self.dictOccupedSlot.items()
+            if not building.isDestroyed()
+        }
+        destroyedCells = {
+            (int(wall.position.x), int(wall.position.y))
+            for wall in walls
+            if wall.isDestroyed()
+        }
+        self.occupiedWallCells -= destroyedCells
 

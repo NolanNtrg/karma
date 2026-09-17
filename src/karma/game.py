@@ -167,7 +167,7 @@ class Game():
                 new_building = self.building_system.build(BuildingType.CoalPlant, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_3: 
+            elif event.key == pygame.K_3:
                 new_building = self.building_system.build(BuildingType.SolarPanel, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
@@ -178,6 +178,12 @@ class Game():
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.paused_from_cinematic = False
             self.state = StateType.Pause
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+            world_position = self.camera.screenToWorld(pygame.Vector2(event.pos))
+            forbidden_rects = [self.base.rect] + [slot["rect"] for slot in self.currentMap.get_build_slots()]
+            new_wall = self.building_system.buildWallAt(world_position, self.rm, forbidden_rects)
+            if new_wall:
+                self.walls.append(new_wall)
 
     def pause_handle_events(self, event: pygame.event.Event) -> None:
         if self.paused_from_cinematic:
@@ -232,6 +238,7 @@ class Game():
         self.cycle_system.currentDay = 1
         self.building_system.currentSlot = None
         self.building_system.dictOccupedSlot.clear()
+        self.building_system.occupiedWallCells.clear()
         self.rm.stocks.update({
             RessourceType.Energy: ENERGY_START,
             RessourceType.RawMaterial: RAW_MATERIAL_START,
