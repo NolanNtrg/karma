@@ -52,6 +52,7 @@ class MainMenu(Menu):
     def __init__(self, initial_volume: float = 1.0) -> None:
         super().__init__(title_color="white")
         self.add_button("Jouer", StateType.Play)
+        self.add_button("Comment jouer", StateType.HowToPlay)
         vol_text = f"Volume : {int(initial_volume * 100)}%" if initial_volume > 0 else "Volume : Muet"
         self.volume_button = self.add_button(vol_text, VolumeAction.Cycle)
         self.add_button("Plein écran", ResolutionType.Fullscreen)
@@ -71,6 +72,7 @@ class PauseMenu(Menu):
         self.overlay.fill((0, 0, 0))
         
         self.add_button("Reprendre", StateType.Play)
+        self.add_button("Comment jouer", StateType.HowToPlay) 
         vol_text = f"Volume : {int(initial_volume * 100)}%" if initial_volume > 0 else "Volume : Muet"
         self.volume_button = self.add_button(vol_text, VolumeAction.Cycle)
         self.add_button("Menu Principal", StateType.Menu)
@@ -88,14 +90,25 @@ class PauseMenu(Menu):
 class CreditsMenu(Menu):
     def __init__(self) -> None:
         super().__init__(title_color="white")
-        self.add_text("Menus, joueur, système de ressources créés par Nolan")
-        self.add_text("Map, sound design, cinématiques et lore créés par Macéo")
-        self.add_text("Assets, bâtiments, caméra créés par Enzo")
-        self.add_text("Base, architecture, ennemis créés par Gabriel")
-        self.add_text("Cycle d'éclipse, musiques, placement des bâtiments créés par Paul")
+        self.font = pygame.font.Font(ASSETS_DIR / "fonts" / "Pixelify_Sans" / "static" / "PixelifySans-Bold.ttf", 20)
+        self.add_text("Nolan : Chef de Projet")
+        self.add_text("Paul : Sound design et HUD (heads-up display)")
+        self.add_text("Gabriel : Responsable technique et Conception Archi")
+        self.add_text("Enzo : Script et création d’Assets")
+        self.add_text("Macéo : Maître du temps et map design")
+        self.add_text("Assets : Matt Walkden — Robot Warfare Pack")
+        self.add_text("Musiques : Acromusic")
+        self.add_text("Bruitages : MyInstants.com")
+        self.add_text("Cutscenes : Gemini 3.8 Flash")
+        self.add_text("Design des bâtiments : GPT 5.6 Sol")
         self.add_text("Merci d'avoir joué !")
         self.add_button("Retour", StateType.Menu, True)
 
+    def add_text(self, text: str) -> None:
+        surface = self.font.render(text, False, "white")
+        y = 205 + len(self.texts) * 35
+        rect = surface.get_rect(centerx=SCREEN_WIDTH // 2, top=y)
+        self.texts.append((surface, rect))
 class GameOverMenu(Menu):
     def __init__(self) -> None:
         super().__init__()

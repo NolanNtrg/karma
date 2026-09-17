@@ -67,6 +67,9 @@ class Game():
         self.main_menu = MainMenu(self.volume)
         self.pause_menu = PauseMenu(self.volume)
         self.credits_menu = CreditsMenu()
+        self.game_over_menu = GameOverMenu()
+        self.how_to_play_index: int = 0
+        self.how_to_play_return_state: StateType = StateType.Menu 
 
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
@@ -114,6 +117,8 @@ class Game():
                 self.pause_handle_events(event)
             elif self.state == StateType.Credits:
                 self.credits_handle_events(event)
+            elif self.state == StateType.HowToPlay:
+                self.how_to_play_handle_events(event)
             elif self.state in (StateType.BadEnding, StateType.GoodEnding):
                 self.game_over_handle_events(event)
             elif self.state == StateType.Cinematic:
@@ -145,6 +150,10 @@ class Game():
             self.state = action
             self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
         elif action == StateType.Credits:
+            self.state = action
+        elif action == StateType.HowToPlay:
+            self.how_to_play_index = 0
+            self.how_to_play_return_state = StateType.Menu
             self.state = action
         elif action == StateType.Quit:
             self.running = False
@@ -203,6 +212,10 @@ class Game():
                 pygame.display.toggle_fullscreen()
             elif action == VolumeAction.Cycle:
                 self.cycle_volume()
+            elif action == StateType.HowToPlay:                     # <-- AJOUTER CES 4 LIGNES
+                self.how_to_play_index = 0
+                self.how_to_play_return_state = StateType.Pause
+                self.state = action
             elif action == StateType.Quit:
                 self.running = False
             elif action == StateType.Play or action == StateType.Menu:
@@ -212,6 +225,15 @@ class Game():
         action = self.credits_menu.handle_event(event)
         if action == StateType.Menu:
             self.state = action
+
+    def how_to_play_handle_events(self, event: pygame.event.Event) -> None:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.state = self.how_to_play_return_state
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.how_to_play_index == 0:
+                self.how_to_play_index = 1
+            else:
+                self.state = self.how_to_play_return_state
 
     def game_over_handle_events(self, event: pygame.event.Event) -> None:
         action = self.game_over_menu.handle_event(event)

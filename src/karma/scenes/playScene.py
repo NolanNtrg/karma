@@ -8,68 +8,68 @@ from karma.entities.buildings.solar_panel import SolarPanel
 
 class PlayScene:
 
-    def updatePlayScene(self, dt: float) -> None:
-        if self.state != StateType.Play:
+    @staticmethod
+    def updatePlayScene(game, dt: float) -> None:
+        if game.state != StateType.Play:
             return
-        self.player.update(
+        game.player.update(
             dt,
-            self.combat_system.enemies,
-            self.camera,
-            (self.dayMap.width, self.dayMap.height),
+            game.combat_system.enemies,
+            game.camera,
+            (game.dayMap.width, game.dayMap.height),
         )
-        # si la souris est cliquée OU maintenu, on fait tirer le joueur vers la position de la souris
         if pygame.mouse.get_pressed()[0]:
-            self.player.shoot(self.camera.screenToWorld(pygame.Vector2(pygame.mouse.get_pos())))
-        self.base.update(dt, self.cycle_system.isDay)
-        self.camera.update(self.player.getCenter())
+            game.player.shoot(game.camera.screenToWorld(pygame.Vector2(pygame.mouse.get_pos())))
+        game.base.update(dt, game.cycle_system.isDay)
+        game.camera.update(game.player.getCenter())
 
-        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.buildings, self.cycle_system.currentDay)
+        game.combat_system.update(dt, game.cycle_system.isDay, game.base, game.walls, game.buildings, game.cycle_system.currentDay)
 
-        self.building_system.removeDestroyed(self.walls)
+        game.building_system.removeDestroyed(game.walls)
 
         # mise à jour des bâtiments, suppression de ceux détruits
-        self.buildings = [building for building in self.buildings if not building.isDestroyed()]
+        game.buildings = [building for building in game.buildings if not building.isDestroyed()]
 
         # mise à jour des murs
-        self.walls = [wall for wall in self.walls if not wall.isDestroyed()]
+        game.walls = [wall for wall in game.walls if not wall.isDestroyed()]
 
-        if self.base.isDestroyed():
-            self.start_explosion()
+        if game.base.isDestroyed():
+            game.start_explosion()
             return
 
-        for building in self.buildings:
+        for building in game.buildings:
             if isinstance(building, Turret):
-                building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
+                building.update(dt, game.combat_system.enemies, game.camera, game.cycle_system.isDay)
             elif isinstance(building, RessourcesProducer):
-                building.update(dt, self.cycle_system.isDay)
-                if building.requiresDaylight and not self.cycle_system.isDay:
+                building.update(dt, game.cycle_system.isDay)
+                if building.requiresDaylight and not game.cycle_system.isDay:
                     continue
                 produced = building.tryProduce(dt)
                 if produced > 0:
-                    self.rm.add(building.resourceType, produced)
+                    game.rm.add(building.resourceType, produced)
 
-        for wall in self.walls:
-            wall.update(self.cycle_system.isDay)
+        for wall in game.walls:
+            wall.update(game.cycle_system.isDay)
 
-        karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
-        self.rm.applyKarmaDelta(karmaDelta)
+        karmaDelta = sum(building.getKarmaImpact(dt) for building in game.buildings)
+        game.rm.applyKarmaDelta(karmaDelta)
 
-        build_slots = self.currentMap.get_build_slots()
-        self.building_system.update(self.player, build_slots)
+        build_slots = game.currentMap.get_build_slots()
+        game.building_system.update(game.player, build_slots)
 
-        slot = self.building_system.currentSlot
-        if slot is not None and self.building_system.isSlotFree(slot["id"]):
-            self.building_menu.isVisible= True
+        slot = game.building_system.currentSlot
+        if slot is not None and game.building_system.isSlotFree(slot["id"]):
+            game.building_menu.isVisible= True
         else:
-            self.building_menu.isVisible = False
+            game.building_menu.isVisible = False
             
-        if self.cycle_system.update(dt):
-            self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
-            if self.cycle_system.isDay:
-                self.combat_system.enemies.clear()
-                self.base.heal(BASE_NIGHT_HEAL)
-                if self.cycle_system.currentDay >= 4:
-                    self.start_good_ending()
+        if game.cycle_system.update(dt):
+            game.currentMap = game.dayMap if game.cycle_system.isDay else game.nightMap
+            if game.cycle_system.isDay:
+                game.combat_system.enemies.clear()
+                game.base.heal(BASE_NIGHT_HEAL)
+                if game.cycle_system.currentDay >= 4:
+                    game.start_good_ending()
                     return
                 pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
                 pygame.mixer.music.play(-1)
@@ -79,43 +79,44 @@ class PlayScene:
 
             cinematic_directory = (
                 VIDEO_DIR / "Vidéo Fin Eclipse"
-                if self.cycle_system.isDay
+                if game.cycle_system.isDay
                 else VIDEO_DIR / "Vidéo Début Eclipse"
             )
-            self.start_cinematic(cinematic_directory, StateType.Play)
+            game.start_cinematic(cinematic_directory, StateType.Play)
 
-    def drawPlayScene(self) -> None:
-        self.currentMap.render(self.game_surface, self.camera)
-        if not self.paused_from_explosion:
-            self.base.draw(self.game_surface, self.camera)
+    @staticmethod
+    def drawPlayScene(game) -> None:
+        game.currentMap.render(game.game_surface, game.camera)
+        if not game.paused_from_explosion:
+            game.base.draw(game.game_surface, game.camera)
 
-        for building in self.buildings:
-                building.draw(self.game_surface, self.camera)
+        for building in game.buildings:
+                building.draw(game.game_surface, game.camera)
 
-        for wall in self.walls:
-                wall.draw(self.game_surface, self.camera)
+        for wall in game.walls:
+                wall.draw(game.game_surface, game.camera)
 
-        self.combat_system.draw(self.game_surface, self.camera)
-        self.player.draw(self.game_surface, self.camera)
-        if self.paused_from_explosion and self.explosion is not None:
-            self.explosion.draw(self.game_surface, self.camera)
-        pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
+        game.combat_system.draw(game.game_surface, game.camera)
+        game.player.draw(game.game_surface, game.camera)
+        if game.paused_from_explosion and game.explosion is not None:
+            game.explosion.draw(game.game_surface, game.camera)
+        pygame.transform.scale(game.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), game.screen)
 
-        self.hud.draw(
-            self.screen,
-            self.cycle_system.currentDay,
-            self.cycle_system.isDay,
-            self.cycle_system.cycleTimer,
-            self.cycle_system.currentDuration(),
-            self.base.health,
-            self.base.max_health,
+        game.hud.draw(
+            game.screen,
+            game.cycle_system.currentDay,
+            game.cycle_system.isDay,
+            game.cycle_system.cycleTimer,
+            game.cycle_system.currentDuration(),
+            game.base.health,
+            game.base.max_health,
         )
 
-        if self.cheat_system.godmode:
-            text = self.hud.fontTimer.render("GODMODE", False, "yellow")
-            self.screen.blit(text, (20, 90))
+        if game.cheat_system.godmode:   
+            text = game.hud.fontTimer.render("GODMODE", False, "yellow")
+            game.screen.blit(text, (20, 90))
 
-        self.building_menu.draw(self.screen)
+        game.building_menu.draw(game.screen)
 
-        if self.state == StateType.Pause and not self.paused_from_explosion:
-            self.pause_menu.draw(self.screen)
+        if game.state == StateType.Pause and not game.paused_from_explosion:
+            game.pause_menu.draw(game.screen)

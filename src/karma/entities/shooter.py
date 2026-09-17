@@ -14,6 +14,7 @@ class Shooter:
     def __init__(self, bulletImage: pygame.Surface) -> None:
         if Shooter.bullet_sound is None:
                 Shooter.bullet_sound = pygame.mixer.Sound(SOUNDS_DIR / "gun-sound.mp3")
+                Shooter.bullet_sound.set_volume(0.1)
         self.bulletImage: pygame.Surface = bulletImage
         self.bullets: list[Bullet] = []
 

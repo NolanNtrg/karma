@@ -22,7 +22,7 @@ class StateType(Enum):
     GameOver = auto()
     BadEnding = auto()
     GoodEnding = auto()
-
+    HowToPlay = auto()
 class BuildingType(Enum):
     Turret = auto()
     CoalPlant = auto()
