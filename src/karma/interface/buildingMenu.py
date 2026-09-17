@@ -6,7 +6,7 @@ class BuildingMenu:
     def __init__(self) -> None:
         raw_image = pygame.image.load(ASSETS_DIR / "hud" / "menu_building.png").convert_alpha()
 
-        self.image = pygame.transform.scale_by(raw_image, 0.35)
+        self.image = pygame.transform.scale_by(raw_image, 0.8)
 
         self.rect = self.image.get_rect(midbottom=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 10))
 
