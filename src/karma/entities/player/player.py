@@ -13,12 +13,12 @@ class Player(Entity):
 
     # constantes pour le tir du joueur
     ATTACK_DAMAGE = 40
-    ATTACK_INTERVAL = 250.0  # millisecondes entre deux tirs
-    BULLET_SPEED = 0.5  # pixels par milliseconde
+    ATTACK_INTERVAL = 250.0  # ms entre deux tirs
+    BULLET_SPEED = 0.5  # pixels par ms
 
     BULLET_SIZE = (16, 16)
-    MUZZLE_FLASH_DURATION = 100.0  # millisecondes d'affichage de la case muzzle flash
-    MUZZLE_FLASH_FRAME = (3, 0)  # case du tileset SquadLeader représentant le tir
+    MUZZLE_FLASH_DURATION = 100.0  # ms d'affichage de la case muzzle flash
+    MUZZLE_FLASH_FRAME = (3, 0)  # case du tileset astronaute représentant le tir
 
     _instance = None
 
