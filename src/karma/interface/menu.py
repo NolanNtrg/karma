@@ -50,6 +50,7 @@ class MainMenu(Menu):
     def __init__(self, initial_volume: float = 1.0) -> None:
         super().__init__(title_color="white")
         self.add_button("Jouer", StateType.Play)
+        self.add_button("Comment jouer", StateType.HowToPlay)
         vol_text = f"Volume : {int(initial_volume * 100)}%" if initial_volume > 0 else "Volume : Muet"
         self.volume_button = self.add_button(vol_text, VolumeAction.Cycle)
         self.add_button("Plein écran", ResolutionType.Fullscreen)
@@ -69,6 +70,7 @@ class PauseMenu(Menu):
         self.overlay.fill((0, 0, 0))
         
         self.add_button("Reprendre", StateType.Play)
+        self.add_button("Comment jouer", StateType.HowToPlay) 
         vol_text = f"Volume : {int(initial_volume * 100)}%" if initial_volume > 0 else "Volume : Muet"
         self.volume_button = self.add_button(vol_text, VolumeAction.Cycle)
         self.add_button("Menu Principal", StateType.Menu)

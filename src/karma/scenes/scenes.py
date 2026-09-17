@@ -24,7 +24,7 @@ class Scene:
         Scene.current_music = music
 
     def updateScenes(self, dt: float) -> None:
-        if self.state in (StateType.Menu, StateType.Credits):
+        if self.state in (StateType.Menu, StateType.Credits, StateType.HowToPlay):
             Scene.playMusic(MusicType.Menu)
         elif self.state in (StateType.Play, StateType.Pause, StateType.Cinematic):
             track = MusicType.Day if self.cycle_system.isDay else MusicType.Night
@@ -39,7 +39,7 @@ class Scene:
 
     def drawScenes(self) -> None:
         # Rendu graphique
-        if self.state in (StateType.Menu, StateType.Credits, StateType.BadEnding, StateType.GoodEnding):
+        if self.state in (StateType.Menu, StateType.Credits, StateType.BadEnding, StateType.GoodEnding, StateType.HowToPlay):
             MenuScene.drawMenuScene(self, self.state)
         elif self.state == StateType.Cinematic:
             self.cinematic_player.draw(self.screen)
