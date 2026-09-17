@@ -74,7 +74,7 @@ PLANTATION_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 # foreuse : production continue (jour+nuit) de matière première mais baisse le karma
 DRILLER_HEALTH: int = 400
 DRILLER_COST: int = 100  # Matière première
-DRILLER_PRODUCTION_AMOUNT: int = 17  # Matière première par tick -> 8.5 Matière première/s
+DRILLER_PRODUCTION_AMOUNT: int = 20  # Matière première par tick -> 10 Matière première/s
 DRILLER_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # mur : bloque/canalise les ennemis, placé librement sur la carte
