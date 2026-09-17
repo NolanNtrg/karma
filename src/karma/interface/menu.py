@@ -4,7 +4,7 @@ import pygame
 from karma.enums import StateType, ResolutionType, VolumeAction
 from karma.interface.button import Button
 from karma.settings import SCREEN_HEIGHT, SCREEN_WIDTH, ASSETS_DIR
-
+from karma.systems.scoreManager import ScoreManager
 
 class Menu:
     # Classe mère pour tous les menus du jeu
@@ -97,5 +97,7 @@ class CreditsMenu(Menu):
 class GameOverMenu(Menu):
     def __init__(self) -> None:
         super().__init__()
+        score: int = int(ScoreManager.calculateScore())
         self.add_button("Recommencer", StateType.Play)
+        self.add_text("Score : " + str(score))
         self.add_button("Quitter", StateType.Quit, True)

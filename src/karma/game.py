@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from karma.scenes.scenes import Scene
+from karma.systems.scoreManager import ScoreManager
 from karma.enums import ResolutionType, StateType, BuildingType, VolumeAction
 from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
@@ -64,7 +65,6 @@ class Game():
         self.main_menu = MainMenu(self.volume)
         self.pause_menu = PauseMenu(self.volume)
         self.credits_menu = CreditsMenu()
-        self.game_over_menu = GameOverMenu()
 
         # gestion de la map
         self.dayMap = MapManager(ASSETS_DIR / "dayMap.tmx")
@@ -220,6 +220,7 @@ class Game():
             self.running = False
 
     def reset_game(self) -> None:
+        ScoreManager.resetScore()
         v_slot = self.dayMap.get_vaisseau_slot()
         v_pos = pygame.Vector2(v_slot.x, v_slot.y)
         self.player.position = pygame.Vector2(v_slot.x + 16, v_slot.y + 80)
@@ -250,11 +251,13 @@ class Game():
         self.next_cinematic_player = None
 
     def start_bad_ending(self) -> None:
+        self.game_over_menu = GameOverMenu()
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
         self.start_cinematic(VIDEO_DIR / "Vidéo Bad Ending", StateType.BadEnding)
 
     def start_good_ending(self) -> None:
+        self.game_over_menu = GameOverMenu()
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
         self.start_cinematic(VIDEO_DIR / "Vidéo Fin Eclipse", StateType.GoodEnding)
