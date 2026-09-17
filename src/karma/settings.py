@@ -23,8 +23,8 @@ KARMA_START: float = 0.0
 KARMA_MIN: float = -1000.0
 KARMA_MAX: float = 1000.0
 
-ENERGY_START = 100
-RAW_MATERIAL_START = 2000
+ENERGY_START = 0
+RAW_MATERIAL_START = 100
 
 BASE_HEALTH: int = 1000
 
@@ -54,19 +54,19 @@ TURRET_ATTACK_INTERVAL: float = 600.0  # ms entre deux tirs
 
 # centrale à charbon : production continue (jour+nuit) mais baisse le karma
 COAL_PLANT_HEALTH: int = 200
-COAL_PLANT_COST: int = 300  # Matière première
+COAL_PLANT_COST: int = 200  # Matière première
 COAL_PLANT_PRODUCTION_AMOUNT: int = 10  # Énergie par tick -> 5 Énergie/s
 COAL_PLANT_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # panneau solaire : production plus faible et limitée au jour mais augmente le karma
 SOLAR_PANEL_HEALTH: int = 150
-SOLAR_PANEL_COST: int = 300  # Matière première
+SOLAR_PANEL_COST: int = 150  # Matière première
 SOLAR_PANEL_PRODUCTION_AMOUNT: int = 6  # Énergie par tick -> 3 Énergie/s
 SOLAR_PANEL_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
 # plantation : production de matière première limitée au jour mais augmente le karma
 PLANTATION_HEALTH: int = 150
-PLANTATION_COST: int = 100  # Matière première
+PLANTATION_COST: int = 60  # Matière première
 PLANTATION_PRODUCTION_AMOUNT: int = 10  # Matière première par tick
 PLANTATION_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
