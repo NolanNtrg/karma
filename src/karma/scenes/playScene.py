@@ -1,30 +1,49 @@
 import pygame
 
-from karma.enums import StateType
+from karma.enums import RessourceType, StateType
 from karma.entities.buildings.turret import Turret
 from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
-from karma.entities.buildings.energy_producer import EnergyProducer
+from karma.entities.buildings.ressourcesProducer import RessourcesProducer
+
 
 class PlayScene:
 
+    @staticmethod
     def updatePlayScene(self, dt: float) -> None:
         if self.state != StateType.Play:
             return
-        self.player.update(dt, self.combat_system.enemies, self.camera)
+        self.player.update(
+            dt,
+            self.combat_system.enemies,
+            self.camera,
+            (self.dayMap.width, self.dayMap.height),
+        )
         self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
 
-        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls)
+        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.cycle_system.currentDay)
 
         if self.base.isDestroyed():
             self.start_explosion()
             return
 
-        for building in self.buildings :
+        for building in self.buildings:
             if isinstance(building, Turret):
                 building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
-            elif isinstance(building, EnergyProducer):
+            elif isinstance(building, RessourcesProducer):
                 building.update(dt, self.cycle_system.isDay)
+                if building.requiresDaylight and not self.cycle_system.isDay:
+                    continue
+                produced = building.tryProduce(dt)
+                if produced > 0:
+                    self.rm.add(building.resourceType, produced)
+
+        karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
+        self.rm.applyKarmaDelta(karmaDelta)
+
+        if self.base.isDestroyed() and not self.game_over:
+            self.game_over = True
+            self.final_karma = self.rm.getStock(RessourceType.Karma)
 
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)
@@ -42,10 +61,10 @@ class PlayScene:
                 if self.cycle_system.currentDay >= 4:
                     self.start_good_ending()
                     return
-                pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+                pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
                 pygame.mixer.music.play(-1)
             else:
-                pygame.mixer.music.load(SOUNDS_DIR / "BadAtmosphere.wav")
+                pygame.mixer.music.load(SOUNDS_DIR / "NightMusic.mp3")
                 pygame.mixer.music.play(-1)
 
             cinematic_directory = (
@@ -56,7 +75,6 @@ class PlayScene:
             self.start_cinematic(cinematic_directory, StateType.Play)
 
     def drawPlayScene(self) -> None:
-        self.game_surface.fill(COLOR_BG)
         self.currentMap.render(self.game_surface, self.camera)
         if not self.paused_from_explosion:
             self.base.draw(self.game_surface, self.camera)
@@ -79,6 +97,10 @@ class PlayScene:
             self.base.health,
             self.base.max_health,
         )
+
+        if self.cheat_system.godmode:
+            text = self.hud.fontTimer.render("GODMODE", False, "yellow")
+            self.screen.blit(text, (20, 90))
 
         self.building_menu.draw(self.screen)
 

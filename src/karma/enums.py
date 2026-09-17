@@ -4,6 +4,9 @@ class ResolutionType(Enum):
     Base = auto()
     Fullscreen = auto()
 
+class VolumeAction(Enum):
+    Cycle = auto()
+
 class RessourceType(Enum):
     Energy = auto()
     RawMaterial = auto()
@@ -23,3 +26,5 @@ class BuildingType(Enum):
     CoalPlant = auto()
     SolarPanel = auto()
     Wall = auto()
+    Plantation = auto()
+    Driller = auto()

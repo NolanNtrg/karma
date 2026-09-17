@@ -13,33 +13,43 @@ class Player(Entity):
 
     # constantes pour le tir du joueur
     ATTACK_DAMAGE = 40
-    ATTACK_INTERVAL = 250.0  # millisecondes entre deux tirs
-    BULLET_SPEED = 0.5  # pixels par milliseconde
+    ATTACK_INTERVAL = 250.0  # ms entre deux tirs
+    BULLET_SPEED = 0.5  # pixels par ms
 
     BULLET_SIZE = (16, 16)
-    MUZZLE_FLASH_DURATION = 100.0  # millisecondes d'affichage de la case muzzle flash
-    MUZZLE_FLASH_FRAME = (3, 0)  # case du tileset SquadLeader représentant le tir
+    MUZZLE_FLASH_DURATION = 100.0  # ms d'affichage de la case muzzle flash
+    MUZZLE_FLASH_FRAME = (3, 0)  # case du tileset astronaute représentant le tir
 
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        # Si l'instance n'existe pas encore, on la crée
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+    
     # Constructeur
     def __init__(self, name: str, position: pygame.Vector2, speed: float, health: int = 100) -> None:
-        if self.instance is None:
-            self.instance = super().__init__(position, health)
-            self.name: str = name
-            self.speed: float = speed
+        if self._initialized :
+            return
+        self.instance = super().__init__(position, health)
+        self.name: str = name
+        self.speed: float = speed
 
-            self.animator = SpriteAnimator(
-                ASSETS_DIR / "Soldiers" / "MachineGunner-Class.png",
-                idleFrameCoords=[(0, 0), (0, 1)],
-                walkFrameCoords=[(1, 0), (1, 1)],
-            )
+        self.animator = SpriteAnimator(
+            ASSETS_DIR / "Soldiers" / "MachineGunner-Class.png",
+            idleFrameCoords=[(0, 0), (0, 1)],
+            walkFrameCoords=[(1, 0), (1, 1)],
+        )
 
-            # initialisation des variables pour le tir
-            self.timeSinceLastAttack: float = self.ATTACK_INTERVAL  # prêt à tirer dès le début
-            self.muzzleFlashTimer: float = 0.0
-            self.muzzleFlashImage = SpriteAnimator.getSprite(self.animator.spriteSheet, *self.MUZZLE_FLASH_FRAME)
+        # initialisation des variables pour le tir
+        self.timeSinceLastAttack: float = self.ATTACK_INTERVAL  # prêt à tirer dès le début
+        self.muzzleFlashTimer: float = 0.0
+        self.muzzleFlashImage = SpriteAnimator.getSprite(self.animator.spriteSheet, *self.MUZZLE_FLASH_FRAME)
 
-            self.shooter = Shooter(Bullet.loadImage(self.BULLET_SIZE))
-        return self.instance
+        self.shooter = Shooter(Bullet.loadImage(self.BULLET_SIZE))
+        self._initialized = True
 
 
     def getDirection(self) -> pygame.Vector2:
@@ -53,9 +63,21 @@ class Player(Entity):
 
         return direction.normalize()
 
-    def update(self, dt: float, enemies: list[Enemy] | None = None, camera=None) -> None:
+    def update(
+        self,
+        dt: float,
+        enemies: list[Enemy] | None = None,
+        camera=None,
+        map_size: tuple[float, float] | None = None,
+    ) -> None:
         direction = self.getDirection()
         self.position += direction * self.speed * dt
+        if map_size is not None:
+            sprite_width, sprite_height = self.animator.image.get_size()
+            max_x = max(0.0, map_size[0] - sprite_width)
+            max_y = max(0.0, map_size[1] - sprite_height)
+            self.position.x = max(0.0, min(self.position.x, max_x))
+            self.position.y = max(0.0, min(self.position.y, max_y))
         self.animator.update(dt, direction.length_squared() > 0, direction)
 
         self.timeSinceLastAttack += dt

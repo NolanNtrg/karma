@@ -2,7 +2,7 @@ import sys
 import pygame
 
 from karma.scenes.scenes import Scene
-from karma.enums import ResolutionType, StateType, BuildingType
+from karma.enums import ResolutionType, StateType, BuildingType, VolumeAction
 from karma.entities.buildings.base import Base
 from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
@@ -13,17 +13,19 @@ from karma.interface.menu import MainMenu, PauseMenu, CreditsMenu, GameOverMenu
 from karma.enums import RessourceType
 from karma.interface.hud import HUD
 from karma.interface.cinematic import CinematicAction, CinematicPlayer
-from karma.interface.explosion import ExplosionAnimation
-from karma.systems import CombatSystem, CycleSystem
+from karma.systems import CheatSystem, CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
-from karma.resources.ressourceManager import RessourceManager
+from karma.systems.resourceManager import RessourceManager
 from karma.interface.buildingMenu import BuildingMenu
 from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
     CAMERA_ZOOM,
+    DAY_DURATION,
+    DEFAULT_VOLUME,
     ENEMY_SPAWN_INTERVAL,
     FPS,
+    NIGHT_DURATION,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
     TITLE,
@@ -43,16 +45,20 @@ class Game():
         self.running: bool = True
         self.state: StateType = StateType.Menu  # États possibles : "MENU", "PLAY", "PAUSE", "CINEMATIC"
         self.resolution: ResolutionType = ResolutionType.Base # États possibles : "BASE", "FULLSCREEN"
+        self.volume: float = DEFAULT_VOLUME
+        pygame.mixer.music.set_volume(self.volume)
         self.cinematic_player: CinematicPlayer | None = None
         self.next_cinematic_player: CinematicPlayer | None = None
         self.explosion: ExplosionAnimation | None = None
         self.cinematic_return_state: StateType = StateType.Menu
         self.paused_from_cinematic: bool = False
+        self.game_over: bool = False
+        self.final_karma: float | None = None
         self.paused_from_explosion: bool = False
 
         self.player = Player(name="Blanchon", position=pygame.Vector2(100, 100), speed=0.3)
-        self.main_menu = MainMenu()
-        self.pause_menu = PauseMenu()
+        self.main_menu = MainMenu(self.volume)
+        self.pause_menu = PauseMenu(self.volume)
         self.credits_menu = CreditsMenu()
         self.game_over_menu = GameOverMenu()
 
@@ -78,12 +84,13 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=1000.0, nightDuration=1000.0)
+        self.cycle_system = CycleSystem(dayDuration=DAY_DURATION, nightDuration=NIGHT_DURATION)
         self.building_system = BuildingsSystem()
 
         self.hud = HUD()
         self.building_menu = BuildingMenu()
         self.rm = RessourceManager()  # Le gestionnaire de ressources
+        self.cheat_system = CheatSystem(self.base, self.cycle_system, self.combat_system, self.rm)
 
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
@@ -103,17 +110,32 @@ class Game():
             elif self.state == StateType.Cinematic:
                 self.cinematic_handle_events(event)
 
+    def cycle_volume(self) -> None:
+        levels = [1.0, 0.75, 0.5, 0.25, 0.0]
+        current = round(self.volume, 2)
+        try:
+            idx = levels.index(current)
+            next_idx = (idx + 1) % len(levels)
+        except ValueError:
+            next_idx = 0
+        self.volume = levels[next_idx]
+        pygame.mixer.music.set_volume(self.volume)
+        self.main_menu.update_volume_text(self.volume)
+        self.pause_menu.update_volume_text(self.volume)
+
     def menu_handle_events(self, event: pygame.event.Event) -> None:
         action = self.main_menu.handle_event(event)
         if action == StateType.Quit:
             self.running = False
-        if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
+        elif action == VolumeAction.Cycle:
+            self.cycle_volume()
+        elif action == ResolutionType.Fullscreen or action == ResolutionType.Base:
             self.resolution = action
             pygame.display.toggle_fullscreen()
         elif action == StateType.Play:
             self.state = action
             self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
-            pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
+            pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
             pygame.mixer.music.play(-1)
         elif action == StateType.Credits:
             self.state = action
@@ -124,18 +146,28 @@ class Game():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.state = StateType.Pause
-            elif event.key == pygame.K_3:  # Appuyer sur 3 pour construire une tourelle 
-                new_building = self.building_system.build(BuildingType.Turret, self.rm, amount=100)
+            elif event.key == pygame.K_3:  # Appuyer sur 3 pour construire une tourelle
+                new_building = self.building_system.build(BuildingType.Turret, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_1:  # Appuyer sur 1 pour construire une centrale a charbon  
-                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm, amount=300)
+            elif event.key == pygame.K_4:  # Appuyer sur 4 pour construire une plantation
+                new_building = self.building_system.build(BuildingType.Plantation, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_2:  # Appuyer sur 2 pour construire un panneau solaire 
-                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm, amount=300)
+            elif event.key == pygame.K_5:  # Appuyer sur 5 pour construire une foreuse
+                new_building = self.building_system.build(BuildingType.Driller, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
+            elif event.key == pygame.K_1:  # Appuyer sur 1 pour construire une centrale a charbon
+                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm)
+                if new_building:
+                    self.buildings.append(new_building)
+            elif event.key == pygame.K_2:  # Appuyer sur 2 pour construire un panneau solaire
+                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm)
+                if new_building:
+                    self.buildings.append(new_building)
+            else:
+                self.cheat_system.handleKey(event.key)
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # position de la souris convertit en coord
             self.player.shoot(self.camera.screenToWorld(pygame.Vector2(event.pos)))
@@ -157,6 +189,8 @@ class Game():
             if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
                 self.resolution = action
                 pygame.display.toggle_fullscreen()
+            elif action == VolumeAction.Cycle:
+                self.cycle_volume()
             elif action == StateType.Quit:
                 self.running = False
             elif action == StateType.Play or action == StateType.Menu:
@@ -277,6 +311,8 @@ class Game():
         if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
             self.resolution = action
             pygame.display.toggle_fullscreen()
+        elif action == VolumeAction.Cycle:
+            self.cycle_volume()
         elif action == StateType.Play:
             self.paused_from_cinematic = False
             self.state = StateType.Cinematic

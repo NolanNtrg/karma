@@ -1,7 +1,7 @@
 import pygame
 
 from karma.enums import RessourceType
-from karma.resources.ressourceManager import RessourceManager
+from karma.systems.resourceManager import RessourceManager
 from karma.settings import ASSETS_DIR, SCREEN_HEIGHT, SCREEN_WIDTH
 
 
@@ -57,7 +57,7 @@ class HUD:
     def DrawRessources(self, screen: pygame.Surface) -> None:
         """Badges ressources en haut à droite avec fond semi-transparent."""
         resources = [
-            (self.karmaIcon, str(RessourceManager().getStock(RessourceType.Karma)), self.fontRessourceKarma),
+            (self.karmaIcon, str(round(RessourceManager().getStock(RessourceType.Karma))), self.fontRessourceKarma),
             (self.energyIcon, str(RessourceManager().getStock(RessourceType.Energy)), self.fontRessourceEnergy),
             (self.rawMaterialIcon, str(RessourceManager().getStock(RessourceType.RawMaterial)), self.fontRessourceRawMaterial),
         ]
