@@ -6,7 +6,10 @@ from karma.systems.resourceManager import RessourceManager
 from karma.entities.buildings.turret import Turret
 from karma.entities.buildings.coal_plant import CoalPlant
 from karma.entities.buildings.solar_panel import SolarPanel
+from karma.entities.buildings.plantation import Plantation
+from karma.entities.buildings.driller import Driller
 from karma.enums import BuildingType
+
 
 class BuildingsSystem:
     def __init__(self) :
@@ -56,6 +59,10 @@ class BuildingsSystem:
                         building = CoalPlant(position, health=200, energyCost=100, productionAmount=25, productionInterval=2000.0)
                     elif building_type == BuildingType.SolarPanel: 
                         building = SolarPanel(position, health=150, energyCost=100, productionAmount=10, productionInterval=2000.0)
+                    elif building_type == BuildingType.Plantation:
+                        building = Plantation(position, health=150, energyCost=100, productionAmount=10, productionInterval=2000.0)
+                    elif building_type == BuildingType.Driller:
+                        building = Driller(position, health=200, energyCost=100, productionAmount=25, productionInterval=2000.0)
 
                     self.dictOccupedSlot[self.currentSlot["id"]] = building
                     return building
