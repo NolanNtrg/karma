@@ -2,7 +2,7 @@ import pygame
 from karma.entities.buildings.building import Building
 from karma.entities.player.player import Player
 from karma.enums import RessourceType
-from karma.resources.ressourceManager import RessourceManager
+from karma.systems.ressourceManager import RessourceManager
 from karma.entities.buildings.turret import Turret
 from karma.entities.buildings.coal_plant import CoalPlant
 from karma.entities.buildings.solar_panel import SolarPanel

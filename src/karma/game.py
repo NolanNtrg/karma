@@ -14,7 +14,7 @@ from karma.interface.hud import HUD
 from karma.interface.cinematic import CinematicAction, CinematicPlayer
 from karma.systems import CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
-from karma.resources.ressourceManager import RessourceManager
+from karma.systems.ressourceManager import RessourceManager
 from karma.interface.buildingMenu import BuildingMenu
 from karma.settings import (
     ASSETS_DIR,

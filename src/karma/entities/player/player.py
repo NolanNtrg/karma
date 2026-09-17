@@ -20,26 +20,36 @@ class Player(Entity):
     MUZZLE_FLASH_DURATION = 100.0  # millisecondes d'affichage de la case muzzle flash
     MUZZLE_FLASH_FRAME = (3, 0)  # case du tileset SquadLeader représentant le tir
 
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        # Si l'instance n'existe pas encore, on la crée
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+    
     # Constructeur
     def __init__(self, name: str, position: pygame.Vector2, speed: float, health: int = 100) -> None:
-        if self.instance is None:
-            self.instance = super().__init__(position, health)
-            self.name: str = name
-            self.speed: float = speed
+        if self._initialized :
+            return
+        self.instance = super().__init__(position, health)
+        self.name: str = name
+        self.speed: float = speed
 
-            self.animator = SpriteAnimator(
-                ASSETS_DIR / "Soldiers" / "MachineGunner-Class.png",
-                idleFrameCoords=[(0, 0), (0, 1)],
-                walkFrameCoords=[(1, 0), (1, 1)],
-            )
+        self.animator = SpriteAnimator(
+            ASSETS_DIR / "Soldiers" / "MachineGunner-Class.png",
+            idleFrameCoords=[(0, 0), (0, 1)],
+            walkFrameCoords=[(1, 0), (1, 1)],
+        )
 
-            # initialisation des variables pour le tir
-            self.timeSinceLastAttack: float = self.ATTACK_INTERVAL  # prêt à tirer dès le début
-            self.muzzleFlashTimer: float = 0.0
-            self.muzzleFlashImage = SpriteAnimator.getSprite(self.animator.spriteSheet, *self.MUZZLE_FLASH_FRAME)
+        # initialisation des variables pour le tir
+        self.timeSinceLastAttack: float = self.ATTACK_INTERVAL  # prêt à tirer dès le début
+        self.muzzleFlashTimer: float = 0.0
+        self.muzzleFlashImage = SpriteAnimator.getSprite(self.animator.spriteSheet, *self.MUZZLE_FLASH_FRAME)
 
-            self.shooter = Shooter(Bullet.loadImage(self.BULLET_SIZE))
-        return self.instance
+        self.shooter = Shooter(Bullet.loadImage(self.BULLET_SIZE))
+        self._initialized = True
 
 
     def getDirection(self) -> pygame.Vector2:

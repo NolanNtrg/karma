@@ -1,7 +1,7 @@
 import pygame
 
 from karma.enums import RessourceType
-from karma.resources.ressourceManager import RessourceManager
+from karma.systems.ressourceManager import RessourceManager
 from karma.settings import ASSETS_DIR, SCREEN_HEIGHT, SCREEN_WIDTH
 
 
