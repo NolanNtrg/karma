@@ -144,6 +144,14 @@ class Game():
                 new_building = self.building_system.build(BuildingType.Turret, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
+            elif event.key == pygame.K_4:  # Appuyer sur 4 pour construire une plantation
+                new_building = self.building_system.build(BuildingType.Plantation, self.rm)
+                if new_building:
+                    self.buildings.append(new_building)
+            elif event.key == pygame.K_5:  # Appuyer sur 5 pour construire une foreuse
+                new_building = self.building_system.build(BuildingType.Driller, self.rm)
+                if new_building:
+                    self.buildings.append(new_building)
             elif event.key == pygame.K_1:  # Appuyer sur 1 pour construire une centrale a charbon
                 new_building = self.building_system.build(BuildingType.CoalPlant, self.rm)
                 if new_building:

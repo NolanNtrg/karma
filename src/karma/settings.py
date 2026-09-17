@@ -64,6 +64,18 @@ SOLAR_PANEL_COST: int = 300  # Matière première
 SOLAR_PANEL_PRODUCTION_AMOUNT: int = 6  # Énergie par tick -> 3 Énergie/s
 SOLAR_PANEL_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
 
+# plantation : production de matière première limitée au jour mais augmente le karma
+PLANTATION_HEALTH: int = 150
+PLANTATION_COST: int = 100  # Matière première
+PLANTATION_PRODUCTION_AMOUNT: int = 10  # Matière première par tick
+PLANTATION_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
+
+# foreuse : production continue (jour+nuit) de matière première mais baisse le karma
+DRILLER_HEALTH: int = 200
+DRILLER_COST: int = 100  # Matière première
+DRILLER_PRODUCTION_AMOUNT: int = 25  # Matière première par tick
+DRILLER_PRODUCTION_INTERVAL: float = 2000.0  # ms entre deux ticks
+
 # -ennemis-
 # coureur : rapide et fragile, dégâts faibles
 RUNNER_HEALTH: int = 60

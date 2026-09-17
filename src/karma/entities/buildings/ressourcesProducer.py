@@ -1,14 +1,12 @@
 from pathlib import Path
-
 import pygame
 
 from karma.entities.buildings.building import Building
+from karma.enums import RessourceType
 from karma.settings import ASSETS_DIR
 
 
-class EnergyProducer(Building):
-    # Base des bâtiments qui produisent de l'Énergie à intervalle régulier.
-
+class RessourcesProducer(Building):
     SIZE: tuple[int, int] = (64, 64)
     FRAME_COUNT: int = 4
 
@@ -21,11 +19,15 @@ class EnergyProducer(Building):
         productionAmount: int,
         productionInterval: float,
         spriteFolder: str,
+        resourceType: RessourceType,
+        requiresDaylight: bool = False,
     ) -> None:
         super().__init__(position, health, energyCost, karmaImpact)
         self.productionAmount: int = productionAmount
         self.productionInterval: float = productionInterval
         self.timeSinceLastProduction: float = 0.0
+        self.resourceType: RessourceType = resourceType
+        self.requiresDaylight: bool = requiresDaylight
 
         spritesDir = ASSETS_DIR / "buildings" / spriteFolder
 
@@ -37,7 +39,6 @@ class EnergyProducer(Building):
         self.setFrames(dayFrames, nightFrames)
 
     def tryProduce(self, dt: float) -> int:
-        # Retourne l'Énergie produite pour cette frame, ou 0 si nécessaire.
         if self.isDestroyed():
             return 0
         self.timeSinceLastProduction += dt

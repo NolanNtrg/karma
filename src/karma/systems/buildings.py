@@ -6,12 +6,22 @@ from karma.systems.resourceManager import RessourceManager
 from karma.entities.buildings.turret import Turret
 from karma.entities.buildings.coal_plant import CoalPlant
 from karma.entities.buildings.solar_panel import SolarPanel
+from karma.entities.buildings.plantation import Plantation
+from karma.entities.buildings.driller import Driller
 from karma.enums import BuildingType
 from karma.settings import (
     COAL_PLANT_COST,
     COAL_PLANT_HEALTH,
     COAL_PLANT_PRODUCTION_AMOUNT,
     COAL_PLANT_PRODUCTION_INTERVAL,
+    DRILLER_COST,
+    DRILLER_HEALTH,
+    DRILLER_PRODUCTION_AMOUNT,
+    DRILLER_PRODUCTION_INTERVAL,
+    PLANTATION_COST,
+    PLANTATION_HEALTH,
+    PLANTATION_PRODUCTION_AMOUNT,
+    PLANTATION_PRODUCTION_INTERVAL,
     SOLAR_PANEL_COST,
     SOLAR_PANEL_HEALTH,
     SOLAR_PANEL_PRODUCTION_AMOUNT,
@@ -27,7 +37,10 @@ BUILDING_COSTS: dict[BuildingType, int] = {
     BuildingType.Turret: TURRET_COST,
     BuildingType.CoalPlant: COAL_PLANT_COST,
     BuildingType.SolarPanel: SOLAR_PANEL_COST,
+    BuildingType.Plantation: PLANTATION_COST,
+    BuildingType.Driller: DRILLER_COST,
 }
+
 
 class BuildingsSystem:
     def __init__(self) :
@@ -97,6 +110,22 @@ class BuildingsSystem:
                             energyCost=SOLAR_PANEL_COST,
                             productionAmount=SOLAR_PANEL_PRODUCTION_AMOUNT,
                             productionInterval=SOLAR_PANEL_PRODUCTION_INTERVAL,
+                        )
+                    elif building_type == BuildingType.Plantation:
+                        building = Plantation(
+                            position,
+                            health=PLANTATION_HEALTH,
+                            energyCost=PLANTATION_COST,
+                            productionAmount=PLANTATION_PRODUCTION_AMOUNT,
+                            productionInterval=PLANTATION_PRODUCTION_INTERVAL,
+                        )
+                    elif building_type == BuildingType.Driller:
+                        building = Driller(
+                            position,
+                            health=DRILLER_HEALTH,
+                            energyCost=DRILLER_COST,
+                            productionAmount=DRILLER_PRODUCTION_AMOUNT,
+                            productionInterval=DRILLER_PRODUCTION_INTERVAL,
                         )
 
                     self.dictOccupedSlot[self.currentSlot["id"]] = building
