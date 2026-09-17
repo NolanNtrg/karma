@@ -305,7 +305,12 @@ class Game():
         self.game_over_menu = GameOverMenu()
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
-        self.start_cinematic(VIDEO_DIR / "Vidéo Mid Ending", StateType.MidEnding)
+        self.start_cinematic(VIDEO_DIR / "Vidéo Fin Eclipse", StateType.MidEnding)
+        self.next_cinematic_player = CinematicPlayer(
+            VIDEO_DIR / "Vidéo Mid Ending",
+            (SCREEN_WIDTH, SCREEN_HEIGHT),
+            fps=10.0,
+        )
         self.state = StateType.MidEnding
 
     def start_explosion(self) -> None:
