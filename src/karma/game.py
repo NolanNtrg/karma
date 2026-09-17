@@ -138,6 +138,14 @@ class Game():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.state = StateType.Pause
+            elif event.key == pygame.K_5:
+                new_building = self.building_system.build(BuildingType.Driller, self.rm, amount=100)
+                if new_building:
+                    self.buildings.append(new_building)
+            elif event.key == pygame.K_4:
+                new_building = self.building_system.build(BuildingType.Plantation, self.rm, amount=100)
+                if new_building:
+                    self.buildings.append(new_building)
             elif event.key == pygame.K_3:  # Appuyer sur 3 pour construire une tourelle 
                 new_building = self.building_system.build(BuildingType.Turret, self.rm, amount=100)
                 if new_building:

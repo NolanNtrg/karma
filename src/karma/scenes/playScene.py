@@ -3,8 +3,8 @@ import pygame
 from karma.enums import RessourceType, StateType
 from karma.entities.buildings.turret import Turret
 from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
-from karma.entities.buildings.energy_producer import EnergyProducer
-from karma.entities.buildings.solar_panel import SolarPanel
+from karma.entities.buildings.ressourcesProducer import RessourcesProducer
+
 
 class PlayScene:
 
@@ -22,16 +22,16 @@ class PlayScene:
 
         self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.cycle_system.currentDay)
 
-        for building in self.buildings :
+        for building in self.buildings:
             if isinstance(building, Turret):
                 building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
-            elif isinstance(building, EnergyProducer):
+            elif isinstance(building, RessourcesProducer):
                 building.update(dt, self.cycle_system.isDay)
-                if isinstance(building, SolarPanel) and not self.cycle_system.isDay:
+                if building.requiresDaylight and not self.cycle_system.isDay:
                     continue
-                energy = building.tryProduce(dt)
-                if energy > 0:
-                    self.rm.add(RessourceType.Energy, energy)
+                produced = building.tryProduce(dt)
+                if produced > 0:
+                    self.rm.add(building.resourceType, produced)
 
         karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
         self.rm.applyKarmaDelta(karmaDelta)

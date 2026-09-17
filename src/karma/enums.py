@@ -25,3 +25,5 @@ class BuildingType(Enum):
     CoalPlant = auto()
     SolarPanel = auto()
     Wall = auto()
+    Plantation = auto()
+    Driller = auto()
