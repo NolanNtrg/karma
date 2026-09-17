@@ -8,6 +8,7 @@ class Base(Entity):
 
     def __init__(self, position: pygame.Vector2, health: int = 500) -> None:
         super().__init__(position, health)
+        self.invincible: bool = False
         self.day_frames = []
         self.night_frames = []
 
@@ -20,6 +21,11 @@ class Base(Entity):
         self.imageIndex = 0.0
         self.image = self.day_frames[0]
         self.rect = pygame.Rect(int(self.position.x + 2), int(self.position.y + 10), 60, 50)
+
+    def takeDamage(self, amount: int) -> None:
+        if self.invincible:
+            return
+        super().takeDamage(amount)
 
     def update(self, dt: float, is_day: bool = True) -> None:
         frames = self.day_frames if is_day else self.night_frames

@@ -88,6 +88,10 @@ class PlayScene:
             self.base.max_health,
         )
 
+        if self.cheat_system.godmode:
+            text = self.hud.fontTimer.render("GODMODE", False, "yellow")
+            self.screen.blit(text, (20, 90))
+
         self.building_menu.draw(self.screen)
 
         if self.state == StateType.Pause:
