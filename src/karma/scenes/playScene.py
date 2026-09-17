@@ -1,6 +1,6 @@
 import pygame
 
-from karma.enums import StateType
+from karma.enums import StateType, RessourceType
 from karma.entities.buildings.turret import Turret
 from karma.settings import (SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR, BASE_NIGHT_HEAL)
 from karma.entities.buildings.ressourcesProducer import RessourcesProducer
@@ -69,7 +69,10 @@ class PlayScene:
                 game.combat_system.enemies.clear()
                 game.base.heal(BASE_NIGHT_HEAL)
                 if game.cycle_system.currentDay >= 4:
-                    game.start_good_ending()
+                    if game.rm.getStock(RessourceType.Karma) >= 0:
+                        game.start_good_ending()
+                    else:
+                        game.start_bad_ending()
                     return
                 pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
                 pygame.mixer.music.play(-1)
