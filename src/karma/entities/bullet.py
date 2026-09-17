@@ -42,7 +42,6 @@ class Bullet:
                 enemy.takeDamage(self.damage)
                 if enemy.isDestroyed():
                     Bullet.enemies_killed += 1
-                    print (Bullet.enemies_killed)
                 self.hit = True
                 return
         self.position += self.direction * self.speed * dt
