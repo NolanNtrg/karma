@@ -2,6 +2,7 @@ import pygame
 
 from karma.entities.enemies.enemy import Enemy
 from karma.entities.sprite import SpriteAnimator
+from karma.environment.camera import Camera
 from karma.settings import ARMORED_UNIT_ATTACK_DAMAGE, ARMORED_UNIT_ATTACK_INTERVAL, ARMORED_UNIT_HEALTH, ARMORED_UNIT_SPEED, ASSETS_DIR
 
 
@@ -54,7 +55,7 @@ class ArmoredUnit(Enemy):
         self.animationTime += dt
 
     # override draw pour dessiner le centipède en segments
-    def draw(self, screen: pygame.Surface, camera=None) -> None:
+    def draw(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
         flip = self.heading.x < 0
 
          # queue d'abord, tête dessinée par-dessus

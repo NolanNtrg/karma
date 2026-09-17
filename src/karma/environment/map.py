@@ -1,14 +1,20 @@
+from pathlib import Path
+
 import pygame
+from pytmx import TiledObject
 from pytmx.util_pygame import load_pygame
 
+from karma.environment.camera import Camera
+
+
 class MapManager:
-    def __init__(self, filename):
+    def __init__(self, filename: Path) -> None:
         # load_pygame convertit automatiquement les tuiles en surfaces Pygame
         self.tmx_data = load_pygame(filename)
         self.width = self.tmx_data.width * self.tmx_data.tilewidth
         self.height = self.tmx_data.height * self.tmx_data.tileheight
 
-    def render(self, screen, camera=None):
+    def render(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
         for layer in self.tmx_data.visible_layers:
             # On ne dessine que les calques de tuiles standards
             if hasattr(layer, 'data'):
@@ -21,10 +27,10 @@ class MapManager:
                         screen.blit(tile, position)
 
 
-    def get_vaisseau_slot(self):
+    def get_vaisseau_slot(self) -> TiledObject:
         return self.tmx_data.get_object_by_name("vaisseau")
 
-    def get_build_slots(self): 
+    def get_build_slots(self) -> list[dict]:
         # retourne la liste des slots en rectangle
         slots = []
         try : 

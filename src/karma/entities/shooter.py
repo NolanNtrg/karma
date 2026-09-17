@@ -4,7 +4,8 @@ import pygame
 
 from karma.entities.bullet import Bullet
 from karma.entities.enemies.enemy import Enemy
-from karma.settings import SOUNDS_DIR 
+from karma.environment.camera import Camera
+from karma.settings import SOUNDS_DIR
 
 
 class Shooter:
@@ -22,11 +23,11 @@ class Shooter:
         self.bullets.append(Bullet(position, direction, damage, speed, self.bulletImage))
         Shooter.bullet_sound.play()
 
-    def updateBullets(self, dt: float, enemies: Sequence[Enemy], camera=None) -> None:
+    def updateBullets(self, dt: float, enemies: Sequence[Enemy], camera: Camera | None = None) -> None:
         for bullet in self.bullets:
             bullet.update(dt, enemies, camera)
         self.bullets = [bullet for bullet in self.bullets if not bullet.hit]
 
-    def drawBullets(self, screen: pygame.Surface, camera=None) -> None:
+    def drawBullets(self, screen: pygame.Surface, camera: Camera | None = None) -> None:
         for bullet in self.bullets:
             bullet.draw(screen, camera)
