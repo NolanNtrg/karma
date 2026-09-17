@@ -1,9 +1,9 @@
 import pygame
 
-from karma.enums import RessourceType, StateType
+from karma.enums import StateType
 from karma.entities.buildings.turret import Turret
-from karma.settings import (SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR)
-from karma.entities.buildings.energy_producer import EnergyProducer
+from karma.settings import (SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR, BASE_NIGHT_HEAL)
+from karma.entities.buildings.ressourcesProducer import RessourcesProducer
 from karma.entities.buildings.solar_panel import SolarPanel
 
 class PlayScene:
@@ -17,28 +17,31 @@ class PlayScene:
             self.camera,
             (self.dayMap.width, self.dayMap.height),
         )
+        # si la souris est cliquée OU maintenu, on fait tirer le joueur vers la position de la souris
+        if pygame.mouse.get_pressed()[0]:
+            self.player.shoot(self.camera.screenToWorld(pygame.Vector2(pygame.mouse.get_pos())))
         self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
 
-        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.cycle_system.currentDay)
+        self.combat_system.update(dt, self.cycle_system.isDay, self.base, self.walls, self.buildings, self.cycle_system.currentDay)
 
-        for building in self.buildings :
+        if self.base.isDestroyed():
+            self.start_explosion()
+            return
+
+        for building in self.buildings:
             if isinstance(building, Turret):
                 building.update(dt, self.combat_system.enemies, self.camera, self.cycle_system.isDay)
-            elif isinstance(building, EnergyProducer):
+            elif isinstance(building, RessourcesProducer):
                 building.update(dt, self.cycle_system.isDay)
-                if isinstance(building, SolarPanel) and not self.cycle_system.isDay:
+                if building.requiresDaylight and not self.cycle_system.isDay:
                     continue
-                energy = building.tryProduce(dt)
-                if energy > 0:
-                    self.rm.add(RessourceType.Energy, energy)
+                produced = building.tryProduce(dt)
+                if produced > 0:
+                    self.rm.add(building.resourceType, produced)
 
         karmaDelta = sum(building.getKarmaImpact(dt) for building in self.buildings)
         self.rm.applyKarmaDelta(karmaDelta)
-
-        if self.base.isDestroyed() and not self.game_over:
-            self.game_over = True
-            self.final_karma = self.rm.getStock(RessourceType.Karma)
 
         build_slots = self.currentMap.get_build_slots()
         self.building_system.update(self.player, build_slots)
@@ -53,6 +56,15 @@ class PlayScene:
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
             if self.cycle_system.isDay:
                 self.combat_system.enemies.clear()
+                self.base.heal(BASE_NIGHT_HEAL)
+                if self.cycle_system.currentDay >= 4:
+                    self.start_good_ending()
+                    return
+                pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
+                pygame.mixer.music.play(-1)
+            else:
+                pygame.mixer.music.load(SOUNDS_DIR / "NightMusic.mp3")
+                pygame.mixer.music.play(-1)
 
             cinematic_directory = (
                 VIDEO_DIR / "Vidéo Fin Eclipse"
@@ -63,13 +75,16 @@ class PlayScene:
 
     def drawPlayScene(self) -> None:
         self.currentMap.render(self.game_surface, self.camera)
-        self.base.draw(self.game_surface, self.camera)
+        if not self.paused_from_explosion:
+            self.base.draw(self.game_surface, self.camera)
 
         for building in self.buildings:
                 building.draw(self.game_surface, self.camera)
                 
         self.combat_system.draw(self.game_surface, self.camera)
         self.player.draw(self.game_surface, self.camera)
+        if self.paused_from_explosion and self.explosion is not None:
+            self.explosion.draw(self.game_surface, self.camera)
         pygame.transform.scale(self.game_surface, (SCREEN_WIDTH, SCREEN_HEIGHT), self.screen)
 
         self.hud.draw(
@@ -88,5 +103,5 @@ class PlayScene:
 
         self.building_menu.draw(self.screen)
 
-        if self.state == StateType.Pause:
+        if self.state == StateType.Pause and not self.paused_from_explosion:
             self.pause_menu.draw(self.screen)

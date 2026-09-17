@@ -19,12 +19,15 @@ class StateType(Enum):
     Credits = auto()
     Quit = auto()
     Cinematic = auto()
+    GameOver = auto()
 
 class BuildingType(Enum):
     Turret = auto()
     CoalPlant = auto()
     SolarPanel = auto()
     Wall = auto()
+    Plantation = auto()
+    Driller = auto()
 
 class MusicType(Enum):
     Menu =  auto()

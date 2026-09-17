@@ -1,6 +1,7 @@
 import pygame
 
 from karma.entities.buildings.base import Base
+from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
 from karma.entities.enemies.enemy import Enemy
 from karma.entities.enemies.spawner import EnemySpawner
@@ -32,7 +33,7 @@ class CombatSystem:
         karmaFactor = 1.0 + karmaRatio * KARMA_SPAWN_INFLUENCE
         return max(ENEMY_SPAWN_INTERVAL_MIN, self.baseSpawnInterval * dayFactor * karmaFactor)
 
-    def update(self, dt: float, isDay: bool, base: Base, walls: list[Wall], currentDay: int = 1) -> None:
+    def update(self, dt: float, isDay: bool, base: Base, walls: list[Wall], buildings: list[Building], currentDay: int = 1) -> None:
         # Apparition d'un ennemi la nuit si le délai est écoulé
         if not isDay:
             self.enemySpawner.spawnInterval = self.computeSpawnInterval(currentDay)
@@ -45,7 +46,7 @@ class CombatSystem:
 
         # Mise à jour des ennemis et de leurs attaques
         for enemy in self.enemies:
-            enemy.update(dt, walls, base)
+            enemy.update(dt, walls, buildings, base)
 
         # Nettoyage des ennemis éliminés
         self.enemies = [enemy for enemy in self.enemies if not enemy.isDestroyed()]
