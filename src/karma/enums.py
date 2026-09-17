@@ -20,6 +20,8 @@ class StateType(Enum):
     Quit = auto()
     Cinematic = auto()
     GameOver = auto()
+    BadEnding = auto()
+    GoodEnding = auto()
 
 class BuildingType(Enum):
     Turret = auto()

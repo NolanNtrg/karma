@@ -104,7 +104,7 @@ class Game():
                 self.pause_handle_events(event)
             elif self.state == StateType.Credits:
                 self.credits_handle_events(event)
-            elif self.state == StateType.GameOver:
+            elif self.state in (StateType.BadEnding, StateType.GoodEnding):
                 self.game_over_handle_events(event)
             elif self.state == StateType.Cinematic:
                 self.cinematic_handle_events(event)
@@ -246,12 +246,12 @@ class Game():
     def start_bad_ending(self) -> None:
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
-        self.start_cinematic(VIDEO_DIR / "Vidéo Bad Ending", StateType.GameOver)
+        self.start_cinematic(VIDEO_DIR / "Vidéo Bad Ending", StateType.BadEnding)
 
     def start_good_ending(self) -> None:
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
-        self.start_cinematic(VIDEO_DIR / "Vidéo Fin Eclipse", StateType.GameOver)
+        self.start_cinematic(VIDEO_DIR / "Vidéo Fin Eclipse", StateType.GoodEnding)
         self.next_cinematic_player = CinematicPlayer(
             VIDEO_DIR / "Vidéo Good Ending",
             (SCREEN_WIDTH, SCREEN_HEIGHT),

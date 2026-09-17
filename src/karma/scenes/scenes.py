@@ -18,7 +18,7 @@ class Scene:
 
     def drawScenes(self) -> None:
         # Rendu graphique
-        if self.state in (StateType.Menu, StateType.Credits, StateType.GameOver):
+        if self.state in (StateType.Menu, StateType.Credits, StateType.BadEnding, StateType.GoodEnding):
             MenuScene.drawMenuScene(self, self.state)
         elif self.state == StateType.Cinematic:
             self.cinematic_player.draw(self.screen)
