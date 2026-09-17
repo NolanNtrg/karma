@@ -51,7 +51,7 @@ class CinematicPlayer:
             self.frames[frame_index] = pygame.image.load(self.frame_paths[frame_index]).convert()
 
     @staticmethod
-    def _frame_sort_key(path: Path) -> tuple[int, str]:
+    def _frame_sort_key(path: Path) -> tuple[int, str]: # permet de lire les images dans le bon ordre en fonction de leur numéro, au cas où les images ne sont pas l'odre dans le dossier 
         match = re.search(r"(\d+)(?=\.[^.]+$)", path.name)
         return (int(match.group(1)) if match else -1, path.name)
 
@@ -64,6 +64,7 @@ class CinematicPlayer:
         self._ensure_frame(self.sequencer.current_frame)
         frame = self.frames[self.sequencer.current_frame]
         assert frame is not None
+        # on adapte à la taille de l'écran
         frame_ratio = frame.get_width() / frame.get_height()
         screen_ratio = self.screen_size[0] / self.screen_size[1]
 
