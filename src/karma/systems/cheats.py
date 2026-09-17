@@ -4,7 +4,7 @@ import pygame
 
 from karma.entities.buildings.base import Base
 from karma.enums import RessourceType
-from karma.resources.ressourceManager import RessourceManager
+from karma.systems.resourceManager import RessourceManager
 from karma.settings import KARMA_MAX, KARMA_MIN
 from karma.systems.combat import CombatSystem
 from karma.systems.cycle import CycleSystem

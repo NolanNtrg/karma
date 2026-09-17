@@ -6,7 +6,7 @@ from karma.entities.enemies.enemy import Enemy
 from karma.entities.enemies.spawner import EnemySpawner
 from karma.enums import RessourceType
 from karma.environment.camera import Camera
-from karma.systems.ressourceManager import RessourceManager
+from karma.systems.resourceManager import RessourceManager
 from karma.settings import (
     ENEMY_DAY_DIFFICULTY_FLOOR,
     ENEMY_DAY_DIFFICULTY_STEP,
