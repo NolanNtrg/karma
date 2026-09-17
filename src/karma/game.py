@@ -119,7 +119,7 @@ class Game():
                 self.credits_handle_events(event)
             elif self.state == StateType.HowToPlay:
                 self.how_to_play_handle_events(event)
-            elif self.state in (StateType.BadEnding, StateType.GoodEnding):
+            elif self.state in (StateType.BadEnding, StateType.MidEnding, StateType.GoodEnding):
                 self.game_over_handle_events(event)
             elif self.state == StateType.Cinematic:
                 self.cinematic_handle_events(event)
@@ -292,6 +292,12 @@ class Game():
             (SCREEN_WIDTH, SCREEN_HEIGHT),
             fps=10.0,
         )
+
+    def start_mid_ending(self) -> None:
+        self.game_over_menu = GameOverMenu()
+        pygame.mixer.music.stop()
+        self.building_menu.isVisible = False
+        self.start_cinematic(VIDEO_DIR / "Vidéo Mid Ending", StateType.MidEnding)
 
     def start_explosion(self) -> None:
         self.explosion = ExplosionAnimation(

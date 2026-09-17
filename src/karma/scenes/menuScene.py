@@ -19,7 +19,7 @@ class MenuScene:
         game.screen.blit(MenuScene.background, (0,0))
         if state == StateType.Menu:
             game.main_menu.draw(game.screen)
-        elif state in (StateType.BadEnding, StateType.GoodEnding):
+        elif state in (StateType.BadEnding, StateType.MidEnding, StateType.GoodEnding):
             game.game_over_menu.draw(game.screen)
         else:
             game.credits_menu.draw(game.screen)
