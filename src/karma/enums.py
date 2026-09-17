@@ -24,6 +24,7 @@ class StateType(Enum):
     GoodEnding = auto()
     MidEnding = auto()
     HowToPlay = auto()
+
 class BuildingType(Enum):
     Turret = auto()
     CoalPlant = auto()
@@ -36,3 +37,8 @@ class MusicType(Enum):
     Menu =  auto()
     Night =  auto()
     Day =  auto()
+    GoodEnd =  auto()
+    BadEnd =  auto()
+    MidEnd =  auto()
+
+

@@ -287,6 +287,7 @@ class Game():
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
         self.start_cinematic(VIDEO_DIR / "Vidéo Bad Ending", StateType.BadEnding)
+        self.state = StateType.BadEnding
 
     def start_good_ending(self) -> None:
         self.game_over_menu = GameOverMenu()
@@ -298,12 +299,14 @@ class Game():
             (SCREEN_WIDTH, SCREEN_HEIGHT),
             fps=10.0,
         )
+        self.state = StateType.GoodEnding
 
     def start_mid_ending(self) -> None:
         self.game_over_menu = GameOverMenu()
         pygame.mixer.music.stop()
         self.building_menu.isVisible = False
         self.start_cinematic(VIDEO_DIR / "Vidéo Mid Ending", StateType.MidEnding)
+        self.state = StateType.MidEnding
 
     def start_explosion(self) -> None:
         self.explosion = ExplosionAnimation(
