@@ -11,7 +11,7 @@ class Bullet:
     # Projectile qui vole en ligne droite jusqu'à percuter un ennemi OU sortir hors-cam
 
     HIT_RADIUS = 16  # distance de collision avec un ennemi
-    enemies_killed: int = 0
+    enemies_killed: int = 0 # nombre d'ennemis tués par des bullets, donc par le joueur + tourelles
 
     # partagée par toutes les entités qui tirent (joueur, tourelle) pour éviter de recharger l'image à chaque fois
     @staticmethod
