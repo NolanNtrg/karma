@@ -2,7 +2,7 @@ import pygame
 
 from karma.enums import StateType
 from karma.entities.buildings.turret import Turret
-from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
+from karma.settings import (ASSETS_DIR,BASE_NIGHT_HEAL,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
 from karma.entities.buildings.ressourcesProducer import RessourcesProducer
 
 
@@ -57,6 +57,7 @@ class PlayScene:
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
             if self.cycle_system.isDay:
                 self.combat_system.enemies.clear()
+                self.base.heal(BASE_NIGHT_HEAL)
                 if self.cycle_system.currentDay >= 4:
                     self.start_good_ending()
                     return

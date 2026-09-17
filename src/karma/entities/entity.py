@@ -16,3 +16,6 @@ class Entity:
 
     def isDestroyed(self) -> bool:
         return self.health <= 0
+
+    def heal(self, amount: int) -> None:
+        self.health = min(self.health + amount, self.max_health)
