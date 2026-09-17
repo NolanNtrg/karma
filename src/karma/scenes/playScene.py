@@ -2,13 +2,12 @@ import pygame
 
 from karma.enums import RessourceType, StateType
 from karma.entities.buildings.turret import Turret
-from karma.settings import (ASSETS_DIR,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
+from karma.settings import (SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR)
 from karma.entities.buildings.energy_producer import EnergyProducer
 from karma.entities.buildings.solar_panel import SolarPanel
 
 class PlayScene:
 
-    @staticmethod
     def updatePlayScene(self, dt: float) -> None:
         if self.state != StateType.Play:
             return
@@ -54,11 +53,6 @@ class PlayScene:
             self.currentMap = self.dayMap if self.cycle_system.isDay else self.nightMap
             if self.cycle_system.isDay:
                 self.combat_system.enemies.clear()
-                pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
-                pygame.mixer.music.play(-1)
-            else:
-                pygame.mixer.music.load(SOUNDS_DIR / "NightMusic.mp3")
-                pygame.mixer.music.play(-1)
 
             cinematic_directory = (
                 VIDEO_DIR / "Vidéo Fin Eclipse"

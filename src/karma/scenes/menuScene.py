@@ -1,7 +1,7 @@
 import pygame
 
-from karma.enums import StateType
-from karma.settings import ASSETS_DIR, SCREEN_HEIGHT, SCREEN_WIDTH
+from karma.enums import StateType, MusicType
+from karma.settings import ASSETS_DIR, SCREEN_HEIGHT, SCREEN_WIDTH, SOUNDS_DIR
 
 class MenuScene:
 
@@ -12,7 +12,6 @@ class MenuScene:
         if MenuScene.background is None:
                 backgroundOriginal = pygame.image.load(ASSETS_DIR / "Main-Menu.jpg").convert()
                 MenuScene.background = pygame.transform.scale(backgroundOriginal, (SCREEN_WIDTH, SCREEN_HEIGHT))
-                
         self.screen.blit(MenuScene.background, (0,0))
         if state == StateType.Menu:
             self.main_menu.draw(self.screen)

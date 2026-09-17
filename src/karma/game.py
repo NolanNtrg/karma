@@ -95,8 +95,6 @@ class Game():
                 self.pause_handle_events(event)
             elif self.state == StateType.Credits:
                 self.credits_handle_events(event)
-                
-            
             elif event.type == pygame.QUIT:
                 self.running = False
             elif self.state == StateType.Cinematic:
@@ -127,8 +125,6 @@ class Game():
         elif action == StateType.Play:
             self.state = action
             self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
-            pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
-            pygame.mixer.music.play(-1)
         elif action == StateType.Credits:
             self.state = action
         elif action == StateType.Quit:

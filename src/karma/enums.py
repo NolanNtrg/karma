@@ -25,3 +25,8 @@ class BuildingType(Enum):
     CoalPlant = auto()
     SolarPanel = auto()
     Wall = auto()
+
+class MusicType(Enum):
+    Menu =  auto()
+    Night =  auto()
+    Day =  auto()

@@ -7,9 +7,15 @@ from karma.entities.buildings.turret import Turret
 from karma.entities.buildings.coal_plant import CoalPlant
 from karma.entities.buildings.solar_panel import SolarPanel
 from karma.enums import BuildingType
+from karma.settings import SOUNDS_DIR
 
 class BuildingsSystem:
+
+    building_sound = None
+
     def __init__(self) :
+        if BuildingsSystem.building_sound is None:
+            BuildingsSystem.building_sound = pygame.mixer.Sound(SOUNDS_DIR / "building-sound.mp3")
         self.currentSlot : dict | None = None
         self.dictOccupedSlot : dict[int, Building] = {}
 
@@ -58,6 +64,7 @@ class BuildingsSystem:
                         building = SolarPanel(position, health=150, energyCost=100, productionAmount=10, productionInterval=2000.0)
 
                     self.dictOccupedSlot[self.currentSlot["id"]] = building
+                    BuildingsSystem.building_sound.play()
                     return building
                 
 
