@@ -12,6 +12,7 @@ SCREEN_WIDTH: int = 1280
 SCREEN_HEIGHT: int = 720
 FPS: int = 60
 TITLE: str = "Karma"
+DEFAULT_VOLUME: float = 1.0
 
 # Facteur de zoom de la caméra (1.0 de base, grandi avec la valeur)
 CAMERA_ZOOM: float = 2
