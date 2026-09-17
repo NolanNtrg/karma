@@ -29,11 +29,11 @@ RAW_MATERIAL_START = 2000
 BASE_HEALTH: int = 1000
 
 # durée du jour et de la nuit en ms (1 min chacun)
-DAY_DURATION: float = 60000.0
+DAY_DURATION: float = 45000.0
 NIGHT_DURATION: float = 60000.0
 
 # -ennemis/difficulté-
-# délai en ms entre deux apparitions d'ennemis
+# délai en ms e vagues de monstres qui attaquent quand l'éclipse apparaît. Le joueur doit choisir entre des bâtiments polluants mais efficaces, ou écolo mais plus limités, et ce choix affectera la difficulté, mais aussi la fin du jeu.ntre deux apparitions d'ennemis
 ENEMY_SPAWN_INTERVAL: float = 1500.0
 # dlai minimum autorisé (pas d'exceptions)
 ENEMY_SPAWN_INTERVAL_MIN: float = 300.0
