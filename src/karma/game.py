@@ -168,6 +168,8 @@ class Game():
             if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
                 self.resolution = action
                 pygame.display.toggle_fullscreen()
+            elif action == VolumeAction.Cycle:
+                self.cycle_volume()
             elif action == StateType.Quit:
                 self.running = False
             elif action == StateType.Play or action == StateType.Menu:
@@ -214,6 +216,8 @@ class Game():
         if action == ResolutionType.Fullscreen or action == ResolutionType.Base:
             self.resolution = action
             pygame.display.toggle_fullscreen()
+        elif action == VolumeAction.Cycle:
+            self.cycle_volume()
         elif action == StateType.Play:
             self.paused_from_cinematic = False
             self.state = StateType.Cinematic
