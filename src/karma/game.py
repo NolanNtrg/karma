@@ -141,23 +141,23 @@ class Game():
             if event.key == pygame.K_ESCAPE:
                 self.state = StateType.Pause
             elif event.key == pygame.K_1:
-                new_building = self.building_system.build(BuildingType.Driller, self.rm, amount=100)
+                new_building = self.building_system.build(BuildingType.Driller, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
             elif event.key == pygame.K_2:
-                new_building = self.building_system.build(BuildingType.Plantation, self.rm, amount=100)
+                new_building = self.building_system.build(BuildingType.Plantation, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
             elif event.key == pygame.K_5: 
-                new_building = self.building_system.build(BuildingType.Turret, self.rm, amount=100)
+                new_building = self.building_system.build(BuildingType.Turret, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
             elif event.key == pygame.K_4: 
-                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm, amount=300)
+                new_building = self.building_system.build(BuildingType.CoalPlant, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
             elif event.key == pygame.K_3: 
-                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm, amount=300)
+                new_building = self.building_system.build(BuildingType.SolarPanel, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
             else:
