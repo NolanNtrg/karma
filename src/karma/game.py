@@ -44,6 +44,7 @@ from karma.settings import (
 
 class Game():
 
+    # variables globales 
     lobotomy_sound = None
     explosion_sound = None
 
