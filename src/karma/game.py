@@ -20,9 +20,11 @@ from karma.settings import (
     ASSETS_DIR,
     BASE_HEALTH,
     CAMERA_ZOOM,
+    DAY_DURATION,
     DEFAULT_VOLUME,
     ENEMY_SPAWN_INTERVAL,
     FPS,
+    NIGHT_DURATION,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
     TITLE,
@@ -74,7 +76,7 @@ class Game():
 
         # Systèmes
         self.combat_system = CombatSystem(self.currentMap.width, self.currentMap.height, ENEMY_SPAWN_INTERVAL)
-        self.cycle_system = CycleSystem(dayDuration=8000.0, nightDuration=8000.0)
+        self.cycle_system = CycleSystem(dayDuration=DAY_DURATION, nightDuration=NIGHT_DURATION)
         self.building_system = BuildingsSystem()
 
         self.hud = HUD()

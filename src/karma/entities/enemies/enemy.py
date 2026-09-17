@@ -3,6 +3,7 @@ from pathlib import Path
 import pygame
 
 from karma.entities.buildings.base import Base
+from karma.entities.buildings.building import Building
 from karma.entities.buildings.wall import Wall
 from karma.entities.enemies.attacker import Attacker
 from karma.entities.sprite import SpriteAnimator
@@ -36,6 +37,10 @@ class Enemy(Attacker):
         half_size = (SpriteAnimator.FRAME_SIZE * SpriteAnimator.SCALE) / 2
         return pygame.Vector2(self.position.x + half_size, self.position.y + half_size)
 
+    def getHitPoints(self) -> list[pygame.Vector2]:
+        # points testés pour les collisions comme la balle, etc. (par défaut un seul point au centre)
+        return [self.getCenter()]
+
     def isInRangeOfBase(self, base: Base) -> bool:
         # vérifie si le centre de l'ennemi est à portée de la hitbox de la base
         attack_zone = base.rect.inflate(int(self.attackRange * 2), int(self.attackRange * 2))
@@ -50,12 +55,13 @@ class Enemy(Attacker):
     def updateAnimation(self, dt: float, isMoving: bool, direction: pygame.Vector2) -> None:
         self.animator.update(dt, isMoving, direction)
 
-    def update(self, dt: float, walls: list[Wall], base: Base) -> None:
-        blockingWall = self.findClosestTarget(self.position, walls)
-        if blockingWall is not None:
+    def update(self, dt: float, walls: list[Wall], buildings: list[Building], base: Base) -> None:
+        # Attaque tout mur ou bâtiment rencontré sur le chemin vers la base
+        blockingTarget = self.findClosestTarget(self.position, [*walls, *buildings])
+        if blockingTarget is not None:
             damage = self.tryAttack(dt)
             if damage:
-                blockingWall.takeDamage(damage)
+                blockingTarget.takeDamage(damage)
             self.updateAnimation(dt, False, pygame.Vector2(0, 0))
             return
 

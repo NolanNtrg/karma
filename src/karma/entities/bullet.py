@@ -33,7 +33,10 @@ class Bullet:
     # et on marque la balle comme "hit" pour qu'elle disparaisse
     def update(self, dt: float, enemies: Sequence[Enemy] = (), camera=None) -> None:
         for enemy in enemies:
-            if not enemy.isDestroyed() and self.position.distance_to(enemy.getCenter()) <= self.HIT_RADIUS:
+            if enemy.isDestroyed():
+                continue
+            # si la balle est suffisamment proche d'un ennemi, on le compte comme touché
+            if any(self.position.distance_to(hitPoint) <= self.HIT_RADIUS for hitPoint in enemy.getHitPoints()):
                 enemy.takeDamage(self.damage)
                 self.hit = True
                 return
