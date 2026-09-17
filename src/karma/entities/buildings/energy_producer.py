@@ -38,7 +38,7 @@ class EnergyProducer(Building):
 
     def tryProduce(self, dt: float) -> int:
         # Retourne l'Énergie produite pour cette frame, ou 0 si nécessaire.
-        if not self.isOperational():
+        if self.isDestroyed():
             return 0
         self.timeSinceLastProduction += dt
         if self.timeSinceLastProduction >= self.productionInterval:

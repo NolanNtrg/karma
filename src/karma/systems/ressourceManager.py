@@ -60,6 +60,9 @@ class RessourceManager:
             return True
 
 
+    def setStock(self, ressourceType: RessourceType, amount: float) -> None:
+        self.stocks[ressourceType] = amount
+
     def applyKarmaDelta(self, delta: float) -> None:
         # Applique un delta de karma signé (positif ou négatif) en une seule méthode
         if delta > 0:
