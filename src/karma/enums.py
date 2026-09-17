@@ -4,6 +4,9 @@ class ResolutionType(Enum):
     Base = auto()
     Fullscreen = auto()
 
+class VolumeAction(Enum):
+    Cycle = auto()
+
 class RessourceType(Enum):
     Energy = auto()
     RawMaterial = auto()
