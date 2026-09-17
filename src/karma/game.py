@@ -12,7 +12,7 @@ from karma.environment.map import MapManager
 from karma.interface.menu import MainMenu, PauseMenu, CreditsMenu
 from karma.interface.hud import HUD
 from karma.interface.cinematic import CinematicAction, CinematicPlayer
-from karma.systems import CombatSystem, CycleSystem
+from karma.systems import CheatSystem, CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
 from karma.resources.ressourceManager import RessourceManager
 from karma.interface.buildingMenu import BuildingMenu
@@ -80,6 +80,7 @@ class Game():
         self.hud = HUD()
         self.building_menu = BuildingMenu()
         self.rm = RessourceManager()  # Le gestionnaire de ressources
+        self.cheat_system = CheatSystem(self.base, self.cycle_system, self.combat_system, self.rm)
 
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
@@ -145,10 +146,12 @@ class Game():
                 new_building = self.building_system.build(BuildingType.CoalPlant, self.rm, amount=300)
                 if new_building:
                     self.buildings.append(new_building)
-            elif event.key == pygame.K_2:  # Appuyer sur 2 pour construire un panneau solaire 
+            elif event.key == pygame.K_2:  # Appuyer sur 2 pour construire un panneau solaire
                 new_building = self.building_system.build(BuildingType.SolarPanel, self.rm, amount=300)
                 if new_building:
                     self.buildings.append(new_building)
+            else:
+                self.cheat_system.handleKey(event.key)
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # position de la souris convertit en coord
             self.player.shoot(self.camera.screenToWorld(pygame.Vector2(event.pos)))
