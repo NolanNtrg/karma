@@ -167,9 +167,6 @@ class Game():
                     self.buildings.append(new_building)
             else:
                 self.cheat_system.handleKey(event.key)
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            # position de la souris convertit en coord
-            self.player.shoot(self.camera.screenToWorld(pygame.Vector2(event.pos)))
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.paused_from_cinematic = False
             self.state = StateType.Pause

@@ -13,7 +13,7 @@ class Player(Entity):
 
     # constantes pour le tir du joueur
     ATTACK_DAMAGE = 40
-    ATTACK_INTERVAL = 250.0  # ms entre deux tirs
+    ATTACK_INTERVAL = 300.0  # ms entre deux tirs
     BULLET_SPEED = 0.5  # pixels par ms
 
     BULLET_SIZE = (16, 16)

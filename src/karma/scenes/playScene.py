@@ -18,6 +18,9 @@ class PlayScene:
             self.camera,
             (self.dayMap.width, self.dayMap.height),
         )
+        # si la souris est cliquée OU maintenu, on fait tirer le joueur vers la position de la souris
+        if pygame.mouse.get_pressed()[0]:
+            self.player.shoot(self.camera.screenToWorld(pygame.Vector2(pygame.mouse.get_pos())))
         self.base.update(dt, self.cycle_system.isDay)
         self.camera.update(self.player.getCenter())
 
