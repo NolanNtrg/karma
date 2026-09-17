@@ -14,9 +14,11 @@ from karma.enums import RessourceType
 from karma.interface.hud import HUD
 from karma.interface.cinematic import CinematicAction, CinematicPlayer
 from karma.interface.explosion import ExplosionAnimation
-from karma.systems import CheatSystem, CombatSystem, CycleSystem
 from karma.systems.buildings import BuildingsSystem
 from karma.systems.resourceManager import RessourceManager
+from karma.systems.cheats import CheatSystem
+from karma.systems.cycle import CycleSystem
+from karma.systems.combat import CombatSystem
 from karma.interface.buildingMenu import BuildingMenu
 from karma.settings import (
     ASSETS_DIR,
@@ -38,6 +40,9 @@ from karma.settings import (
 )
 
 class Game():
+
+    lobotomy_sound = None
+
     def __init__(self) -> None:
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED)
@@ -91,6 +96,9 @@ class Game():
         self.rm = RessourceManager()  # Le gestionnaire de ressources
         self.cheat_system = CheatSystem(self.base, self.cycle_system, self.combat_system, self.rm)
 
+        if Game.lobotomy_sound is None:
+            Game.lobotomy_sound = pygame.mixer.Sound(SOUNDS_DIR / "LOBOTOMY.mp3")
+
     def handle_events(self) -> None:
         # Gestion des entrées utilisateur
         for event in pygame.event.get():
@@ -134,8 +142,6 @@ class Game():
         elif action == StateType.Play:
             self.state = action
             self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
-            pygame.mixer.music.load(SOUNDS_DIR / "DayMusic.mp3")
-            pygame.mixer.music.play(-1)
         elif action == StateType.Credits:
             self.state = action
         elif action == StateType.Quit:
@@ -165,6 +171,8 @@ class Game():
                 new_building = self.building_system.build(BuildingType.SolarPanel, self.rm)
                 if new_building:
                     self.buildings.append(new_building)
+            elif event.key == pygame.K_6: 
+                Game.lobotomy_sound.play()
             else:
                 self.cheat_system.handleKey(event.key)
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -208,8 +216,6 @@ class Game():
         if action == StateType.Play:
             self.reset_game()
             self.start_cinematic(VIDEO_DIR / "Vidéo Intro", StateType.Play)
-            pygame.mixer.music.load(SOUNDS_DIR / "Menu-Music.mp3")
-            pygame.mixer.music.play(-1)
         elif action == StateType.Quit:
             self.running = False
 

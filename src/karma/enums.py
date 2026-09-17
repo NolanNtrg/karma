@@ -30,3 +30,8 @@ class BuildingType(Enum):
     Wall = auto()
     Plantation = auto()
     Driller = auto()
+
+class MusicType(Enum):
+    Menu =  auto()
+    Night =  auto()
+    Day =  auto()

@@ -1,14 +1,35 @@
 import pygame
 
-from karma.enums import StateType
-from karma.settings import ASSETS_DIR, SCREEN_HEIGHT, SCREEN_WIDTH
+from karma.enums import StateType, MusicType
 from karma.scenes.playScene import PlayScene
 from karma.scenes.menuScene import MenuScene
-
+from karma.settings import SOUNDS_DIR
 
 class Scene:
+    current_music: MusicType | None = None
+
+    @staticmethod
+    def playMusic(music: MusicType):
+        if Scene.current_music == music:
+            return
+
+        music_files = {
+            MusicType.Menu: SOUNDS_DIR / "MenuMusic.mp3",
+            MusicType.Day: SOUNDS_DIR / "DayMusic.mp3",
+            MusicType.Night: SOUNDS_DIR / "NightMusic.mp3",
+        }
+        path = music_files.get(music)
+        pygame.mixer.music.load(path)
+        pygame.mixer.music.play(-1)
+        Scene.current_music = music
 
     def updateScenes(self, dt: float) -> None:
+        if self.state in (StateType.Menu, StateType.Credits):
+            Scene.playMusic(MusicType.Menu)
+        elif self.state in (StateType.Play, StateType.Pause, StateType.Cinematic):
+            track = MusicType.Day if self.cycle_system.isDay else MusicType.Night
+            Scene.playMusic(track)
+
         if self.state == StateType.Play:
             PlayScene.updatePlayScene(self, dt)
         elif self.state == StateType.Pause and self.paused_from_explosion:

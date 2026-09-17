@@ -2,13 +2,12 @@ import pygame
 
 from karma.enums import StateType
 from karma.entities.buildings.turret import Turret
-from karma.settings import (ASSETS_DIR,BASE_NIGHT_HEAL,COLOR_BG,SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR,)
+from karma.settings import (SCREEN_HEIGHT,SCREEN_WIDTH,SOUNDS_DIR,VIDEO_DIR, BASE_NIGHT_HEAL)
 from karma.entities.buildings.ressourcesProducer import RessourcesProducer
-
+from karma.entities.buildings.solar_panel import SolarPanel
 
 class PlayScene:
 
-    @staticmethod
     def updatePlayScene(self, dt: float) -> None:
         if self.state != StateType.Play:
             return

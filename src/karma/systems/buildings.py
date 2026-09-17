@@ -32,6 +32,7 @@ from karma.settings import (
     TURRET_ATTACK_RANGE,
     TURRET_COST,
     TURRET_HEALTH,
+    SOUNDS_DIR,
     WALL_COST,
     WALL_HEALTH,
     WALL_SIZE,
@@ -49,7 +50,12 @@ BUILDING_COSTS: dict[BuildingType, int] = {
 
 
 class BuildingsSystem:
+
+    building_sound = None
+
     def __init__(self) :
+        if BuildingsSystem.building_sound is None:
+            BuildingsSystem.building_sound = pygame.mixer.Sound(SOUNDS_DIR / "building-sound.mp3")
         self.currentSlot : dict | None = None
         self.dictOccupedSlot : dict[int, Building] = {}
         self.occupiedWallCells: set[tuple[int, int]] = set()
@@ -68,18 +74,6 @@ class BuildingsSystem:
 
         if foundSlot != self.currentSlot :
             self.currentSlot = foundSlot
-
-            if self.currentSlot is not None:
-                slot_id = self.currentSlot["id"]
-                slot_name = self.currentSlot["name"]
-
-                if self.isSlotFree(slot_id):
-                    print(f"[BUILD] {slot_name} est LIBRE. Prêt pour construire un bâtiment !")
-                else:
-                    building = self.dictOccupedSlot[slot_id]
-                    print(f"[BUILD] {slot_name} est OCCUPÉ par {building.__class__.__name__} (HP: {building.health}).")
-            else:
-                print("[BUILD] Le joueur est sorti de la zone de construction.")
 
     def build(self, building_type: BuildingType, ressource_manager: RessourceManager):
         if self.currentSlot is not None:
@@ -136,6 +130,7 @@ class BuildingsSystem:
                         )
 
                     self.dictOccupedSlot[self.currentSlot["id"]] = building
+                    BuildingsSystem.building_sound.play()
                     return building
 
     def buildWallAt(
