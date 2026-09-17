@@ -9,11 +9,11 @@ from karma.settings import KARMA_MAX, KARMA_MIN
 from karma.systems.combat import CombatSystem
 from karma.systems.cycle import CycleSystem
 
-SPAWN_WAVE_KEYS: dict[int, int] = {pygame.K_F3: 25}
+SPAWN_WAVE_KEYS: dict[int, int] = {pygame.K_j: 25}
 
 
 class CheatSystem:
-    # Raccourcis de debug (F1-F7) pour tester rapidement le jeu
+    # Raccourcis de debug (G, H, J, K, L, M) pour tester rapidement le jeu
 
     def __init__(self, base: Base, cycle_system: CycleSystem, combat_system: CombatSystem, rm: RessourceManager) -> None:
         self.base = base
@@ -23,17 +23,17 @@ class CheatSystem:
         self.godmode: bool = False
 
     def handleKey(self, key: int) -> None:
-        if key == pygame.K_F1:
+        if key == pygame.K_g:
             self.toggleGodmode()
-        elif key == pygame.K_F2:
+        elif key == pygame.K_h:
             self.skipPhase()
         elif key in SPAWN_WAVE_KEYS:
             self.spawnEnemies(SPAWN_WAVE_KEYS[key])
-        elif key == pygame.K_F4:
+        elif key == pygame.K_k:
             self.maxResources()
-        elif key == pygame.K_F5:
+        elif key == pygame.K_l:
             self.rm.setStock(RessourceType.Karma, KARMA_MAX)
-        elif key == pygame.K_F6:
+        elif key == pygame.K_m:
             self.rm.setStock(RessourceType.Karma, KARMA_MIN)
 
     def toggleGodmode(self) -> None:
