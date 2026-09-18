@@ -51,6 +51,8 @@ class Game():
     def __init__(self) -> None:
         # Initialisation de Pygame et de la fenêtre du jeu
         pygame.init()
+        icon = pygame.image.load(ASSETS_DIR / "icon.png")
+        pygame.display.set_icon(icon)
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
